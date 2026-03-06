@@ -7,282 +7,391 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
-  ImageBackground,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Colors } from '../../src/constants/theme';
-import { SearchIcon } from '../../src/components/icons/SearchIcon';
+import { TargetCirclesIcon } from '../../src/components/icons/TargetCirclesIcon';
+import { TerrainProfileIcon } from '../../src/components/icons/TerrainProfileIcon';
 import { FilterIcon } from '../../src/components/icons/FilterIcon';
-import { HeartIcon } from '../../src/components/icons/HeartIcon';
-import { ArrowUpRightIcon } from '../../src/components/icons/ArrowUpRightIcon';
-import { MapPinIcon } from '../../src/components/icons/MapPinIcon';
+import { ElevationProfileIcon } from '../../src/components/icons/ElevationProfileIcon';
+import { NavigationArrowIcon } from '../../src/components/icons/NavigationArrowIcon';
 
 const { width: SCREEN_W } = Dimensions.get('window');
+const COL_GAP = 6;
+const SIDE_PAD = 2;
+const COL_W = (SCREEN_W - SIDE_PAD * 2 - COL_GAP) / 2;
 
-// Feed images
-const FEED_IMAGES = {
-  routeMap: require('../../assets/images/feed/route_map.png'),
-  snow: require('../../assets/images/feed/feed_snow_mountain.png'),
-  landscape: require('../../assets/images/feed/feed_landscape.png'),
-  adventure: require('../../assets/images/feed/feed_adventure.png'),
-  sunset: require('../../assets/images/feed/feed_sunset.png'),
-  hikerSnow: require('../../assets/images/feed/feed_hiker_snow.png'),
-  skiing: require('../../assets/images/feed/feed_skiing.png'),
-  jeep: require('../../assets/images/feed/feed_jeep.png'),
-  tent: require('../../assets/images/feed/feed_tent.png'),
-  iceland: require('../../assets/images/feed/feed_iceland.png'),
-  trailSunset: require('../../assets/images/feed/feed_trail_sunset.png'),
-  powder: require('../../assets/images/feed/feed_powder.png'),
-  profile1: require('../../assets/images/feed/profile_photo1.png'),
-  profile2: require('../../assets/images/feed/profile_photo2.png'),
-  profile3: require('../../assets/images/feed/profile_photo3.png'),
+/* ── Image assets (Figma node 1:3129 "02") ── */
+const HOME_IMAGES = {
+  mapBanner: require('../../assets/images/feed/figma_map_banner.png'),
+  card1_fullWidth: require('../../assets/images/feed/home_card_1.png'),   // imgRectangle133 – backcountry skiing ice cave
+  card2_left: require('../../assets/images/feed/home_card_2.png'),        // imgRectangle236 – hikers in snow
+  card3_left: require('../../assets/images/feed/home_card_3.png'),        // imgRectangle181 – mountain hiking
+  card4_right: require('../../assets/images/feed/home_card_4.png'),       // imgRectangle138 – snowy peaks
+  card5_left: require('../../assets/images/feed/home_card_5.png'),        // imgRectangle180 – kayak/camp
+  card6_fullWidth: require('../../assets/images/feed/home_card_6.png'),   // imgRectangle264 – volcanic landscape
+  card7_right: require('../../assets/images/feed/home_card_7.png'),       // imgRectangle231 – hiker with gear
+  card8_fullWidth: require('../../assets/images/feed/home_card_8.png'),   // imgRectangle154 – 4x4 overlanding
+  card9_right: require('../../assets/images/feed/figma_card_13.png'),      // imgRectangle222 – free skiing snowy slope
+  flag1: require('../../assets/images/feed/home_flag_1.png'),
+  flag2: require('../../assets/images/feed/home_flag_2.png'),
+  flag3: require('../../assets/images/feed/home_flag_3.png'),
 };
 
-interface FeedItem {
+const PROFILE_IMAGES = {
+  tomtom8: require('../../assets/images/feed/home_profile_tomtom8.png'),
+  tony: require('../../assets/images/feed/home_profile_tony.png'),
+  iamsimon: require('../../assets/images/feed/home_profile_iamsimon.png'),
+  nik66: require('../../assets/images/feed/home_profile_nik66.png'),
+  julian: require('../../assets/images/feed/home_profile_julian.png'),
+  rebsix: require('../../assets/images/feed/home_profile_rebsix.png'),
+  cusmin: require('../../assets/images/feed/home_profile_cusmin.png'),
+  ashley: require('../../assets/images/feed/home_profile_ashley.png'),
+};
+
+/* ── Card data matching Figma exactly ── */
+interface CardItem {
   id: string;
   image: any;
-  likes: number;
   height: number;
   username: string;
   profileImage: any;
   activityType: string;
-  distance: string;
   elevation: string;
+  distance: string;
   time: string;
+  progress?: number;           // 0-1 fill ratio for distance bar
+  layout: 'full' | 'left' | 'right';
+  flagImage?: any;
+  elevationVariant?: 1 | 2 | 3 | 4 | 5;
+  badgeType?: 'wide' | 'narrow';
 }
 
-const FEED_DATA: FeedItem[] = [
-  { id: '1', image: FEED_IMAGES.hikerSnow, likes: 340, height: 280, username: '@_ashley', profileImage: FEED_IMAGES.profile1, activityType: 'Hiking', distance: '15km', elevation: '1200m', time: '5h 30min' },
-  { id: '2', image: FEED_IMAGES.skiing, likes: 0, height: 380, username: '@tony', profileImage: FEED_IMAGES.profile2, activityType: '4x4 Overlanding', distance: '33km', elevation: '450m', time: '3h 15min' },
-  { id: '3', image: FEED_IMAGES.landscape, likes: 704, height: 320, username: '@tomtom8', profileImage: FEED_IMAGES.profile3, activityType: 'Backcountry Skiing', distance: '12km', elevation: '900m', time: '4h 00min' },
-  { id: '4', image: FEED_IMAGES.snow, likes: 1200, height: 400, username: '@iamsimon', profileImage: FEED_IMAGES.profile1, activityType: 'Free Skiing', distance: '8km', elevation: '1500m', time: '2h 45min' },
-  { id: '5', image: FEED_IMAGES.trailSunset, likes: 234, height: 350, username: '@elena', profileImage: FEED_IMAGES.profile2, activityType: 'Trail Running', distance: '21km', elevation: '600m', time: '1h 50min' },
+const CARD_DATA: CardItem[] = [
+  // Row 1: full-width card – @tomtom8
+  { id: 'fw1', image: HOME_IMAGES.card1_fullWidth, height: 258, username: '@tomtom8', profileImage: PROFILE_IMAGES.tomtom8, activityType: 'Backcountry Skiing', elevation: '2550mt', distance: '33km', time: '5d 3h', progress: 0.63, layout: 'full', flagImage: HOME_IMAGES.flag1, elevationVariant: 1, badgeType: 'wide' },
+  // Row 2 left – @tony
+  { id: 'l2', image: HOME_IMAGES.card2_left, height: 239, username: '@tony', profileImage: PROFILE_IMAGES.tony, activityType: 'Hiking', elevation: '1800mt', distance: '11km', time: '2d 5h', progress: 1, layout: 'left', flagImage: HOME_IMAGES.flag2, elevationVariant: 2, badgeType: 'wide' },
+  // Row 2 right – @iamsimon
+  { id: 'r2', image: HOME_IMAGES.card9_right, height: 286, username: '@iamsimon', profileImage: PROFILE_IMAGES.iamsimon, activityType: 'Free Skiing', elevation: '1200mt', distance: '15km', time: '5h 30min', progress: 1, layout: 'right', flagImage: HOME_IMAGES.flag3, elevationVariant: 3, badgeType: 'narrow' },
+  // Row 3 left – @nik_66
+  { id: 'l3', image: HOME_IMAGES.card3_left, height: 239, username: '@nik_66', profileImage: PROFILE_IMAGES.nik66, activityType: 'Hiking', elevation: '1200mt', distance: '15km', time: '5h 30min', progress: 1, layout: 'left', elevationVariant: 3, badgeType: 'narrow' },
+  // Row 3 right – @julian_
+  { id: 'r3', image: HOME_IMAGES.card7_right, height: 286, username: '@julian_', profileImage: PROFILE_IMAGES.julian, activityType: 'Trail Running', elevation: '1200mt', distance: '15km', time: '5h 30min', progress: 1, layout: 'right', elevationVariant: 4, badgeType: 'narrow' },
+  // Row 4 left – @rebsix
+  { id: 'l4', image: HOME_IMAGES.card4_right, height: 286, username: '@rebsix', profileImage: PROFILE_IMAGES.rebsix, activityType: 'Hiking', elevation: '1200mt', distance: '15km', time: '5h 30min', progress: 1, layout: 'left', elevationVariant: 3, badgeType: 'wide' },
+  // Row 4 right – @cusmin
+  { id: 'r4', image: HOME_IMAGES.card5_left, height: 189, username: '@cusmin', profileImage: PROFILE_IMAGES.cusmin, activityType: 'Trail Running', elevation: '1200mt', distance: '15km', time: '5h 30min', progress: 1, layout: 'right', elevationVariant: 4, badgeType: 'narrow' },
+  // Row 5: full-width – @_ashley
+  { id: 'fw2', image: HOME_IMAGES.card6_fullWidth, height: 219, username: '@_ashley', profileImage: PROFILE_IMAGES.ashley, activityType: 'Backcountry Skiing', elevation: '1800mt', distance: '11km', time: '2d 5h', progress: 1, layout: 'full', elevationVariant: 2, badgeType: 'wide' },
+  // Row 6: full-width large – @tony (again)
+  { id: 'fw3', image: HOME_IMAGES.card8_fullWidth, height: 485, username: '@tony', profileImage: PROFILE_IMAGES.tony, activityType: '4x4 Overlanding', elevation: '1200mt', distance: '15km', time: '5h 30min', progress: 1, layout: 'full', elevationVariant: 5, badgeType: 'wide' },
 ];
 
+/* ── Component ── */
 export default function HomeScreen() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'explore' | 'follow'>('follow');
+  const [activeTab, setActiveTab] = useState<'explore' | 'follow'>('explore');
+
+  /* Split cards into left / right / full columns */
+  const leftCards = CARD_DATA.filter((c) => c.layout === 'left');
+  const rightCards = CARD_DATA.filter((c) => c.layout === 'right');
+  const fullCards = CARD_DATA.filter((c) => c.layout === 'full');
+
+  /* Render a single card */
+  const renderCard = (item: CardItem) => (
+    <View key={item.id} style={{ marginBottom: 4 }}>
+      {/* Profile row */}
+      <TouchableOpacity
+        style={styles.cardUserRow}
+        activeOpacity={0.7}
+        onPress={() => router.push('/other-user-profile')}
+      >
+        <Image source={item.profileImage} style={styles.cardUserAvatar} />
+        <Text style={styles.cardUsername}>{item.username}</Text>
+        {item.flagImage && (
+          <Image source={item.flagImage} style={styles.flagIcon} />
+        )}
+      </TouchableOpacity>
+
+      {/* Card image + terrain badge overlay */}
+      <TouchableOpacity
+        style={styles.card}
+        activeOpacity={0.85}
+        onPress={() => router.push('/activity-detail')}
+      >
+        {item.image ? (
+          <Image
+            source={item.image}
+            style={[
+              styles.cardImage,
+              {
+                height: item.height,
+                width: item.layout === 'full' ? SCREEN_W - SIDE_PAD * 2 : COL_W,
+              },
+            ]}
+            resizeMode="cover"
+          />
+        ) : (
+          <View
+            style={[
+              styles.cardPlaceholder,
+              {
+                height: item.height,
+                width: item.layout === 'full' ? SCREEN_W - SIDE_PAD * 2 : COL_W,
+              },
+            ]}
+          />
+        )}
+
+        {/* Terrain badge – overlaid on image bottom right */}
+        <View style={[
+          styles.terrainBadge,
+          item.badgeType === 'wide' ? styles.terrainBadgeWide : styles.terrainBadgeNarrow,
+        ]}>
+          {item.badgeType === 'wide' && (
+            <View style={styles.terrainBadgeLayer2} />
+          )}
+          <View style={styles.terrainBadgeLayer3} />
+          {item.badgeType === 'wide' && (
+            <View style={styles.terrainBadgeProfileWrap}>
+              <View style={{ transform: [{ rotate: '170deg' }] }}>
+                <TerrainProfileIcon width={30} height={10} color="#007AFF" />
+              </View>
+            </View>
+          )}
+          <View style={styles.terrainBadgeIconWrap}>
+            <View style={{ transform: [{ rotate: '82deg' }] }}>
+              <TerrainProfileIcon width={18} height={10} color="#007AFF" />
+            </View>
+          </View>
+          {item.badgeType === 'wide' && (
+            <Text style={styles.terrainBadgeCount}>+2</Text>
+          )}
+        </View>
+      </TouchableOpacity>
+
+      {/* Stats section – below image (Figma: positioned below card, not overlaid) */}
+      <View style={styles.statsSection}>
+        <Text style={styles.statsActivityType}>{item.activityType}</Text>
+        {/* Elevation row: label | Vector18 line | value (all inline) */}
+        <View style={styles.statsRow}>
+          <Text style={styles.statsLabelFixed}>Elevation</Text>
+          <ElevationProfileIcon
+            width={87}
+            height={10}
+            color="#282828"
+            variant={item.elevationVariant ?? 1}
+          />
+          <Text style={styles.statsValueRight}>{item.elevation}</Text>
+        </View>
+        {/* Distance row: label | Rectangle133 progress bar | value (all inline) */}
+        <View style={styles.statsRow}>
+          <Text style={styles.statsLabelFixed}>Distance </Text>
+          <View style={styles.statsProgressBar}>
+            <View
+              style={[
+                styles.statsProgressFill,
+                { width: 87 * (item.progress ?? 1) },
+              ]}
+            />
+          </View>
+          <Text style={styles.statsValueRight}>{item.distance}</Text>
+        </View>
+        {/* Time row: label | spacer | value */}
+        <View style={styles.statsRow}>
+          <Text style={styles.statsLabelFixed}>Time</Text>
+          <View style={{ width: 87 }} />
+          <Text style={styles.statsValueRight}>{item.time}</Text>
+        </View>
+      </View>
+    </View>
+  );
 
   return (
     <View style={styles.screen}>
-      {/* Top Activity Banner */}
-      <View style={styles.activityBanner}>
-        <ImageBackground
-          source={FEED_IMAGES.routeMap}
-          style={styles.activityBg}
-          imageStyle={styles.activityBgImage}
-        >
-          <View style={styles.activityContent}>
-            <View style={styles.activityLeft}>
-              <MapPinIcon width={16} height={16} color="#007AFF" />
-              <View style={styles.activityTextGroup}>
-                <Text style={styles.activityTitle}>Your last activity</Text>
-                <Text style={styles.activityLocation}>Oslo, Norway</Text>
-                <Text style={styles.activityDetail}>87 km gravel ride</Text>
-              </View>
-            </View>
-            <TouchableOpacity
-              style={styles.openButton}
-              activeOpacity={0.7}
-              onPress={() => router.push('/activity-detail')}
-            >
-              <Text style={styles.openButtonText}>Open</Text>
-            </TouchableOpacity>
+      {/* ── Frosted glass header (Figma 393×177, rgba(217,217,217,0.9)) ── */}
+      <View style={styles.headerSection}>
+        {/* Map banner */}
+        <View style={styles.mapWrapper}>
+          <Image
+            source={HOME_IMAGES.mapBanner}
+            style={styles.mapImage}
+            resizeMode="cover"
+          />
+          {/* Concentric circles location marker (right side of map) */}
+          <View style={styles.mapLocationMarker}>
+            <TargetCirclesIcon width={180} height={180} color="#007AFF" />
           </View>
-        </ImageBackground>
+          {/* Navigation arrow icon (top-left of map, Figma node 1:3369) */}
+          <View style={styles.compassIcon}>
+            <View style={{ transform: [{ rotate: '-42.75deg' }] }}>
+              <NavigationArrowIcon width={31} height={19} color="#007AFF" />
+            </View>
+          </View>
+          {/* Text block */}
+          <View style={styles.headerTextBlock}>
+            <Text style={styles.headerTitle}>Current Location</Text>
+            <Text style={styles.headerSubtitle}>Oslo, Norway</Text>
+            <Text style={styles.headerCount}>3,576 activities found</Text>
+          </View>
+        </View>
+
+        {/* Search bar row inside frosted header */}
+        <View style={styles.searchBarRow}>
+          <TouchableOpacity style={styles.searchSideBtn} activeOpacity={0.7}>
+            <FilterIcon width={21} height={21} color="#282828" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.searchBar}
+            activeOpacity={0.7}
+            onPress={() => router.push('/search')}
+          >
+            <Text style={styles.searchBarText}>Search Location</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.searchSideBtn} activeOpacity={0.7}>
+            <TargetCirclesIcon width={31} height={31} color="#007AFF" />
+          </TouchableOpacity>
+        </View>
       </View>
 
-      {/* Search + Filter Bar */}
-      <View style={styles.searchSection}>
-        <TouchableOpacity style={styles.filterBtn} activeOpacity={0.7} onPress={() => router.push('/feed-filters')}>
-          <FilterIcon width={18} height={18} color="#1F1F1F" />
-        </TouchableOpacity>
+      {/* Green indicator dot */}
+      <View style={styles.indicatorDot} />
 
-        <TouchableOpacity style={styles.searchBar} activeOpacity={0.8} onPress={() => router.push('/search')}>
-          <Text style={styles.searchText}>Search Users</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.profileBtn} activeOpacity={0.7} onPress={() => router.push('/(tabs)/profile')}>
-          <Image source={FEED_IMAGES.profile1} style={styles.searchProfileImg} />
-        </TouchableOpacity>
-      </View>
-
-      {/* Tabs: Explore / You Follow */}
+      {/* Tab selector: Explore / You Follow */}
       <View style={styles.tabRow}>
-        <TouchableOpacity
-          style={styles.tab}
-          onPress={() => setActiveTab('explore')}
-          activeOpacity={0.7}
-        >
+        <TouchableOpacity onPress={() => setActiveTab('explore')} activeOpacity={0.7}>
           <Text style={[styles.tabText, activeTab === 'explore' && styles.tabTextActive]}>
             Explore
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.tab}
-          onPress={() => setActiveTab('follow')}
-          activeOpacity={0.7}
-        >
+        <TouchableOpacity onPress={() => setActiveTab('follow')} activeOpacity={0.7}>
           <Text style={[styles.tabText, activeTab === 'follow' && styles.tabTextActive]}>
             You Follow
           </Text>
         </TouchableOpacity>
       </View>
 
-      {/* Feed */}
+      {/* ── Masonry grid ── */}
       <ScrollView
-        style={styles.feedScroll}
-        contentContainerStyle={styles.feedContent}
+        style={styles.gridScroll}
+        contentContainerStyle={styles.gridContent}
         showsVerticalScrollIndicator={false}
       >
-        {FEED_DATA.map((item) => (
-          <View key={item.id}>
-            {/* Per-card user info row */}
-            <TouchableOpacity
-              style={styles.feedUserRow}
-              activeOpacity={0.7}
-              onPress={() => router.push('/other-user-profile')}
-            >
-              <Image source={item.profileImage} style={styles.feedUserAvatar} />
-              <Text style={styles.feedUsername}>{item.username}</Text>
-            </TouchableOpacity>
+        {/* Full-width card 1 */}
+        {renderCard(fullCards[0])}
 
-            <TouchableOpacity
-              style={styles.feedCard}
-              activeOpacity={0.85}
-              onPress={() => router.push('/activity-detail')}
-            >
-              <Image
-                source={item.image}
-                style={[styles.feedImage, { height: item.height }]}
-                resizeMode="cover"
-              />
-              {/* Activity stats overlay — bottom left */}
-              <View style={styles.statsOverlay}>
-                <Text style={styles.statsActivityType}>{item.activityType}</Text>
-                <View style={styles.statsRow}>
-                  <Text style={styles.statsLabel}>Distance</Text>
-                  <Text style={styles.statsValue}>{item.distance}</Text>
-                </View>
-                <View style={styles.statsProgressBar}>
-                  <View style={styles.statsProgressFill} />
-                </View>
-                <View style={styles.statsRow}>
-                  <Text style={styles.statsLabel}>Elevation</Text>
-                  <Text style={styles.statsValue}>{item.elevation}</Text>
-                </View>
-                <View style={styles.statsRow}>
-                  <Text style={styles.statsLabel}>Time</Text>
-                  <Text style={styles.statsValue}>{item.time}</Text>
-                </View>
-              </View>
-              {/* Like + action badges — bottom right */}
-              <View style={styles.feedOverlay}>
-                {item.likes > 0 && (
-                  <View style={styles.likeBadge}>
-                    <HeartIcon width={14} height={14} color="#007AFF" filled />
-                    <Text style={styles.likeCount}>
-                      {item.likes >= 1000
-                        ? `${(item.likes / 1000).toFixed(1)}k`
-                        : item.likes}
-                    </Text>
-                  </View>
-                )}
-                <TouchableOpacity style={styles.arrowBadge} activeOpacity={0.7} onPress={() => router.push('/activity-detail')}>
-                  <ArrowUpRightIcon width={18} height={18} color="#007AFF" />
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
+        {/* Two-column rows */}
+        <View style={styles.masonryContainer}>
+          {/* Left column */}
+          <View style={styles.masonryCol}>
+            {leftCards.map(renderCard)}
           </View>
-        ))}
-        {/* Bottom spacer for tab bar */}
+          {/* Right column */}
+          <View style={styles.masonryCol}>
+            {rightCards.map(renderCard)}
+          </View>
+        </View>
+
+        {/* Full-width card 2 */}
+        {fullCards[1] && renderCard(fullCards[1])}
+        {/* Full-width card 3 */}
+        {fullCards[2] && renderCard(fullCards[2])}
+
+        {/* Bottom spacer */}
         <View style={{ height: 100 }} />
       </ScrollView>
     </View>
   );
 }
 
+/* ── Styles (pixel-perfect from Figma node 1:3129) ── */
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: '#A0A0A0',
   },
-  // Activity Banner — Figma: rounded-tl/tr 50, rounded-bl/br 30
-  activityBanner: {
-    marginHorizontal: 2,
-    marginTop: 6,
+
+  /* ── Frosted header section ── */
+  headerSection: {
+    marginTop: 50,
+    backgroundColor: 'rgba(217, 217, 217, 0.9)',
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    paddingTop: 5,
+    paddingBottom: 7,
+  },
+  mapWrapper: {
+    marginHorizontal: 5,
     height: 110,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     overflow: 'hidden',
+    position: 'relative',
   },
-  activityBg: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  activityBgImage: {
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+  mapImage: {
+    ...StyleSheet.absoluteFillObject,
+    width: '100%',
+    height: '100%',
     opacity: 0.8,
   },
-  activityContent: {
-    flexDirection: 'row',
+  compassIcon: {
+    position: 'absolute',
+    top: 40,
+    left: 14,
+    width: 37,
+    height: 34,
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingBottom: 16,
-    paddingTop: 12,
+    justifyContent: 'center',
   },
-  activityLeft: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 8,
-    flex: 1,
+  mapLocationMarker: {
+    position: 'absolute',
+    top: -35,
+    right: -2,
+    width: 180,
+    height: 180,
+    opacity: 0.9,
   },
-  activityTextGroup: {
-    flex: 1,
+  headerTextBlock: {
+    position: 'absolute',
+    top: 49,
+    left: 53,
   },
-  activityTitle: {
+  headerTitle: {
     fontSize: 16,
     fontWeight: '500',
     color: '#282828',
   },
-  activityLocation: {
+  headerSubtitle: {
     fontSize: 12,
     color: '#007AFF',
+    marginTop: 1,
   },
-  activityDetail: {
+  headerCount: {
     fontSize: 12,
-    color: '#007AFF',
+    color: '#1283FD',
+    marginTop: 1,
   },
-  openButton: {
-    width: 85,
-    height: 46,
-    backgroundColor: 'rgba(0,0,0,0.2)',
-    borderRadius: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  openButtonText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#282828',
+  indicatorDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#007AFF',
+    alignSelf: 'flex-end',
+    marginRight: 19,
+    marginTop: 4,
   },
 
-  // Search
-  searchSection: {
+  /* ── Search bar row ── */
+  searchBarRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 18,
-    paddingVertical: 10,
-    gap: 8,
+    marginTop: 6,
+    gap: 4,
   },
-  filterBtn: {
+  searchSideBtn: {
     width: 49,
     height: 49,
     borderRadius: 15,
@@ -295,157 +404,200 @@ const styles = StyleSheet.create({
     height: 49,
     borderRadius: 15,
     backgroundColor: '#CFD0D1',
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  searchText: {
+  searchBarText: {
     fontSize: 14,
     fontWeight: '500',
     color: '#1F1F1F',
   },
-  profileBtn: {
-    width: 49,
-    height: 49,
-    borderRadius: 15,
-    overflow: 'hidden',
-  },
-  searchProfileImg: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 15,
-  },
 
-  // Tabs — Figma: 20px bold, no underline, color diff only
+  /* ── Tab selector ── */
   tabRow: {
     flexDirection: 'row',
-    paddingHorizontal: 18,
-    marginBottom: 8,
-    gap: 20,
-  },
-  tab: {
-    paddingVertical: 6,
+    justifyContent: 'space-between',
+    paddingHorizontal: 26,
+    marginTop: 4,
+    marginBottom: 6,
   },
   tabText: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#838385',
+    color: 'rgba(60,60,67,0.29)',
   },
   tabTextActive: {
     color: '#282828',
   },
 
-  // Per-card user info row
-  feedUserRow: {
+  /* ── Per-card user row ── */
+  cardUserRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-    gap: 6,
+    paddingLeft: 24,
+    paddingRight: 4,
+    paddingVertical: 4,
+    gap: 4,
   },
-  feedUserAvatar: {
+  cardUserAvatar: {
     width: 20,
     height: 20,
     borderRadius: 10,
   },
-  feedUsername: {
+  cardUsername: {
     fontSize: 13,
     fontWeight: '700',
     color: '#282828',
   },
+  flagIcon: {
+    width: 17,
+    height: 12,
+    marginLeft: 2,
+  },
 
-  // Feed
-  feedScroll: {
-    flex: 1,
-  },
-  feedContent: {
-    paddingHorizontal: 2,
-    gap: 4,
-  },
-  feedCard: {
+  /* ── Card image ── */
+  card: {
     borderRadius: 20,
     overflow: 'hidden',
     position: 'relative',
   },
-  feedImage: {
-    width: '100%',
+  cardImage: {
     borderRadius: 20,
   },
-  // Activity stats overlay — bottom left on feed cards
-  statsOverlay: {
-    position: 'absolute',
-    bottom: 12,
-    left: 12,
-    backgroundColor: 'rgba(184,184,184,0.85)',
-    borderRadius: 15,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    minWidth: 110,
+  cardPlaceholder: {
+    borderRadius: 20,
+    backgroundColor: 'rgba(160,160,160,0.5)',
+  },
+
+  /* ── Stats section (Figma: below card image, not overlaid) ── */
+  statsSection: {
+    paddingLeft: 11,
+    paddingTop: 5,
+    paddingBottom: 2,
   },
   statsActivityType: {
     fontSize: 10,
     fontWeight: '700',
     color: '#282828',
-    marginBottom: 4,
+    marginBottom: 3,
+    width: 141,
   },
   statsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 2,
+    width: 170,
+    height: 12,
   },
-  statsLabel: {
+  statsLabelFixed: {
     fontSize: 8,
     fontWeight: '600',
     color: '#282828',
+    width: 44,
   },
-  statsValue: {
+  statsValueRight: {
     fontSize: 8,
     fontWeight: '600',
     color: '#282828',
-    marginLeft: 8,
+    textAlign: 'right',
+    flex: 1,
   },
   statsProgressBar: {
     width: 87,
     height: 6,
     backgroundColor: 'rgba(0,0,0,0.15)',
     borderRadius: 20,
-    marginVertical: 3,
   },
   statsProgressFill: {
-    width: 55,
     height: 6,
     backgroundColor: '#282828',
     borderRadius: 20,
   },
-  feedOverlay: {
+
+  /* ── Terrain badge (bottom-right, Figma exact) ── */
+  terrainBadge: {
     position: 'absolute',
-    bottom: 12,
-    right: 12,
-    flexDirection: 'column',
-    gap: 8,
-    alignItems: 'center',
-  },
-  likeBadge: {
-    width: 73,
-    height: 50,
+    bottom: 10,
+    right: 10,
+    height: 37,
+    borderRadius: 10,
+    backgroundColor: 'rgba(0,0,0,0.2)',
     flexDirection: 'row',
     alignItems: 'center',
+    overflow: 'hidden',
+  },
+  terrainBadgeWide: {
+    width: 58,
+  },
+  terrainBadgeNarrow: {
+    width: 30,
+  },
+  terrainBadgeLayer2: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: 44,
+    height: 37,
+    borderRadius: 10,
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 0.5,
+    elevation: 2,
+  },
+  terrainBadgeLayer3: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: 30,
+    height: 37,
+    borderRadius: 10,
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 0.5,
+    elevation: 3,
+  },
+  terrainBadgeProfileWrap: {
+    position: 'absolute',
+    left: 4,
+    top: 0,
+    bottom: 0,
     justifyContent: 'center',
-    backgroundColor: '#B8B8B8',
-    borderRadius: 15,
-    gap: 4,
-  },
-  likeCount: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#282828',
-  },
-  arrowBadge: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#B8B8B8',
     alignItems: 'center',
+    width: 38,
+  },
+  terrainBadgeIconWrap: {
+    position: 'absolute',
+    left: 4,
+    top: 0,
+    bottom: 0,
     justifyContent: 'center',
+    alignItems: 'center',
+    width: 22,
+  },
+  terrainBadgeCount: {
+    position: 'absolute',
+    right: 3,
+    fontSize: 8,
+    fontWeight: '600',
+    color: '#C9C9C9',
+    textAlign: 'center',
+  },
+
+  /* ── Grid / masonry ── */
+  gridScroll: {
+    flex: 1,
+  },
+  gridContent: {
+    paddingHorizontal: SIDE_PAD,
+  },
+  masonryContainer: {
+    flexDirection: 'row',
+    gap: COL_GAP,
+  },
+  masonryCol: {
+    width: COL_W,
   },
 });

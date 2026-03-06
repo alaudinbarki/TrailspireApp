@@ -10,32 +10,44 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../src/constants/theme';
-import { CompassIcon } from '../../src/components/icons/CompassIcon';
-import { HeartIcon } from '../../src/components/icons/HeartIcon';
+import { TargetCirclesIcon } from '../../src/components/icons/TargetCirclesIcon';
+import { TerrainProfileIcon } from '../../src/components/icons/TerrainProfileIcon';
 import { FilterIcon } from '../../src/components/icons/FilterIcon';
-import { SearchIcon } from '../../src/components/icons/SearchIcon';
-import { ArrowUpRightIcon } from '../../src/components/icons/ArrowUpRightIcon';
 
 const { width: SCREEN_W } = Dimensions.get('window');
 
 const EXPLORE_IMAGES = {
-  snow: require('../../assets/images/feed/feed_snow_mountain.png'),
-  landscape: require('../../assets/images/feed/feed_landscape.png'),
-  adventure: require('../../assets/images/feed/feed_adventure.png'),
-  sunset: require('../../assets/images/feed/feed_sunset.png'),
-  hikerSnow: require('../../assets/images/feed/feed_hiker_snow.png'),
-  skiing: require('../../assets/images/feed/feed_skiing.png'),
-  jeep: require('../../assets/images/feed/feed_jeep.png'),
-  tent: require('../../assets/images/feed/feed_tent.png'),
-  iceland: require('../../assets/images/feed/feed_iceland.png'),
-  powder: require('../../assets/images/feed/feed_powder.png'),
-  trailSunset: require('../../assets/images/feed/feed_trail_sunset.png'),
+  card_isabel21: require('../../assets/images/feed/figma_card_9.png'),
+  card_cusmin: require('../../assets/images/feed/figma_card_7.png'),
+  card_rebsix: require('../../assets/images/feed/figma_card_8.png'),
+  card_ashley: require('../../assets/images/feed/figma_card_10.png'),
+  card_tony: require('../../assets/images/feed/figma_card_11.png'),
+  card_marconuvolari: require('../../assets/images/feed/figma_card_12.png'),
+  card_nik66: require('../../assets/images/feed/figma_card_6.png'),
+  card_will87: require('../../assets/images/feed/figma_card_1.png'),
+  card_lollomag: require('../../assets/images/feed/figma_card_2.png'),
+  card_julian: require('../../assets/images/feed/figma_card_3.png'),
+  card_tomasmek: require('../../assets/images/feed/figma_card_4.png'),
+  card_gioforty: require('../../assets/images/feed/figma_card_5.png'),
+  card_iamsimon: require('../../assets/images/feed/figma_card_13.png'),
+  mapBanner: require('../../assets/images/feed/figma_map_banner.png'),
 };
 
 const PROFILE_IMAGES = {
-  p1: require('../../assets/images/feed/profile_photo1.png'),
-  p2: require('../../assets/images/feed/profile_photo2.png'),
-  p3: require('../../assets/images/feed/profile_photo3.png'),
+  isabel21: require('../../assets/images/feed/figma_profile_isabel21.png'),
+  cusmin: require('../../assets/images/feed/figma_profile_cusmin.png'),
+  rebsix: require('../../assets/images/feed/profile_photo1.png'),
+  ashley: require('../../assets/images/feed/figma_profile_ashley.png'),
+  carlnoto: require('../../assets/images/feed/figma_profile_carlnoto.png'),
+  tony: require('../../assets/images/feed/figma_profile_tony.png'),
+  marconuvolari: require('../../assets/images/feed/figma_profile_marconuvolari87.png'),
+  nik66: require('../../assets/images/feed/figma_profile_nik66.png'),
+  will87: require('../../assets/images/feed/figma_profile_will87.png'),
+  lollomag: require('../../assets/images/feed/figma_profile_lollomag.png'),
+  julian: require('../../assets/images/feed/profile_photo2.png'),
+  tomasmek: require('../../assets/images/feed/profile_photo3.png'),
+  gioforty: require('../../assets/images/feed/figma_profile_gioforty.png'),
+  iamsimon: require('../../assets/images/feed/figma_profile_iamsimon.png'),
 };
 
 interface ExploreItem {
@@ -52,16 +64,20 @@ interface ExploreItem {
 }
 
 const EXPLORE_DATA: ExploreItem[] = [
-  { id: '1', image: EXPLORE_IMAGES.snow, username: '@isabel21', profileImage: PROFILE_IMAGES.p1, height: 220 },
-  { id: '2', image: EXPLORE_IMAGES.landscape, username: '@cusmin', profileImage: PROFILE_IMAGES.p2, height: 180 },
-  { id: '3', image: EXPLORE_IMAGES.tent, username: '@rebsix', profileImage: PROFILE_IMAGES.p3, height: 260 },
-  { id: '4', image: EXPLORE_IMAGES.skiing, username: '@_ashley', profileImage: PROFILE_IMAGES.p1, height: 200 },
-  { id: '5', image: EXPLORE_IMAGES.hikerSnow, username: '@carl.noto', profileImage: PROFILE_IMAGES.p2, height: 240 },
-  { id: '6', image: EXPLORE_IMAGES.jeep, username: '@tony', profileImage: PROFILE_IMAGES.p3, height: 190 },
-  { id: '7', image: EXPLORE_IMAGES.trailSunset, username: '@nik_66', profileImage: PROFILE_IMAGES.p1, height: 220 },
-  { id: '8', image: EXPLORE_IMAGES.powder, username: '@will87', profileImage: PROFILE_IMAGES.p2, height: 250, activityType: 'Road Cycling', elevation: '2550mt', distance: '33km', time: '5d 3h', progress: 0.65 },
-  { id: '9', image: EXPLORE_IMAGES.adventure, username: '@gioforty', profileImage: PROFILE_IMAGES.p3, height: 200 },
-  { id: '10', image: EXPLORE_IMAGES.iceland, username: '@lollomag', profileImage: PROFILE_IMAGES.p1, height: 240 },
+  { id: '1', image: EXPLORE_IMAGES.card_isabel21, username: '@isabel21', profileImage: PROFILE_IMAGES.isabel21, height: 191, activityType: 'Hiking', elevation: '1200mt', distance: '15km', time: '5h 30min', progress: 0.7 },
+  { id: '2', image: EXPLORE_IMAGES.card_cusmin, username: '@cusmin', profileImage: PROFILE_IMAGES.cusmin, height: 286, activityType: 'Hiking', elevation: '1200mt', distance: '15km', time: '5h 30min', progress: 0.65 },
+  { id: '3', image: EXPLORE_IMAGES.card_rebsix, username: '@rebsix', profileImage: PROFILE_IMAGES.rebsix, height: 286, activityType: 'Hiking', elevation: '1200mt', distance: '15km', time: '5h 30min', progress: 0.6 },
+  { id: '4', image: EXPLORE_IMAGES.card_ashley, username: '@_ashley', profileImage: PROFILE_IMAGES.ashley, height: 238, activityType: 'Hiking', elevation: '1200mt', distance: '15km', time: '5h 30min', progress: 0.7 },
+  { id: '5', image: null, username: '@carl.noto', profileImage: PROFILE_IMAGES.carlnoto, height: 286, activityType: 'Free Skiing', elevation: '1200mt', distance: '15km', time: '5h 30min', progress: 0.55 },
+  { id: '6', image: EXPLORE_IMAGES.card_tony, username: '@tony', profileImage: PROFILE_IMAGES.tony, height: 238, activityType: 'Trail Running', elevation: '1200mt', distance: '15km', time: '5h 30min', progress: 0.7 },
+  { id: '7', image: EXPLORE_IMAGES.card_marconuvolari, username: '@marconuvolari87', profileImage: PROFILE_IMAGES.marconuvolari, height: 219, activityType: 'Road Cycling', elevation: '1200mt', distance: '15km', time: '5h 30min', progress: 0.65 },
+  { id: '8', image: EXPLORE_IMAGES.card_nik66, username: '@nik_66', profileImage: PROFILE_IMAGES.nik66, height: 300, activityType: 'Hiking', elevation: '1200mt', distance: '15km', time: '5h 30min', progress: 0.6 },
+  { id: '9', image: EXPLORE_IMAGES.card_will87, username: '@will87', profileImage: PROFILE_IMAGES.will87, height: 127, activityType: 'Road Cycling', elevation: '2550mt', distance: '33km', time: '5d 3h', progress: 0.65 },
+  { id: '10', image: EXPLORE_IMAGES.card_lollomag, username: '@lollomag', profileImage: PROFILE_IMAGES.lollomag, height: 238, activityType: 'Hiking', elevation: '1200mt', distance: '15km', time: '5h 30min', progress: 0.7 },
+  { id: '11', image: EXPLORE_IMAGES.card_julian, username: '@julian_', profileImage: PROFILE_IMAGES.julian, height: 191, activityType: 'Hiking', elevation: '1200mt', distance: '15km', time: '5h 30min', progress: 0.6 },
+  { id: '12', image: EXPLORE_IMAGES.card_tomasmek, username: '@tomasmek', profileImage: PROFILE_IMAGES.tomasmek, height: 126, activityType: 'Hiking', elevation: '1200mt', distance: '15km', time: '5h 30min', progress: 0.65 },
+  { id: '13', image: EXPLORE_IMAGES.card_gioforty, username: '@gioforty', profileImage: PROFILE_IMAGES.gioforty, height: 286, activityType: 'Trail Running', elevation: '1800mt', distance: '11km', time: '2d 5h', progress: 0.55 },
+  { id: '14', image: EXPLORE_IMAGES.card_iamsimon, username: '@iamsimon', profileImage: PROFILE_IMAGES.iamsimon, height: 238, activityType: 'Running', elevation: '1200mt', distance: '15km', time: '5h 30min', progress: 0.7 },
 ];
 
 export default function ExploreScreen() {
@@ -83,14 +99,20 @@ export default function ExploreScreen() {
         activeOpacity={0.85}
         onPress={() => router.push('/activity-detail')}
       >
-        <Image
-          source={item.image}
-          style={[styles.gridImage, { height: item.height }]}
-          resizeMode="cover"
-        />
-        {/* Heart button overlay */}
+        {item.image ? (
+          <Image
+            source={item.image}
+            style={[styles.gridImage, { height: item.height }]}
+            resizeMode="cover"
+          />
+        ) : (
+          <View style={[styles.gridImage, { height: item.height, backgroundColor: '#C4C4C4' }]} />
+        )}
+        {/* Terrain profile overlay - matches Figma exactly */}
         <View style={styles.heartOverlay}>
-          <HeartIcon width={16} height={16} color="#FFFFFF" />
+          <View style={{ transform: [{ rotate: '170deg' }] }}>
+            <TerrainProfileIcon width={30} height={10} color="#007AFF" />
+          </View>
         </View>
       </TouchableOpacity>
       {/* Activity stats below card (if present) */}
@@ -100,7 +122,7 @@ export default function ExploreScreen() {
           <View style={styles.statsRow}>
             <Text style={styles.statsLabel}>Elevation</Text>
             <View style={styles.statsBarContainer}>
-              <Image source={EXPLORE_IMAGES.trailSunset} style={styles.statsBarBg} resizeMode="cover" />
+              <View style={[styles.statsProgressBar, { width: '100%' }]} />
             </View>
             <Text style={styles.statsValue}>{item.elevation}</Text>
           </View>
@@ -123,45 +145,47 @@ export default function ExploreScreen() {
 
   return (
     <View style={styles.screen}>
-      {/* Banner */}
-      <View style={styles.banner}>
-        <Image
-          source={EXPLORE_IMAGES.snow}
-          style={styles.bannerImage}
-          resizeMode="cover"
-        />
-        {/* Compass icon top-left */}
-        <View style={styles.bannerCompass}>
-          <CompassIcon width={31} height={31} color="#FFFFFF" />
+      {/* Frosted glass header section */}
+      <View style={styles.headerSection}>
+        {/* Map banner */}
+        <View style={styles.mapWrapper}>
+          <Image
+            source={EXPLORE_IMAGES.mapBanner}
+            style={styles.mapImage}
+            resizeMode="cover"
+          />
+          {/* Target circles icon on map - Figma exact match */}
+          <View style={styles.compassIcon}>
+            <TargetCirclesIcon width={31} height={31} color="#000000" />
+          </View>
+          {/* Header info text on map */}
+          <View style={styles.headerTextBlock}>
+            <Text style={styles.headerTitle}>Explore Mode</Text>
+            <Text style={styles.headerSubtitle}>World Atlas</Text>
+            <Text style={styles.headerCount}>329,246 activities found</Text>
+          </View>
         </View>
-        {/* Header info text */}
-        <View style={styles.bannerTextBlock}>
-          <Text style={styles.bannerTitle}>Explore Mode</Text>
-          <Text style={styles.bannerSubtitle}>World Atlas</Text>
-          <Text style={styles.bannerCount}>329,246 activities found</Text>
+
+        {/* Search bar row - inside frosted header */}
+        <View style={styles.searchBarRow}>
+          <TouchableOpacity style={styles.searchSideBtn} activeOpacity={0.7}>
+            <FilterIcon width={21} height={21} color="#282828" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.searchBar}
+            activeOpacity={0.7}
+            onPress={() => router.push('/search')}
+          >
+            <Text style={styles.searchBarText}>Search Location</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.searchSideBtnTarget} activeOpacity={0.7}>
+            <TargetCirclesIcon width={43} height={43} color="#000000" />
+          </TouchableOpacity>
         </View>
-        {/* Search button top-right */}
-        <TouchableOpacity style={styles.bannerSearchBtn} activeOpacity={0.7} onPress={() => router.push('/search')}>
-          <SearchIcon width={18} height={18} color="#FFFFFF" />
-        </TouchableOpacity>
       </View>
 
-      {/* Search bar row */}
-      <View style={styles.searchBarRow}>
-        <TouchableOpacity style={styles.searchSideBtn} activeOpacity={0.7}>
-          <FilterIcon width={21} height={21} color="#282828" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.searchBar}
-          activeOpacity={0.7}
-          onPress={() => router.push('/search')}
-        >
-          <Text style={styles.searchBarText}>Search Location</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.searchSideBtn} activeOpacity={0.7}>
-          <ArrowUpRightIcon width={16} height={16} color="#282828" />
-        </TouchableOpacity>
-      </View>
+      {/* Green indicator dot */}
+      <View style={styles.indicatorDot} />
 
       {/* Tab selector: Explore / You Follow */}
       <View style={styles.tabRow}>
@@ -205,10 +229,17 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
 
-  /* ── Banner (Figma: top 50/30 radii, 382w, 110h, opacity 0.8) ── */
-  banner: {
-    marginTop: 5,
-    marginHorizontal: (SCREEN_W - 382) / 2,
+  /* ── Frosted header section (Figma: full-width, 177h, bottom radii 30, rgba(217,217,217,0.9)) ── */
+  headerSection: {
+    marginTop: 50,
+    backgroundColor: 'rgba(217, 217, 217, 0.9)',
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    paddingTop: 5,
+    paddingBottom: 7,
+  },
+  mapWrapper: {
+    marginHorizontal: 5,
     height: 110,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
@@ -217,56 +248,53 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     position: 'relative',
   },
-  bannerImage: {
+  mapImage: {
     ...StyleSheet.absoluteFillObject,
     width: '100%',
     height: '100%',
     opacity: 0.8,
   },
-  bannerCompass: {
+  compassIcon: {
     position: 'absolute',
-    top: 44,
-    left: 14,
+    top: 43,
+    left: 9,
   },
-  bannerTextBlock: {
+  headerTextBlock: {
     position: 'absolute',
-    top: 44,
-    left: 53,
+    top: 49,
+    left: 48,
   },
-  bannerTitle: {
+  headerTitle: {
     fontSize: 16,
     fontWeight: '500',
     color: '#282828',
   },
-  bannerSubtitle: {
+  headerSubtitle: {
     fontSize: 12,
     color: '#007AFF',
     marginTop: 1,
   },
-  bannerCount: {
+  headerCount: {
     fontSize: 12,
     color: '#007AFF',
     marginTop: 1,
   },
-  bannerSearchBtn: {
-    position: 'absolute',
-    top: 40,
-    right: 10,
-    width: 43,
-    height: 43,
-    borderRadius: 15,
-    backgroundColor: 'rgba(207,208,209,0.8)',
-    alignItems: 'center',
-    justifyContent: 'center',
+  indicatorDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#007AFF',
+    alignSelf: 'flex-end',
+    marginRight: 19,
+    marginTop: 6,
   },
 
   /* ── Search bar row (Figma: 251w bar, 49h, two 48.9 side buttons) ── */
   searchBarRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
     paddingHorizontal: 18,
-    marginTop: 8,
+    marginTop: 6,
     gap: 8,
   },
   searchSideBtn: {
@@ -276,6 +304,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#CFD0D1',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  searchSideBtnTarget: {
+    width: 49,
+    height: 49,
+    borderRadius: 15,
+    backgroundColor: '#CFD0D1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
   },
   searchBar: {
     flex: 1,
@@ -296,7 +333,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 22,
-    marginTop: 14,
+    marginTop: 4,
     marginBottom: 6,
   },
   tabText: {

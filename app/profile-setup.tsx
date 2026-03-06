@@ -27,7 +27,7 @@ export default function ProfileSetupScreen() {
   const [dob, setDob] = useState('');
 
   const handleStart = () => {
-    router.replace('/(tabs)/home');
+    router.replace('/(tabs)/explore');
   };
 
   return (

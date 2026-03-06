@@ -12,3 +12,8 @@ export { ArrowUpRightIcon } from './ArrowUpRightIcon';
 export { MapPinIcon } from './MapPinIcon';
 export { BackArrowIcon } from './BackArrowIcon';
 export { FilterIcon } from './FilterIcon';
+export { TargetCirclesIcon } from './TargetCirclesIcon';
+export { TerrainProfileIcon } from './TerrainProfileIcon';
+export { DocumentStackIcon } from './DocumentStackIcon';
+export { ElevationProfileIcon } from './ElevationProfileIcon';
+export { NavigationArrowIcon } from './NavigationArrowIcon';

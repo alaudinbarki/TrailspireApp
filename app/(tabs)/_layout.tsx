@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Tabs, useRouter } from 'expo-router';
 import { GridIcon } from '../../src/components/icons/GridIcon';
 import { PlusIcon } from '../../src/components/icons/PlusIcon';
-import { CompassIcon } from '../../src/components/icons/CompassIcon';
+import { DocumentStackIcon } from '../../src/components/icons/DocumentStackIcon';
 import { Colors } from '../../src/constants/theme';
 
 export default function TabsLayout() {
@@ -20,19 +20,19 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="home"
+        name="explore"
         options={{
           tabBarIcon: ({ color, focused }) => (
             <GridIcon
-              width={24}
-              height={24}
+              width={26}
+              height={26}
               color={focused ? '#007AFF' : '#FFFFFF'}
             />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="home"
         options={{
           tabBarIcon: ({ color, focused }) => (
             <PlusIcon
@@ -53,10 +53,10 @@ export default function TabsLayout() {
         name="activity"
         options={{
           tabBarIcon: ({ color, focused }) => (
-            <CompassIcon
-              width={26}
+            <DocumentStackIcon
+              width={23}
               height={26}
-              color={focused ? '#007AFF' : '#FFFFFF'}
+              color={focused ? '#007AFF' : '#F2F2F2'}
             />
           ),
         }}
