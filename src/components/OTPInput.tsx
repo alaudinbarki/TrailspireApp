@@ -5,17 +5,25 @@ import {
   StyleSheet,
   NativeSyntheticEvent,
   TextInputKeyPressEventData,
+  ViewStyle,
+  TextStyle,
 } from 'react-native';
 import { Colors, BorderRadius, Layout, FontSize, FontWeight } from '../constants/theme';
 
 interface OTPInputProps {
   length?: number;
   onComplete?: (code: string) => void;
+  gap?: number;
+  containerStyle?: ViewStyle;
+  boxStyle?: TextStyle;
 }
 
 export const OTPInput: React.FC<OTPInputProps> = ({
   length = 4,
   onComplete,
+  gap,
+  containerStyle,
+  boxStyle,
 }) => {
   const [values, setValues] = useState<string[]>(Array(length).fill(''));
   const inputRefs = useRef<(TextInput | null)[]>([]);
@@ -51,7 +59,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, gap !== undefined ? { gap } : null, containerStyle]}>
       {Array(length)
         .fill(0)
         .map((_, index) => (
@@ -62,6 +70,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
             }}
             style={[
               styles.box,
+              boxStyle,
               values[index] ? styles.boxFilled : null,
             ]}
             value={values[index]}
@@ -70,6 +79,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
             keyboardType="number-pad"
             maxLength={1}
             selectTextOnFocus
+            allowFontScaling={false}
             textAlign="center"
           />
         ))}
@@ -92,6 +102,9 @@ const styles = StyleSheet.create({
     fontSize: FontSize.heading,
     fontWeight: FontWeight.semiBold,
     color: Colors.textDark,
+    includeFontPadding: false,
+    textAlignVertical: 'center',
+    padding: 0,
     textAlign: 'center',
   },
   boxFilled: {

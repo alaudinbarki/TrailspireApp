@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
@@ -16,7 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../src/constants/theme';
 import { SearchIcon } from '../src/components/icons/SearchIcon';
 
-const { width: SCREEN_W } = Dimensions.get('window');
+const BASE_WIDTH = 393;
 
 const ACTIVITY_TYPES = [
   { id: 'add', label: '+', color: '#282828', bg: '#282828', textColor: '#FFFFFF' },
@@ -177,7 +176,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   mapBanner: {
-    width: SCREEN_W - 11,
+    width: BASE_WIDTH - 11,
     height: 110,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,

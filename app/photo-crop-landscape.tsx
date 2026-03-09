@@ -34,7 +34,7 @@ export default function PhotoCropLandscapeScreen() {
           <BackArrowIcon width={20} height={20} color="#282828" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Crop Photo</Text>
-        <View style={{ width: 49 }} />
+        <View style={styles.headerSpacer} />
       </View>
 
       {/* Photo Preview */}
@@ -124,6 +124,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.2)',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  headerSpacer: {
+    width: 49,
   },
   headerTitle: {
     fontFamily: 'Inter',

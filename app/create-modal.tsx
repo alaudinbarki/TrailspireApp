@@ -4,8 +4,8 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Pressable,
   Dimensions,
-  Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 
@@ -13,103 +13,68 @@ const { width: SCREEN_W } = Dimensions.get('window');
 
 export default function CreateModalScreen() {
   const router = useRouter();
+  const sheetWidth = Math.min(389, SCREEN_W - 16);
 
   return (
     <View style={styles.screen}>
-      {/* Map Background with pulse animation */}
-      <TouchableOpacity
-        style={styles.mapArea}
-        activeOpacity={1}
-        onPress={() => router.back()}
-      >
-        <Image
-          source={require('../assets/images/feed/explore_map.png')}
-          style={styles.mapImage}
-          resizeMode="cover"
-        />
-        <View style={styles.mapOverlay} />
+      <Pressable style={styles.backdrop} onPress={() => router.back()} />
+      <View style={[styles.sheet, { width: sheetWidth }]}>
+        <Text style={styles.title}>Create</Text>
 
-        {/* Radar/Pulse rings */}
-        <View style={styles.pulseContainer}>
-          <View style={[styles.pulseRing, styles.pulseRing1]} />
-          <View style={[styles.pulseRing, styles.pulseRing2]} />
-          <View style={[styles.pulseRing, styles.pulseRing3]} />
-          <View style={styles.pulseDot} />
-        </View>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.closeButton}
+          activeOpacity={0.8}
+          onPress={() => router.back()}
+        >
+          <View style={styles.closeLineLeft} />
+          <View style={styles.closeLineRight} />
+        </TouchableOpacity>
 
-      {/* Expanded Bottom Bar */}
-      <View style={styles.bottomBar}>
-        {/* Drag handle */}
-        <View style={styles.handleRow}>
-          <View style={styles.handle} />
-        </View>
-
-        {/* Create Title */}
-        <Text style={styles.createTitle}>Create</Text>
-
-        {/* Options Row */}
-        <View style={styles.optionsRow}>
-          {/* Post */}
+        <View style={styles.contentRow}>
           <TouchableOpacity
-            style={styles.optionBtn}
-            activeOpacity={0.7}
+            style={styles.action}
+            activeOpacity={0.8}
             onPress={() => {
               router.back();
               router.push('/photo-gallery');
             }}
           >
-            <View style={styles.optionIconContainer}>
-              <View style={styles.cameraIcon}>
-                <View style={styles.cameraBody} />
-                <View style={styles.cameraLens} />
+            <View style={styles.iconWrap}>
+              <View style={styles.imageIconBox}>
+                <View style={styles.imageOuter} />
+                <View style={styles.imageDot} />
+                <View style={styles.imageMountainA} />
+                <View style={styles.imageMountainB} />
+              </View>
+              <View style={styles.plusBadge}>
+                <View style={styles.plusVertical} />
+                <View style={styles.plusHorizontal} />
               </View>
             </View>
-            <Text style={styles.optionLabel}>Post</Text>
+            <Text style={styles.label}>Post</Text>
           </TouchableOpacity>
 
-          {/* Divider */}
-          <View style={styles.divider} />
+          <View style={styles.separator} />
 
-          {/* Library */}
           <TouchableOpacity
-            style={styles.optionBtn}
-            activeOpacity={0.7}
+            style={styles.action}
+            activeOpacity={0.8}
             onPress={() => {
               router.back();
               router.push('/photo-gallery');
             }}
           >
-            <View style={styles.optionIconContainer}>
-              <View style={styles.fileIcon}>
-                <View style={styles.fileBody} />
-                <View style={styles.fileFold} />
+            <View style={styles.iconWrap}>
+              <View style={styles.libraryStack}>
+                <View style={styles.libraryBack} />
+                <View style={styles.libraryFront} />
+              </View>
+              <View style={styles.plusBadge}>
+                <View style={styles.plusVertical} />
+                <View style={styles.plusHorizontal} />
               </View>
             </View>
-            <Text style={styles.optionLabel}>Library</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Bottom nav icons row */}
-        <View style={styles.navRow}>
-          <TouchableOpacity
-            style={styles.navBtn}
-            activeOpacity={0.7}
-            onPress={() => router.back()}
-          >
-            <View style={styles.navDot} />
-          </TouchableOpacity>
-
-          <View style={styles.plusBtnActive}>
-            <Text style={styles.plusIcon}>+</Text>
-          </View>
-
-          <TouchableOpacity
-            style={styles.navBtn}
-            activeOpacity={0.7}
-            onPress={() => router.back()}
-          >
-            <View style={styles.navDot} />
+            <Text style={styles.label}>Library</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -120,206 +85,174 @@ export default function CreateModalScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#000000',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
-
-  // Map area
-  mapArea: {
-    flex: 1,
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.42)',
+  },
+  sheet: {
+    height: 173,
+    backgroundColor: '#282828',
+    borderRadius: 60,
+    marginBottom: 16,
+    paddingTop: 16,
+    paddingHorizontal: 20,
     position: 'relative',
   },
-  mapImage: {
-    ...StyleSheet.absoluteFillObject,
-    width: '100%',
-    height: '100%',
+  title: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginTop: 2,
   },
-  mapOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.35)',
-  },
-
-  // Pulse animation
-  pulseContainer: {
+  closeButton: {
     position: 'absolute',
-    top: '40%',
-    left: '50%',
-    marginLeft: -75,
-    marginTop: -75,
-    width: 150,
-    height: 150,
+    top: 25,
+    right: 28,
+    width: 18,
+    height: 18,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  pulseRing: {
+  closeLineLeft: {
     position: 'absolute',
-    borderRadius: 999,
-    borderWidth: 1.5,
-    borderColor: 'rgba(0,122,255,0.4)',
+    width: 18,
+    height: 2,
+    borderRadius: 2,
+    backgroundColor: '#F2F2F2',
+    transform: [{ rotate: '45deg' }],
   },
-  pulseRing1: {
-    width: 150,
-    height: 150,
-    opacity: 0.3,
+  closeLineRight: {
+    position: 'absolute',
+    width: 18,
+    height: 2,
+    borderRadius: 2,
+    backgroundColor: '#F2F2F2',
+    transform: [{ rotate: '-45deg' }],
   },
-  pulseRing2: {
-    width: 100,
-    height: 100,
-    opacity: 0.5,
+  contentRow: {
+    flexDirection: 'row',
+    marginTop: 12,
+    height: 108,
   },
-  pulseRing3: {
-    width: 50,
-    height: 50,
-    opacity: 0.7,
-  },
-  pulseDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: '#007AFF',
-  },
-
-  // Bottom bar
-  bottomBar: {
-    backgroundColor: '#282828',
-    borderTopLeftRadius: 60,
-    borderTopRightRadius: 60,
-    paddingTop: 12,
-    paddingBottom: 30,
-    paddingHorizontal: 30,
-    minHeight: 220,
-  },
-  handleRow: {
+  action: {
+    flex: 1,
     alignItems: 'center',
-    marginBottom: 16,
+    justifyContent: 'center',
   },
-  handle: {
-    width: 46,
+  separator: {
+    width: 1,
+    backgroundColor: '#F2F2F2',
+    borderRadius: 1,
+    marginVertical: 4,
+  },
+  iconWrap: {
+    width: 42,
+    height: 36,
+    marginBottom: 10,
+    position: 'relative',
+  },
+  imageIconBox: {
+    width: 30,
+    height: 30,
+    position: 'absolute',
+    left: 0,
+    top: 4,
+  },
+  imageOuter: {
+    position: 'absolute',
+    width: 30,
+    height: 30,
+    borderRadius: 6,
+    borderWidth: 1.6,
+    borderColor: '#F2F2F2',
+  },
+  imageDot: {
+    position: 'absolute',
+    top: 5,
+    left: 6,
+    width: 5,
     height: 5,
     borderRadius: 3,
-    backgroundColor: '#CFD0D1',
+    borderWidth: 1.2,
+    borderColor: '#F2F2F2',
   },
-  createTitle: {
-    fontFamily: 'Inter',
-    fontWeight: '600',
-    fontSize: 18,
+  imageMountainA: {
+    position: 'absolute',
+    bottom: 6,
+    left: 7,
+    width: 9,
+    height: 1.6,
+    backgroundColor: '#F2F2F2',
+    transform: [{ rotate: '-35deg' }],
+  },
+  imageMountainB: {
+    position: 'absolute',
+    bottom: 7,
+    left: 13,
+    width: 11,
+    height: 1.6,
+    backgroundColor: '#F2F2F2',
+    transform: [{ rotate: '35deg' }],
+  },
+  libraryStack: {
+    width: 34,
+    height: 30,
+    position: 'absolute',
+    left: 0,
+    top: 3,
+  },
+  libraryBack: {
+    position: 'absolute',
+    top: 2,
+    left: 10,
+    width: 21,
+    height: 24,
+    borderRadius: 4,
+    borderWidth: 1.4,
+    borderColor: '#F2F2F2',
+  },
+  libraryFront: {
+    position: 'absolute',
+    top: 6,
+    left: 3,
+    width: 21,
+    height: 24,
+    borderRadius: 4,
+    borderWidth: 1.4,
+    borderColor: '#F2F2F2',
+  },
+  plusBadge: {
+    position: 'absolute',
+    right: 3,
+    top: -2,
+    width: 15,
+    height: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#282828',
+  },
+  plusVertical: {
+    position: 'absolute',
+    width: 2,
+    height: 9,
+    borderRadius: 2,
+    backgroundColor: '#F2F2F2',
+  },
+  plusHorizontal: {
+    position: 'absolute',
+    width: 10,
+    height: 2,
+    borderRadius: 2,
+    backgroundColor: '#F2F2F2',
+  },
+  label: {
     color: '#FFFFFF',
-    textAlign: 'center',
-    marginBottom: 24,
-  },
-
-  // Options
-  optionsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 28,
-    gap: 40,
-  },
-  optionBtn: {
-    alignItems: 'center',
-    gap: 10,
-  },
-  optionIconContainer: {
-    width: 52,
-    height: 52,
-    borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  optionLabel: {
-    fontFamily: 'Inter',
+    fontSize: 22,
     fontWeight: '500',
-    fontSize: 13,
-    color: '#FFFFFF',
-  },
-  divider: {
-    width: 1,
-    height: 60,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-  },
-
-  // Camera icon (simplified)
-  cameraIcon: {
-    width: 24,
-    height: 20,
-    position: 'relative',
-  },
-  cameraBody: {
-    width: 24,
-    height: 16,
-    borderRadius: 4,
-    borderWidth: 1.5,
-    borderColor: '#FFFFFF',
-    position: 'absolute',
-    bottom: 0,
-  },
-  cameraLens: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    borderWidth: 1.5,
-    borderColor: '#FFFFFF',
-    position: 'absolute',
-    bottom: 4,
-    left: 8,
-  },
-
-  // File icon (simplified)
-  fileIcon: {
-    width: 20,
-    height: 24,
-    position: 'relative',
-  },
-  fileBody: {
-    width: 20,
-    height: 24,
-    borderRadius: 3,
-    borderWidth: 1.5,
-    borderColor: '#FFFFFF',
-  },
-  fileFold: {
-    width: 8,
-    height: 8,
-    borderBottomWidth: 1.5,
-    borderLeftWidth: 1.5,
-    borderColor: '#FFFFFF',
-    position: 'absolute',
-    top: 0,
-    right: 0,
-  },
-
-  // Nav row
-  navRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 40,
-  },
-  navBtn: {
-    width: 28,
-    height: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  navDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: 'rgba(255,255,255,0.4)',
-  },
-  plusBtnActive: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#007AFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  plusIcon: {
-    fontSize: 24,
-    fontWeight: '300',
-    color: '#FFFFFF',
-    marginTop: -2,
+    lineHeight: 27,
   },
 });

@@ -33,7 +33,7 @@ export const Button: React.FC<ButtonProps> = ({
       {loading ? (
         <ActivityIndicator color={Colors.textLight} />
       ) : (
-        <Text style={styles.text}>{title}</Text>
+        <Text allowFontScaling={false} style={styles.text}>{title}</Text>
       )}
     </TouchableOpacity>
   );
@@ -57,5 +57,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.large,
     fontWeight: FontWeight.semiBold,
     fontFamily: 'System',
+    includeFontPadding: false,
+    textAlignVertical: 'center',
   },
 });

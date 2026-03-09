@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
-  Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,8 +13,8 @@ import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
 import { SearchIcon } from '../src/components/icons/SearchIcon';
 import { FilterIcon } from '../src/components/icons/FilterIcon';
 
-const { width: SCREEN_W } = Dimensions.get('window');
-const CARD_SIZE = (SCREEN_W - 64) / 4; // 4 columns with spacing
+const BASE_WIDTH = 393;
+const CARD_SIZE = (BASE_WIDTH - 64) / 4;
 
 const FRIENDS = [
   { id: 1, username: '@andyros96', image: require('../assets/images/feed/friend_avatar_andyros.png') },
@@ -52,7 +51,7 @@ export default function FriendsGridScreen() {
           <BackArrowIcon width={20} height={20} color="#282828" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Friends</Text>
-        <View style={{ width: 49 }} />
+        <View style={styles.headerSpacer} />
       </View>
 
       {/* Search Bar */}
@@ -61,7 +60,7 @@ export default function FriendsGridScreen() {
           <SearchIcon width={18} height={18} color="#A0A0A0" />
           <Text style={styles.searchPlaceholder}>Search friends...</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.filterBtn} activeOpacity={0.7} onPress={() => {}}>
+        <TouchableOpacity style={styles.filterBtn} activeOpacity={0.7} onPress={() => { }}>
           <FilterIcon width={20} height={20} color="#282828" />
         </TouchableOpacity>
       </View>
@@ -114,6 +113,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#CFD0D1',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  headerSpacer: {
+    width: 49,
   },
   headerTitle: {
     fontFamily: 'Inter',

@@ -6,7 +6,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from '../src/constants/theme';
@@ -16,8 +15,8 @@ import { ArrowUpRightIcon } from '../src/components/icons/ArrowUpRightIcon';
 import { SearchIcon } from '../src/components/icons/SearchIcon';
 import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
 
-const { width: SCREEN_W } = Dimensions.get('window');
-const CARD_W = (SCREEN_W - 24 - 8) / 2;
+const BASE_WIDTH = 393;
+const CARD_W = (BASE_WIDTH - 24 - 8) / 2;
 
 const IMAGES = {
   exploreMap: require('../assets/images/feed/explore_map.png'),
@@ -246,7 +245,7 @@ export default function ExploreResultsScreen() {
                     <Text style={styles.cardLocation}>{item.location}</Text>
                   </View>
                   <View style={styles.cardActions}>
-                    <TouchableOpacity style={styles.likeBtn} activeOpacity={0.7} onPress={() => {}}>
+                    <TouchableOpacity style={styles.likeBtn} activeOpacity={0.7} onPress={() => { }}>
                       <HeartIcon width={14} height={14} color="#FF3B30" />
                       <Text style={styles.likeCount}>{item.likes}</Text>
                     </TouchableOpacity>
@@ -295,7 +294,7 @@ export default function ExploreResultsScreen() {
                     <Text style={styles.cardLocation}>{item.location}</Text>
                   </View>
                   <View style={styles.cardActions}>
-                    <TouchableOpacity style={styles.likeBtn} activeOpacity={0.7} onPress={() => {}}>
+                    <TouchableOpacity style={styles.likeBtn} activeOpacity={0.7} onPress={() => { }}>
                       <HeartIcon width={14} height={14} color="#FF3B30" />
                       <Text style={styles.likeCount}>{item.likes}</Text>
                     </TouchableOpacity>

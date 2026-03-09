@@ -1,5 +1,8 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { enableGlobalStyleScaling } from '../src/utils/globalScale';
+
+enableGlobalStyleScaling();
 
 export default function RootLayout() {
   return (

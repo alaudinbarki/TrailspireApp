@@ -43,7 +43,7 @@ export default function CreateActivityScreen() {
           <BackArrowIcon width={20} height={20} color="#282828" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Create Activity</Text>
-        <View style={{ width: 49 }} />
+        <View style={styles.headerSpacer} />
       </View>
 
       <ScrollView
@@ -73,7 +73,7 @@ export default function CreateActivityScreen() {
 
           {/* Action Buttons */}
           <View style={styles.actionBtns}>
-            <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7} onPress={() => {}}>
+            <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7} onPress={() => { }}>
               <Text style={styles.actionBtnText}>Import GPX</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7} onPress={() => router.push('/activity-filter-selection')}>
@@ -144,8 +144,8 @@ export default function CreateActivityScreen() {
                         styles.difficultyCircle,
                         i < level.id && styles.difficultyCircleFilled,
                         selectedDifficulty === level.id &&
-                          i < level.id &&
-                          styles.difficultyCircleActive,
+                        i < level.id &&
+                        styles.difficultyCircleActive,
                       ]}
                     />
                   ))}
@@ -192,6 +192,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#CFD0D1',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  headerSpacer: {
+    width: 49,
   },
   headerTitle: {
     fontFamily: 'Inter',

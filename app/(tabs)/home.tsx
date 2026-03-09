@@ -6,19 +6,23 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Dimensions,
+  Pressable,
+  PixelRatio,
+  useWindowDimensions,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { TargetCirclesIcon } from '../../src/components/icons/TargetCirclesIcon';
 import { TerrainProfileIcon } from '../../src/components/icons/TerrainProfileIcon';
 import { FilterIcon } from '../../src/components/icons/FilterIcon';
 import { ElevationProfileIcon } from '../../src/components/icons/ElevationProfileIcon';
-import { NavigationArrowIcon } from '../../src/components/icons/NavigationArrowIcon';
+import { SelectedCircleSvg } from '../../src/components/icons/SelectedCircleSvg';
+import { MapIconSvg } from '../../src/components/icons/MapIconSvg';
+import { SharedFeedFilterPanel } from '@/components/SharedFeedFilterPanel';
 
-const { width: SCREEN_W } = Dimensions.get('window');
+const BASE_WIDTH = 393;
 const COL_GAP = 6;
 const SIDE_PAD = 2;
-const COL_W = (SCREEN_W - SIDE_PAD * 2 - COL_GAP) / 2;
+const COL_W = (BASE_WIDTH - SIDE_PAD * 2 - COL_GAP) / 2;
 
 /* ── Image assets (Figma node 1:3129 "02") ── */
 const HOME_IMAGES = {
@@ -91,15 +95,31 @@ const CARD_DATA: CardItem[] = [
 export default function HomeScreen() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'explore' | 'follow'>('explore');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+
+  const scaleX = screenWidth / BASE_WIDTH;
+  const scaleY = screenHeight / 852;
+  const sx = (value: number) => PixelRatio.roundToNearestPixel(value * scaleX);
+  const sy = (value: number) => PixelRatio.roundToNearestPixel(value * scaleY);
+
+  const followingUsers = new Set(['@tony', '@julian_', '@_ashley', '@iamsimon', '@rebsix']);
+  const visibleCards = activeTab === 'explore'
+    ? CARD_DATA
+    : CARD_DATA.filter((item) => followingUsers.has(item.username));
+
+  const scaledColW = sx(COL_W);
+  const scaledFullW = sx(BASE_WIDTH - SIDE_PAD * 2);
+  const scaledStatBarW = sx(87);
 
   /* Split cards into left / right / full columns */
-  const leftCards = CARD_DATA.filter((c) => c.layout === 'left');
-  const rightCards = CARD_DATA.filter((c) => c.layout === 'right');
-  const fullCards = CARD_DATA.filter((c) => c.layout === 'full');
+  const leftCards = visibleCards.filter((c) => c.layout === 'left');
+  const rightCards = visibleCards.filter((c) => c.layout === 'right');
+  const fullCards = visibleCards.filter((c) => c.layout === 'full');
 
   /* Render a single card */
   const renderCard = (item: CardItem) => (
-    <View key={item.id} style={{ marginBottom: 4 }}>
+    <View key={item.id} style={styles.cardWrapper}>
       {/* Profile row */}
       <TouchableOpacity
         style={styles.cardUserRow}
@@ -125,8 +145,8 @@ export default function HomeScreen() {
             style={[
               styles.cardImage,
               {
-                height: item.height,
-                width: item.layout === 'full' ? SCREEN_W - SIDE_PAD * 2 : COL_W,
+                height: sy(item.height),
+                width: item.layout === 'full' ? scaledFullW : scaledColW,
               },
             ]}
             resizeMode="cover"
@@ -136,8 +156,8 @@ export default function HomeScreen() {
             style={[
               styles.cardPlaceholder,
               {
-                height: item.height,
-                width: item.layout === 'full' ? SCREEN_W - SIDE_PAD * 2 : COL_W,
+                height: sy(item.height),
+                width: item.layout === 'full' ? scaledFullW : scaledColW,
               },
             ]}
           />
@@ -155,13 +175,13 @@ export default function HomeScreen() {
           {item.badgeType === 'wide' && (
             <View style={styles.terrainBadgeProfileWrap}>
               <View style={{ transform: [{ rotate: '170deg' }] }}>
-                <TerrainProfileIcon width={30} height={10} color="#007AFF" />
+                <TerrainProfileIcon width={sx(30)} height={sy(10)} color="#007AFF" />
               </View>
             </View>
           )}
           <View style={styles.terrainBadgeIconWrap}>
             <View style={{ transform: [{ rotate: '82deg' }] }}>
-              <TerrainProfileIcon width={18} height={10} color="#007AFF" />
+              <TerrainProfileIcon width={sx(18)} height={sy(10)} color="#007AFF" />
             </View>
           </View>
           {item.badgeType === 'wide' && (
@@ -177,8 +197,8 @@ export default function HomeScreen() {
         <View style={styles.statsRow}>
           <Text style={styles.statsLabelFixed}>Elevation</Text>
           <ElevationProfileIcon
-            width={87}
-            height={10}
+            width={sx(87)}
+            height={sy(10)}
             color="#282828"
             variant={item.elevationVariant ?? 1}
           />
@@ -191,7 +211,7 @@ export default function HomeScreen() {
             <View
               style={[
                 styles.statsProgressFill,
-                { width: 87 * (item.progress ?? 1) },
+                { width: scaledStatBarW * (item.progress ?? 1) },
               ]}
             />
           </View>
@@ -200,7 +220,7 @@ export default function HomeScreen() {
         {/* Time row: label | spacer | value */}
         <View style={styles.statsRow}>
           <Text style={styles.statsLabelFixed}>Time</Text>
-          <View style={{ width: 87 }} />
+          <View style={styles.statsTimeSpacer} />
           <Text style={styles.statsValueRight}>{item.time}</Text>
         </View>
       </View>
@@ -208,99 +228,118 @@ export default function HomeScreen() {
   );
 
   return (
-    <View style={styles.screen}>
-      {/* ── Frosted glass header (Figma 393×177, rgba(217,217,217,0.9)) ── */}
-      <View style={styles.headerSection}>
-        {/* Map banner */}
-        <View style={styles.mapWrapper}>
-          <Image
-            source={HOME_IMAGES.mapBanner}
-            style={styles.mapImage}
-            resizeMode="cover"
-          />
-          {/* Concentric circles location marker (right side of map) */}
-          <View style={styles.mapLocationMarker}>
-            <TargetCirclesIcon width={180} height={180} color="#007AFF" />
-          </View>
-          {/* Navigation arrow icon (top-left of map, Figma node 1:3369) */}
-          <View style={styles.compassIcon}>
-            <View style={{ transform: [{ rotate: '-42.75deg' }] }}>
-              <NavigationArrowIcon width={31} height={19} color="#007AFF" />
+    <SafeAreaView style={styles.screen} edges={['top']}>
+      <View style={styles.headerBlock}>
+        {/* ── Frosted glass header (Figma 393×177, top -1) ── */}
+        <View style={[styles.headerSection, isFilterOpen ? styles.headerSectionWithFilter : styles.headerSectionClosed]}>
+          <View style={styles.mapWrapper}>
+            <Image
+              source={HOME_IMAGES.mapBanner}
+              style={styles.mapImage}
+              resizeMode="cover"
+            />
+            <View style={styles.mapLocationMarker}>
+              <MapIconSvg width={sx(180)} height={sy(180)} />
+            </View>
+            <View
+              style={{
+                top: 50,
+                left: 10,
+              }}
+            >
+              <SelectedCircleSvg width={sx(40)} height={sy(40)} />
+            </View>
+            <View style={styles.headerTextBlock}>
+              <Text style={styles.headerTitle}>Current Location</Text>
+              <Text style={styles.headerSubtitle}>Oslo, Norway</Text>
+              <Text style={styles.headerCount}>3,576 activities found</Text>
             </View>
           </View>
-          {/* Text block */}
-          <View style={styles.headerTextBlock}>
-            <Text style={styles.headerTitle}>Current Location</Text>
-            <Text style={styles.headerSubtitle}>Oslo, Norway</Text>
-            <Text style={styles.headerCount}>3,576 activities found</Text>
+
+          <View style={styles.searchBarRow}>
+            <TouchableOpacity
+              style={styles.searchSideBtn}
+              activeOpacity={0.7}
+              onPress={() => setIsFilterOpen((previous) => !previous)}
+            >
+              <FilterIcon width={sx(31)} height={sy(19)} color={isFilterOpen ? '#007AFF' : '#616264'} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.searchBar}
+              activeOpacity={0.7}
+              onPress={() => router.push('/search')}
+            >
+              <Text style={styles.searchBarText}>Search Location</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.searchSideBtn}
+              activeOpacity={0.7}
+              onPress={() => router.replace('/(tabs)/explore')}
+            >
+              <SelectedCircleSvg width={sx(43)} height={sy(43)} />
+            </TouchableOpacity>
           </View>
+
+          <SharedFeedFilterPanel
+            visible={isFilterOpen}
+            onClose={() => setIsFilterOpen(false)}
+            attached
+          />
         </View>
 
-        {/* Search bar row inside frosted header */}
-        <View style={styles.searchBarRow}>
-          <TouchableOpacity style={styles.searchSideBtn} activeOpacity={0.7}>
-            <FilterIcon width={21} height={21} color="#282828" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.searchBar}
-            activeOpacity={0.7}
-            onPress={() => router.push('/search')}
-          >
-            <Text style={styles.searchBarText}>Search Location</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.searchSideBtn} activeOpacity={0.7}>
-            <TargetCirclesIcon width={31} height={31} color="#007AFF" />
-          </TouchableOpacity>
-        </View>
       </View>
 
-      {/* Green indicator dot */}
-      <View style={styles.indicatorDot} />
-
-      {/* Tab selector: Explore / You Follow */}
-      <View style={styles.tabRow}>
-        <TouchableOpacity onPress={() => setActiveTab('explore')} activeOpacity={0.7}>
-          <Text style={[styles.tabText, activeTab === 'explore' && styles.tabTextActive]}>
-            Explore
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setActiveTab('follow')} activeOpacity={0.7}>
-          <Text style={[styles.tabText, activeTab === 'follow' && styles.tabTextActive]}>
-            You Follow
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* ── Masonry grid ── */}
       <ScrollView
-        style={styles.gridScroll}
-        contentContainerStyle={styles.gridContent}
+        style={styles.mainScroll}
+        contentContainerStyle={styles.mainContent}
+        scrollEnabled
+        directionalLockEnabled
+        canCancelContentTouches
+        keyboardShouldPersistTaps="handled"
+        bounces={false}
         showsVerticalScrollIndicator={false}
       >
-        {/* Full-width card 1 */}
-        {renderCard(fullCards[0])}
+        {!isFilterOpen && <View style={styles.indicatorDot} />}
 
-        {/* Two-column rows */}
-        <View style={styles.masonryContainer}>
-          {/* Left column */}
-          <View style={styles.masonryCol}>
-            {leftCards.map(renderCard)}
-          </View>
-          {/* Right column */}
-          <View style={styles.masonryCol}>
-            {rightCards.map(renderCard)}
-          </View>
+        <View style={styles.tabRow}>
+          <Pressable
+            onPress={() => setActiveTab('explore')}
+            hitSlop={2}
+            pressRetentionOffset={{ top: 2, left: 2, right: 2, bottom: 2 }}
+          >
+            <Text style={[styles.tabText, activeTab === 'explore' && styles.tabTextActive]}>
+              Explore
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={() => setActiveTab('follow')}
+            hitSlop={2}
+            pressRetentionOffset={{ top: 2, left: 2, right: 2, bottom: 2 }}
+          >
+            <Text style={[styles.tabText, activeTab === 'follow' && styles.tabTextActive]}>
+              You Follow
+            </Text>
+          </Pressable>
         </View>
 
-        {/* Full-width card 2 */}
-        {fullCards[1] && renderCard(fullCards[1])}
-        {/* Full-width card 3 */}
-        {fullCards[2] && renderCard(fullCards[2])}
+        <View style={styles.feedContainer}>
+          {fullCards[0] && renderCard(fullCards[0])}
 
-        {/* Bottom spacer */}
-        <View style={{ height: 100 }} />
+          <View style={styles.masonryContainer}>
+            <View style={styles.masonryCol}>
+              {leftCards.map(renderCard)}
+            </View>
+            <View style={styles.masonryCol}>
+              {rightCards.map(renderCard)}
+            </View>
+          </View>
+
+          {fullCards[1] && renderCard(fullCards[1])}
+          {fullCards[2] && renderCard(fullCards[2])}
+          <View style={styles.bottomSpacer} />
+        </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -310,52 +349,61 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#A0A0A0',
   },
+  headerBlock: {
+    backgroundColor: '#A0A0A0',
+  },
+  mainScroll: {
+    flex: 1,
+  },
+  mainContent: {
+    paddingBottom: 132,
+  },
 
   /* ── Frosted header section ── */
   headerSection: {
-    marginTop: 50,
+    marginTop: -1,
     backgroundColor: 'rgba(217, 217, 217, 0.9)',
+  },
+  headerSectionClosed: {
+    height: 177,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-    paddingTop: 5,
-    paddingBottom: 7,
+  },
+  headerSectionWithFilter: {
+    minHeight: 177,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    paddingBottom: 0,
+    overflow: 'hidden',
   },
   mapWrapper: {
     marginHorizontal: 5,
+    marginTop: 5,
+    width: 382,
     height: 110,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     overflow: 'hidden',
-    position: 'relative',
   },
   mapImage: {
     ...StyleSheet.absoluteFillObject,
     width: '100%',
     height: '100%',
-    opacity: 0.8,
-  },
-  compassIcon: {
-    position: 'absolute',
-    top: 40,
-    left: 14,
-    width: 37,
-    height: 34,
-    alignItems: 'center',
-    justifyContent: 'center',
+    opacity: 0.9,
   },
   mapLocationMarker: {
     position: 'absolute',
-    top: -35,
-    right: -2,
+    top: -36,
+    right: 10,
     width: 180,
     height: 180,
     opacity: 0.9,
   },
   headerTextBlock: {
     position: 'absolute',
-    top: 49,
+    top: 54,
     left: 53,
   },
   headerTitle: {
@@ -365,12 +413,12 @@ const styles = StyleSheet.create({
   },
   headerSubtitle: {
     fontSize: 12,
-    color: '#007AFF',
+    color: '#282828',
     marginTop: 1,
   },
   headerCount: {
     fontSize: 12,
-    color: '#1283FD',
+    color: '#282828',
     marginTop: 1,
   },
   indicatorDot: {
@@ -378,9 +426,11 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     backgroundColor: '#007AFF',
+    borderWidth: 1,
+    borderColor: '#A0A0A0',
     alignSelf: 'flex-end',
+    marginTop: 8,
     marginRight: 19,
-    marginTop: 4,
   },
 
   /* ── Search bar row ── */
@@ -400,7 +450,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   searchBar: {
-    flex: 1,
+    width: 251,
     height: 49,
     borderRadius: 15,
     backgroundColor: '#CFD0D1',
@@ -418,7 +468,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 26,
-    marginTop: 4,
+    marginTop: 6,
     marginBottom: 6,
   },
   tabText: {
@@ -438,6 +488,9 @@ const styles = StyleSheet.create({
     paddingRight: 4,
     paddingVertical: 4,
     gap: 4,
+  },
+  cardWrapper: {
+    marginBottom: 4,
   },
   cardUserAvatar: {
     width: 20,
@@ -466,7 +519,7 @@ const styles = StyleSheet.create({
   },
   cardPlaceholder: {
     borderRadius: 20,
-    backgroundColor: 'rgba(160,160,160,0.5)',
+    backgroundColor: '#838383',
   },
 
   /* ── Stats section (Figma: below card image, not overlaid) ── */
@@ -511,6 +564,9 @@ const styles = StyleSheet.create({
     height: 6,
     backgroundColor: '#282828',
     borderRadius: 20,
+  },
+  statsTimeSpacer: {
+    width: 87,
   },
 
   /* ── Terrain badge (bottom-right, Figma exact) ── */
@@ -587,10 +643,8 @@ const styles = StyleSheet.create({
   },
 
   /* ── Grid / masonry ── */
-  gridScroll: {
-    flex: 1,
-  },
-  gridContent: {
+  feedContainer: {
+    marginTop: 0,
     paddingHorizontal: SIDE_PAD,
   },
   masonryContainer: {
@@ -599,5 +653,8 @@ const styles = StyleSheet.create({
   },
   masonryCol: {
     width: COL_W,
+  },
+  bottomSpacer: {
+    height: 100,
   },
 });

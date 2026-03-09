@@ -6,17 +6,16 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Dimensions,
   FlatList,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
 
-const { width: SCREEN_W } = Dimensions.get('window');
+const BASE_WIDTH = 393;
 const GRID_GAP = 5;
 const NUM_COLS = 3;
 const GRID_PADDING = 10;
-const TILE_SIZE = (SCREEN_W - 2 * GRID_PADDING - GRID_GAP * (NUM_COLS - 1)) / NUM_COLS;
+const TILE_SIZE = (BASE_WIDTH - 2 * GRID_PADDING - GRID_GAP * (NUM_COLS - 1)) / NUM_COLS;
 
 const GALLERY_IMAGES = [
   { id: '1', source: require('../assets/images/feed/gallery_1.png') },

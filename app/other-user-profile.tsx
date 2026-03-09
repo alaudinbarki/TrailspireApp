@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
-  Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,7 +14,7 @@ import { SearchIcon } from '../src/components/icons/SearchIcon';
 import { FilterIcon } from '../src/components/icons/FilterIcon';
 import { HeartIcon } from '../src/components/icons/HeartIcon';
 
-const { width: SCREEN_W } = Dimensions.get('window');
+const BASE_WIDTH = 393;
 
 const ACTIVITIES = [
   {
@@ -144,7 +143,7 @@ const styles = StyleSheet.create({
   profileInfo: { flex: 1 },
   profileName: { fontFamily: 'Inter', fontSize: 16, fontWeight: '600', color: '#F2F2F2' },
   profileHandle: { fontFamily: 'Inter', fontSize: 12, color: '#F2F2F2', marginTop: 2 },
-  heroImage: { width: SCREEN_W - 32, height: 180, borderRadius: 16, alignSelf: 'center', marginBottom: 16 },
+  heroImage: { width: BASE_WIDTH - 32, height: 180, borderRadius: 16, alignSelf: 'center', marginBottom: 16 },
   searchRow: { flexDirection: 'row', paddingHorizontal: 16, marginBottom: 16, gap: 10 },
   searchBar: { flex: 1, backgroundColor: '#FFFFFF', borderRadius: 12, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 12, gap: 10 },
   searchPlaceholder: { fontFamily: 'Inter', fontSize: 14, color: '#A0A0A0' },

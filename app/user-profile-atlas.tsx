@@ -6,13 +6,12 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
-  Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
 
-const { width: SCREEN_W } = Dimensions.get('window');
+const BASE_WIDTH = 393;
 
 const FRIEND_AVATARS = [
   require('../assets/images/feed/friend_avatar_andyros.png'),
@@ -48,7 +47,7 @@ export default function UserProfileAtlasScreen() {
           <BackArrowIcon width={20} height={20} color="#282828" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Profile</Text>
-        <View style={{ width: 49 }} />
+        <View style={styles.headerSpacer} />
       </View>
 
       <ScrollView
@@ -88,7 +87,7 @@ export default function UserProfileAtlasScreen() {
             <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7} onPress={() => router.push('/chat-thread')}>
               <Text style={styles.actionBtnText}>Chat</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.actionBtn, styles.followBtn]} activeOpacity={0.7} onPress={() => {}}>
+            <TouchableOpacity style={[styles.actionBtn, styles.followBtn]} activeOpacity={0.7} onPress={() => { }}>
               <Text style={styles.followBtnText}>Follow</Text>
             </TouchableOpacity>
           </View>
@@ -144,7 +143,7 @@ export default function UserProfileAtlasScreen() {
           ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 }
 
@@ -168,6 +167,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#CFD0D1',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  headerSpacer: {
+    width: 49,
   },
   headerTitle: {
     fontFamily: 'Inter',
@@ -309,8 +311,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   photoItem: {
-    width: (SCREEN_W - 24) / 3,
-    height: (SCREEN_W - 24) / 3,
+    width: (BASE_WIDTH - 24) / 3,
+    height: (BASE_WIDTH - 24) / 3,
     padding: 2,
   },
   photoImage: {

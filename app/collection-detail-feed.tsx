@@ -72,9 +72,9 @@ export default function CollectionDetailFeedScreen() {
         </View>
 
         {/* Filter */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterBar} contentContainerStyle={{ gap: 8 }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterBar} contentContainerStyle={styles.filterContent}>
           {['All', 'Skiing', 'Running', 'Cycling'].map((type) => (
-            <TouchableOpacity key={type} activeOpacity={0.7} onPress={() => {}}>
+            <TouchableOpacity key={type} activeOpacity={0.7} onPress={() => { }}>
               <Text style={styles.filterText}>{type}</Text>
             </TouchableOpacity>
           ))}
@@ -207,6 +207,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     backgroundColor: '#F2F2F2',
+  },
+  filterContent: {
+    gap: 8,
   },
   filterText: {
     fontFamily: 'Inter',

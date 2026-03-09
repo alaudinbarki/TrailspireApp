@@ -9,13 +9,12 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
-  Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
 
-const { width: SCREEN_W } = Dimensions.get('window');
+const BASE_WIDTH = 393;
 
 export default function ChatThreadScreen() {
   const router = useRouter();
@@ -73,7 +72,7 @@ export default function ChatThreadScreen() {
 
         {/* Audio Message */}
         <View style={[styles.bubble, styles.bubbleSent, styles.audioBubble]}>
-          <TouchableOpacity style={styles.playBtn} activeOpacity={0.7} onPress={() => {}}>
+          <TouchableOpacity style={styles.playBtn} activeOpacity={0.7} onPress={() => { }}>
             <View style={styles.playIcon} />
           </TouchableOpacity>
           <View style={styles.waveform}>
@@ -217,7 +216,7 @@ const styles = StyleSheet.create({
     marginVertical: 16,
   },
   bubble: {
-    maxWidth: SCREEN_W * 0.7,
+    maxWidth: BASE_WIDTH * 0.7,
     paddingHorizontal: 12,
     paddingVertical: 9,
     borderRadius: 18,

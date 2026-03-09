@@ -24,6 +24,7 @@ export const TextInput: React.FC<TextInputProps> = ({
       <RNTextInput
         style={[styles.input, style]}
         placeholderTextColor={Colors.textGray}
+        allowFontScaling={false}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         {...props}
@@ -52,5 +53,7 @@ const styles = StyleSheet.create({
     color: Colors.textDark,
     fontFamily: 'System',
     padding: 0,
+    includeFontPadding: false,
+    textAlignVertical: 'center',
   },
 });

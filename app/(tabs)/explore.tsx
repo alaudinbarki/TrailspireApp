@@ -6,15 +6,13 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Dimensions,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { Colors } from '../../src/constants/theme';
 import { TargetCirclesIcon } from '../../src/components/icons/TargetCirclesIcon';
 import { TerrainProfileIcon } from '../../src/components/icons/TerrainProfileIcon';
 import { FilterIcon } from '../../src/components/icons/FilterIcon';
-
-const { width: SCREEN_W } = Dimensions.get('window');
+import { SharedFeedFilterPanel } from '@/components/SharedFeedFilterPanel';
 
 const EXPLORE_IMAGES = {
   card_isabel21: require('../../assets/images/feed/figma_card_9.png'),
@@ -82,7 +80,7 @@ const EXPLORE_DATA: ExploreItem[] = [
 
 export default function ExploreScreen() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'explore' | 'follow'>('explore');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const leftColumn = EXPLORE_DATA.filter((_, i) => i % 2 === 0);
   const rightColumn = EXPLORE_DATA.filter((_, i) => i % 2 === 1);
@@ -144,102 +142,142 @@ export default function ExploreScreen() {
   );
 
   return (
-    <View style={styles.screen}>
-      {/* Frosted glass header section */}
-      <View style={styles.headerSection}>
-        {/* Map banner */}
-        <View style={styles.mapWrapper}>
-          <Image
-            source={EXPLORE_IMAGES.mapBanner}
-            style={styles.mapImage}
-            resizeMode="cover"
+    <SafeAreaView style={styles.screen} edges={['top']}>
+      <View style={styles.headerBlock}>
+        {/* Frosted glass header section */}
+        <View style={[styles.headerSection, isFilterOpen ? styles.headerSectionWithFilter : styles.headerSectionClosed]}>
+          {/* Map banner */}
+          <View style={styles.mapWrapper}>
+            <Image
+              source={EXPLORE_IMAGES.mapBanner}
+              style={styles.mapImage}
+              resizeMode="cover"
+            />
+            {/* Target circles icon on map - Figma exact match */}
+            <View style={styles.compassIcon}>
+              <TargetCirclesIcon width={31} height={31} color="#000000" />
+            </View>
+            {/* Header info text on map */}
+            <View style={styles.headerTextBlock}>
+              <Text style={styles.headerTitle}>Explore Mode</Text>
+              <Text style={styles.headerSubtitle}>World Atlas</Text>
+              <Text style={styles.headerCount}>329,246 activities found</Text>
+            </View>
+          </View>
+
+          {/* Search bar row - inside frosted header */}
+          <View style={styles.searchBarRow}>
+            <TouchableOpacity
+              style={styles.searchSideBtn}
+              activeOpacity={0.7}
+              onPress={() => setIsFilterOpen((previous) => !previous)}
+            >
+              <FilterIcon width={31} height={19} color={isFilterOpen ? '#007AFF' : '#616264'} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.searchBar}
+              activeOpacity={0.7}
+              onPress={() => router.push('/search')}
+            >
+              <Text style={styles.searchBarText}>Search Location</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.searchSideBtnTarget}
+              activeOpacity={0.7}
+              onPress={() => router.replace('/(tabs)/home')}
+            >
+              <View style={styles.targetDotActive}>
+                <View style={styles.targetDotActiveOuter} />
+                <View style={styles.targetDotActiveMid} />
+                <View style={styles.targetDotActiveInner} />
+                <View style={styles.targetDotActiveCore} />
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          <SharedFeedFilterPanel
+            visible={isFilterOpen}
+            onClose={() => setIsFilterOpen(false)}
+            attached
           />
-          {/* Target circles icon on map - Figma exact match */}
-          <View style={styles.compassIcon}>
-            <TargetCirclesIcon width={31} height={31} color="#000000" />
-          </View>
-          {/* Header info text on map */}
-          <View style={styles.headerTextBlock}>
-            <Text style={styles.headerTitle}>Explore Mode</Text>
-            <Text style={styles.headerSubtitle}>World Atlas</Text>
-            <Text style={styles.headerCount}>329,246 activities found</Text>
-          </View>
         </View>
 
-        {/* Search bar row - inside frosted header */}
-        <View style={styles.searchBarRow}>
-          <TouchableOpacity style={styles.searchSideBtn} activeOpacity={0.7}>
-            <FilterIcon width={21} height={21} color="#282828" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.searchBar}
-            activeOpacity={0.7}
-            onPress={() => router.push('/search')}
-          >
-            <Text style={styles.searchBarText}>Search Location</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.searchSideBtnTarget} activeOpacity={0.7}>
-            <TargetCirclesIcon width={43} height={43} color="#000000" />
-          </TouchableOpacity>
-        </View>
       </View>
 
-      {/* Green indicator dot */}
-      <View style={styles.indicatorDot} />
-
-      {/* Tab selector: Explore / You Follow */}
-      <View style={styles.tabRow}>
-        <TouchableOpacity onPress={() => setActiveTab('explore')} activeOpacity={0.7}>
-          <Text style={[styles.tabText, activeTab === 'explore' && styles.tabTextActive]}>
-            Explore
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setActiveTab('follow')} activeOpacity={0.7}>
-          <Text style={[styles.tabText, activeTab === 'follow' && styles.tabTextActive]}>
-            You Follow
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Masonry Grid */}
       <ScrollView
-        style={styles.gridScroll}
-        contentContainerStyle={styles.gridContent}
+        style={styles.mainScroll}
+        contentContainerStyle={styles.mainContent}
+        scrollEnabled
+        directionalLockEnabled
+        canCancelContentTouches
+        keyboardShouldPersistTaps="handled"
+        bounces={false}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.masonryContainer}>
-          {/* Left column */}
-          <View style={styles.masonryColumn}>
-            {leftColumn.map(renderCard)}
-          </View>
-          {/* Right column */}
-          <View style={styles.masonryColumn}>
-            {rightColumn.map(renderCard)}
-          </View>
+        {/* Green indicator dot */}
+        {!isFilterOpen && <View style={styles.indicatorDot} />}
+
+        {/* Tab selector: static colors per spec */}
+        <View style={styles.tabRow}>
+          <Text style={styles.tabTextExplore}>Explore</Text>
+          <Text style={styles.tabTextFollow}>You Follow</Text>
         </View>
-        <View style={{ height: 90 }} />
+
+        {/* Masonry Grid */}
+        <View style={styles.gridContent}>
+          <View style={styles.masonryContainer}>
+            {/* Left column */}
+            <View style={styles.masonryColumn}>
+              {leftColumn.map(renderCard)}
+            </View>
+            {/* Right column */}
+            <View style={styles.masonryColumn}>
+              {rightColumn.map(renderCard)}
+            </View>
+          </View>
+          <View style={styles.bottomSpacer} />
+        </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: '#A0A0A0',
+  },
+  headerBlock: {
+    backgroundColor: '#A0A0A0',
+  },
+  mainScroll: {
+    flex: 1,
+  },
+  mainContent: {
+    paddingBottom: 132,
   },
 
   /* ── Frosted header section (Figma: full-width, 177h, bottom radii 30, rgba(217,217,217,0.9)) ── */
   headerSection: {
-    marginTop: 50,
+    marginTop: -1,
     backgroundColor: 'rgba(217, 217, 217, 0.9)',
+  },
+  headerSectionClosed: {
+    height: 177,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-    paddingTop: 5,
-    paddingBottom: 7,
+  },
+  headerSectionWithFilter: {
+    minHeight: 177,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    paddingBottom: 0,
+    overflow: 'hidden',
   },
   mapWrapper: {
     marginHorizontal: 5,
+    marginTop: 5,
+    width: 382,
     height: 110,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
@@ -252,17 +290,17 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     width: '100%',
     height: '100%',
-    opacity: 0.8,
+    opacity: 0.9,
   },
   compassIcon: {
     position: 'absolute',
-    top: 43,
-    left: 9,
+    top: 50,
+    left: 18,
   },
   headerTextBlock: {
     position: 'absolute',
-    top: 49,
-    left: 48,
+    top: 54,
+    left: 53,
   },
   headerTitle: {
     fontSize: 16,
@@ -271,12 +309,12 @@ const styles = StyleSheet.create({
   },
   headerSubtitle: {
     fontSize: 12,
-    color: '#007AFF',
+    color: '#282828',
     marginTop: 1,
   },
   headerCount: {
     fontSize: 12,
-    color: '#007AFF',
+    color: '#282828',
     marginTop: 1,
   },
   indicatorDot: {
@@ -284,9 +322,11 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     backgroundColor: '#007AFF',
+    borderWidth: 1,
+    borderColor: '#A0A0A0',
     alignSelf: 'flex-end',
     marginRight: 19,
-    marginTop: 6,
+    marginTop: 8,
   },
 
   /* ── Search bar row (Figma: 251w bar, 49h, two 48.9 side buttons) ── */
@@ -295,7 +335,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 18,
     marginTop: 6,
-    gap: 8,
+    gap: 4,
   },
   searchSideBtn: {
     width: 49,
@@ -314,8 +354,42 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
   },
+  targetDotActive: {
+    width: 43,
+    height: 43,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  targetDotActiveOuter: {
+    position: 'absolute',
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+  },
+  targetDotActiveMid: {
+    position: 'absolute',
+    width: 33,
+    height: 33,
+    borderRadius: 16.5,
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+  },
+  targetDotActiveInner: {
+    position: 'absolute',
+    width: 23,
+    height: 23,
+    borderRadius: 11.5,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  targetDotActiveCore: {
+    position: 'absolute',
+    width: 15,
+    height: 15,
+    borderRadius: 7.5,
+    backgroundColor: 'rgba(63, 63, 63, 0.8)',
+  },
   searchBar: {
-    flex: 1,
+    width: 251,
     height: 49,
     borderRadius: 15,
     backgroundColor: '#CFD0D1',
@@ -336,13 +410,15 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 6,
   },
-  tabText: {
+  tabTextExplore: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#282828',
+  },
+  tabTextFollow: {
     fontSize: 20,
     fontWeight: '700',
     color: 'rgba(60,60,67,0.29)',
-  },
-  tabTextActive: {
-    color: '#282828',
   },
 
   /* ── Per-card user profile row ── */
@@ -368,9 +444,6 @@ const styles = StyleSheet.create({
   },
 
   /* ── Grid ── */
-  gridScroll: {
-    flex: 1,
-  },
   gridContent: {
     paddingHorizontal: 12,
   },
@@ -384,7 +457,7 @@ const styles = StyleSheet.create({
   gridCard: {
     borderRadius: 20,
     overflow: 'hidden',
-    backgroundColor: '#E8E8E6',
+    backgroundColor: '#838383',
     position: 'relative',
   },
   gridImage: {
@@ -442,7 +515,9 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 6,
     borderRadius: 20,
-    backgroundColor: '#E8E8E6',
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#282828',
     marginHorizontal: 4,
     overflow: 'hidden',
   },
@@ -457,5 +532,8 @@ const styles = StyleSheet.create({
     color: '#282828',
     textAlign: 'right',
     minWidth: 30,
+  },
+  bottomSpacer: {
+    height: 90,
   },
 });

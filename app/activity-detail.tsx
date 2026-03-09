@@ -181,7 +181,7 @@ export default function ActivityDetailScreen() {
           </View>
         </View>
 
-        <View style={{ height: 60 }} />
+        <View style={styles.bottomSpacer} />
       </ScrollView>
     </View>
   );
@@ -365,6 +365,9 @@ const styles = StyleSheet.create({
   galleryColumn: {
     flex: 1,
     gap: 6,
+  },
+  bottomSpacer: {
+    height: 60,
   },
   galleryCard: {
     borderRadius: 20,

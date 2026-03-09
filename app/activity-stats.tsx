@@ -6,13 +6,12 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
-  Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
 
-const { width: SCREEN_W } = Dimensions.get('window');
+const BASE_WIDTH = 393;
 
 const PERIOD_TABS = ['Week', 'Month', 'Year', 'All Time'];
 
@@ -47,7 +46,7 @@ export default function ActivityStatsScreen() {
           <BackArrowIcon width={20} height={20} color="#282828" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Activity Stats</Text>
-        <View style={{ width: 49 }} />
+        <View style={styles.headerSpacer} />
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
@@ -124,6 +123,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#F2F2F2' },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 12 },
   backBtn: { width: 49, height: 49, borderRadius: 15, backgroundColor: '#CFD0D1', alignItems: 'center', justifyContent: 'center' },
+  headerSpacer: { width: 49 },
   headerTitle: { fontFamily: 'Inter', fontSize: 20, fontWeight: '600', color: '#282828' },
   scrollContent: { padding: 16, paddingBottom: 30 },
   periodTabs: { flexDirection: 'row', backgroundColor: '#FFFFFF', borderRadius: 12, padding: 4, marginBottom: 20 },
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   barPrev: { backgroundColor: '#D9D9D9' },
   chartLabel: { fontFamily: 'Inter', fontSize: 9, color: '#A0A0A0' },
   statsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginBottom: 24 },
-  statCard: { width: (SCREEN_W - 44) / 2, backgroundColor: '#FFFFFF', borderRadius: 12, padding: 16 },
+  statCard: { width: (BASE_WIDTH - 44) / 2, backgroundColor: '#FFFFFF', borderRadius: 12, padding: 16 },
   statValue: { fontFamily: 'Inter', fontSize: 22, fontWeight: '700', color: '#282828' },
   statUnit: { fontSize: 14, fontWeight: '400', color: '#A0A0A0' },
   statLabel: { fontFamily: 'Inter', fontSize: 13, color: '#A0A0A0', marginTop: 4 },

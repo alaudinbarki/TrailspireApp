@@ -5,13 +5,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
 
-const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
+const BASE_WIDTH = 393;
 
 const ASPECT_RATIOS = [
   { id: '9:16', label: '9:16', selected: true },
@@ -155,7 +154,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: '#A0A0A0',
     alignSelf: 'center',
-    width: SCREEN_W - 10,
+    width: BASE_WIDTH - 10,
     height: 592,
   },
   photoPreview: {

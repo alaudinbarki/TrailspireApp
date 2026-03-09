@@ -17,3 +17,5 @@ export { TerrainProfileIcon } from './TerrainProfileIcon';
 export { DocumentStackIcon } from './DocumentStackIcon';
 export { ElevationProfileIcon } from './ElevationProfileIcon';
 export { NavigationArrowIcon } from './NavigationArrowIcon';
+export { SelectedCircleSvg } from './SelectedCircleSvg';
+export { MapIconSvg } from './MapIconSvg';

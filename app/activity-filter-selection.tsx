@@ -71,7 +71,7 @@ export default function ActivityFilterSelectionScreen() {
           <BackArrowIcon width={20} height={20} color="#282828" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Activity Filter</Text>
-        <View style={{ width: 49 }} />
+        <View style={styles.headerSpacer} />
       </View>
 
       <ScrollView
@@ -169,6 +169,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#CFD0D1',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  headerSpacer: {
+    width: 49,
   },
   headerTitle: {
     fontFamily: 'Inter',
