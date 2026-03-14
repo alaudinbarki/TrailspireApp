@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -6,80 +6,99 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  TextInput,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
 import { SearchIcon } from '../src/components/icons/SearchIcon';
-import { FilterIcon } from '../src/components/icons/FilterIcon';
+import { scaleUniform, scaleWidth } from '../src/utils/globalScale';
 
-const BASE_WIDTH = 393;
-const CARD_SIZE = (BASE_WIDTH - 64) / 4;
+const GRID_SIDE_PADDING = 16.5;
+const GRID_GAP = 5.61;
+const CARD_SIZE = scaleWidth((342 - (GRID_GAP * 3)) / 4);
 
 const FRIENDS = [
-  { id: 1, username: '@andyros96', image: require('../assets/images/feed/friend_avatar_andyros.png') },
-  { id: 2, username: '@rowbat88', image: require('../assets/images/feed/friend_rowbat88.png') },
-  { id: 3, username: '@jhonny', image: require('../assets/images/feed/friend_jhonny.png') },
-  { id: 4, username: '@carol3', image: require('../assets/images/feed/friend_carol3.png') },
-  { id: 5, username: '@andyros96', image: require('../assets/images/feed/friend_avatar_andyros.png') },
-  { id: 6, username: '@rowbat88', image: require('../assets/images/feed/friend_rowbat88.png') },
-  { id: 7, username: '@jhonny', image: require('../assets/images/feed/friend_jhonny.png') },
-  { id: 8, username: '@carol3', image: require('../assets/images/feed/friend_carol3.png') },
+  { id: 1, username: '@rowbat88', image: require('../assets/images/feed/friend_rowbat88.png'), selected: true },
+  { id: 2, username: '@jhonny_', image: require('../assets/images/feed/friend_jhonny.png') },
+  { id: 3, username: '@carol3', image: require('../assets/images/feed/friend_carol3.png') },
+  { id: 4, username: '@nikros', image: require('../assets/images/feed/friend_avatar_andyros.png') },
+  { id: 5, username: '@lollo_mag', image: require('../assets/images/feed/friend_rowbat88.png') },
+  { id: 6, username: '@sam.stan', image: require('../assets/images/feed/friend_jhonny.png') },
+  { id: 7, username: '@julio', image: require('../assets/images/feed/friend_carol3.png') },
+  { id: 8, username: '@rami', image: require('../assets/images/feed/friend_avatar_andyros.png') },
   { id: 9, username: '@andyros96', image: require('../assets/images/feed/friend_avatar_andyros.png') },
-  { id: 10, username: '@rowbat88', image: require('../assets/images/feed/friend_rowbat88.png') },
-  { id: 11, username: '@jhonny', image: require('../assets/images/feed/friend_jhonny.png') },
-  { id: 12, username: '@carol3', image: require('../assets/images/feed/friend_carol3.png') },
-  { id: 13, username: '@andyros96', image: require('../assets/images/feed/friend_avatar_andyros.png') },
-  { id: 14, username: '@rowbat88', image: require('../assets/images/feed/friend_rowbat88.png') },
-  { id: 15, username: '@jhonny', image: require('../assets/images/feed/friend_jhonny.png') },
-  { id: 16, username: '@carol3', image: require('../assets/images/feed/friend_carol3.png') },
+  { id: 10, username: '@o.otto', image: require('../assets/images/feed/friend_jhonny.png') },
+  { id: 11, username: '@andyros96', image: require('../assets/images/feed/friend_rowbat88.png') },
+  { id: 12, username: '@elen.wolf', image: require('../assets/images/feed/friend_carol3.png') },
+  { id: 13, username: '@willyd', image: require('../assets/images/feed/friend_jhonny.png') },
+  { id: 14, username: '@este_go', image: require('../assets/images/feed/friend_rowbat88.png') },
+  { id: 15, username: '@itstom', image: require('../assets/images/feed/friend_avatar_andyros.png') },
+  { id: 16, username: '@carter__', image: require('../assets/images/feed/friend_carol3.png') },
 ];
 
 export default function FriendsGridScreen() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
 
+  const filteredFriends = useMemo(
+    () => FRIENDS.filter((friend) => friend.username.toLowerCase().includes(searchQuery.trim().toLowerCase())),
+    [searchQuery]
+  );
+
   return (
-    <SafeAreaView style={styles.screen} edges={['top']}>
-      {/* Header */}
+    <SafeAreaView style={styles.screen} >
       <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backBtn}
-          activeOpacity={0.7}
-          onPress={() => router.back()}
-        >
-          <BackArrowIcon width={20} height={20} color="#282828" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Friends</Text>
-        <View style={styles.headerSpacer} />
+        <View style={styles.controlsRow}>
+          <TouchableOpacity
+            style={styles.backBtn}
+            activeOpacity={0.7}
+            onPress={() => router.back()}
+          >
+            <BackArrowIcon width={scaleUniform(20)} height={scaleUniform(20)} color="#282828" />
+          </TouchableOpacity>
+
+          <View style={styles.searchBar}>
+            <SearchIcon width={scaleUniform(18)} height={scaleUniform(18)} color="#6F6F6F" />
+            <TextInput
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              style={styles.searchInput}
+              placeholder="Search"
+              placeholderTextColor="#6F6F6F"
+            />
+          </View>
+
+          <TouchableOpacity style={styles.confirmBtn} activeOpacity={0.7} onPress={() => router.back()}>
+            <Text style={styles.confirmIcon}>⌄</Text>
+          </TouchableOpacity>
+        </View>
+
+
       </View>
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <TouchableOpacity style={styles.searchBar} activeOpacity={0.7}>
-          <SearchIcon width={18} height={18} color="#A0A0A0" />
-          <Text style={styles.searchPlaceholder}>Search friends...</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.filterBtn} activeOpacity={0.7} onPress={() => { }}>
-          <FilterIcon width={20} height={20} color="#282828" />
-        </TouchableOpacity>
-      </View>
-
-      {/* Friends Grid */}
       <ScrollView
         style={styles.content}
         contentContainerStyle={styles.contentInner}
         showsVerticalScrollIndicator={false}
       >
+        <Text style={styles.headerTitle}>Friends</Text>
         <View style={styles.grid}>
-          {FRIENDS.map((friend) => (
+          {filteredFriends.map((friend) => (
             <TouchableOpacity
               key={friend.id}
               style={styles.friendCard}
               activeOpacity={0.7}
               onPress={() => router.push('/user-profile-atlas')}
             >
-              <Image source={friend.image} style={styles.friendPhoto} />
+              <View style={styles.friendPhotoWrap}>
+                <Image source={friend.image} style={styles.friendPhoto} />
+                {friend.selected ? (
+                  <View style={styles.selectedBadge}>
+                    <Text style={styles.selectedBadgeText}>✓</Text>
+                  </View>
+                ) : null}
+              </View>
               <Text style={styles.friendUsername} numberOfLines={1}>
                 {friend.username}
               </Text>
@@ -97,14 +116,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#A0A0A0',
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 18,
+    paddingTop: 55,
+    paddingBottom: 14,
     backgroundColor: '#D9D9D9',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
+  },
+  controlsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   backBtn: {
     width: 49,
@@ -114,72 +135,103 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  headerSpacer: {
-    width: 49,
-  },
   headerTitle: {
     fontFamily: 'Inter',
-    fontSize: 20,
+    fontSize: 14,
     fontWeight: '600',
     color: '#282828',
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    gap: 10,
+    marginTop: 16,
+    marginLeft: 12,
+    marginBottom: 12
   },
   searchBar: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    height: 44,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    gap: 8,
-  },
-  searchPlaceholder: {
-    fontFamily: 'Inter',
-    fontSize: 15,
-    color: '#A0A0A0',
-  },
-  filterBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
+    height: 49,
+    marginLeft: 10,
+    marginRight: 7,
     backgroundColor: '#CFD0D1',
+    borderRadius: 15,
+    paddingHorizontal: 18,
+    gap: 12,
+  },
+  searchInput: {
+    flex: 1,
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#282828',
+  },
+  confirmBtn: {
+    width: 49,
+    height: 49,
+    borderRadius: 24.5,
+    backgroundColor: '#007AFF',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  confirmIcon: {
+    marginTop: -6,
+    fontSize: 30,
+    lineHeight: 30,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   content: {
     flex: 1,
   },
   contentInner: {
-    padding: 16,
+    paddingTop: 14,
+    paddingBottom: 40,
+    paddingHorizontal: GRID_SIDE_PADDING,
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: 16,
+    columnGap: GRID_GAP,
+    rowGap: 15,
   },
   friendCard: {
     width: CARD_SIZE,
     alignItems: 'center',
-    marginBottom: 8,
+  },
+  friendPhotoWrap: {
+    position: 'relative',
+    width: 67.04,
+    height: 67.04,
+    marginBottom: 7,
   },
   friendPhoto: {
-    width: 67,
-    height: 67,
+    width: 67.04,
+    height: 67.04,
     borderRadius: 20,
-    marginBottom: 8,
+  },
+  selectedBadge: {
+    position: 'absolute',
+    top: -10,
+    right: -10,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#007AFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#A0A0A0',
+  },
+  selectedBadgeText: {
+    fontSize: 18,
+    lineHeight: 18,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   friendUsername: {
+    width: '100%',
     fontFamily: 'Inter',
     fontSize: 12,
-    fontWeight: '500',
+    lineHeight: 15,
+    fontWeight: '400',
     color: '#282828',
     textAlign: 'center',
   },

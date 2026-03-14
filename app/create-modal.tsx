@@ -61,8 +61,9 @@ export default function CreateModalScreen() {
             activeOpacity={0.8}
             onPress={() => {
               router.back();
-              router.push('/photo-gallery');
+              router.push('/new-collection-modal');
             }}
+
           >
             <View style={styles.iconWrap}>
               <View style={styles.libraryStack}>

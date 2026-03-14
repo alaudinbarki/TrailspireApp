@@ -23,7 +23,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
         <Stack.Screen
           name="activity-detail"
-          options={{ animation: 'slide_from_bottom', presentation: 'modal' }}
+          options={{ animation: 'slide_from_right' }}
         />
         <Stack.Screen
           name="search"
@@ -68,11 +68,11 @@ export default function RootLayout() {
         />
         <Stack.Screen
           name="friends-grid"
-          options={{ animation: 'slide_from_right' }}
+          options={{ animation: 'slide_from_right', presentation: 'fullScreenModal' }}
         />
         <Stack.Screen
           name="activity-filter-selection"
-          options={{ animation: 'slide_from_bottom', presentation: 'modal' }}
+          options={{ animation: 'slide_from_bottom', presentation: 'fullScreenModal' }}
         />
         <Stack.Screen
           name="saved-collections"
@@ -80,7 +80,7 @@ export default function RootLayout() {
         />
         <Stack.Screen
           name="collection-detail-feed"
-          options={{ animation: 'slide_from_bottom', presentation: 'modal' }}
+          options={{ animation: 'slide_from_right' }}
         />
         <Stack.Screen
           name="user-profile-atlas"

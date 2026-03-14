@@ -109,6 +109,8 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: '#282828',
+    // paddingVertical: 20,
+    // paddingHorizontal: 16,
   },
   header: {
     flexDirection: 'row',
@@ -116,6 +118,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
+    marginHorizontal: 12
   },
   backBtn: {
     width: 49,

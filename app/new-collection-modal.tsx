@@ -70,23 +70,26 @@ export default function NewCollectionModalScreen() {
           <View style={styles.toggleRow}>
             <View>
               <Text style={styles.toggleLabel}>Collaborative</Text>
-              <Text style={styles.toggleDesc}>Allow others to add to this collection</Text>
+              <Text style={styles.toggleDesc}>Invite your friends</Text>
             </View>
-            <Switch
+            <TouchableOpacity style={styles.inviteRow} activeOpacity={0.7} onPress={() => router.push('/friends-grid')}>
+              <Text style={styles.inviteText}>Invite</Text>
+            </TouchableOpacity>
+            {/* <Switch
               value={isCollaborative}
               onValueChange={setIsCollaborative}
               trackColor={{ false: '#3A3A3A', true: '#007AFF' }}
               thumbColor="#FFFFFF"
-            />
+            /> */}
           </View>
 
           {/* Invite link */}
-          {isCollaborative && (
-            <TouchableOpacity style={styles.inviteRow} activeOpacity={0.7} onPress={() => router.push('/friends-grid')}>
-              <Text style={styles.inviteText}>Invite</Text>
-              <Text style={styles.inviteChevron}>›</Text>
-            </TouchableOpacity>
-          )}
+          {/* {isCollaborative && ( */}
+          {/* <TouchableOpacity style={styles.inviteRow} activeOpacity={0.7} onPress={() => router.push('/friends-grid')}>
+            <Text style={styles.inviteText}>Invite</Text>
+            <Text style={styles.inviteChevron}>›</Text>
+          </TouchableOpacity> */}
+          {/* )} */}
 
           {/* Create button */}
           <TouchableOpacity
@@ -118,8 +121,8 @@ const styles = StyleSheet.create({
   toggleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 14, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'rgba(255,255,255,0.1)' },
   toggleLabel: { fontFamily: 'Inter', fontSize: 16, fontWeight: '600', color: '#FFFFFF' },
   toggleDesc: { fontFamily: 'Inter', fontSize: 12, color: '#A0A0A0', marginTop: 2 },
-  inviteRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 14 },
-  inviteText: { fontFamily: 'Inter', fontSize: 16, fontWeight: '600', color: '#007AFF' },
+  inviteRow: { justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8, backgroundColor: "#353535", paddingHorizontal: 16, borderRadius: 12, },
+  inviteText: { fontFamily: 'Inter', fontSize: 16, fontWeight: '600', color: '#FFFFFF' },
   inviteChevron: { fontSize: 22, color: '#007AFF' },
   createBtn: { backgroundColor: '#007AFF', borderRadius: 14, paddingVertical: 16, alignItems: 'center', marginTop: 24 },
   createBtnDisabled: { opacity: 0.4 },

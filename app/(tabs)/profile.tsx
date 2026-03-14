@@ -8,14 +8,9 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import Svg, { Path } from 'react-native-svg';
+import Svg, { Path, SvgUri } from 'react-native-svg';
 import { ArrowUpRightIcon } from '../../src/components/icons/ArrowUpRightIcon';
-import { CompassIcon } from '../../src/components/icons/CompassIcon';
-import { DocumentStackIcon } from '../../src/components/icons/DocumentStackIcon';
-import { ElevationProfileIcon } from '../../src/components/icons/ElevationProfileIcon';
 import { MapPinIcon } from '../../src/components/icons/MapPinIcon';
-import { TargetCirclesIcon } from '../../src/components/icons/TargetCirclesIcon';
-import { TerrainProfileIcon } from '../../src/components/icons/TerrainProfileIcon';
 
 interface ProfilePost {
     id: string;
@@ -34,8 +29,6 @@ const IMAGES = {
     trailSunset: require('../../assets/images/feed/feed_trail_sunset.png'),
     powder: require('../../assets/images/feed/feed_powder.png'),
 };
-
-
 
 const STATS = [
     { label: 'Activities', value: '147' },
@@ -120,13 +113,13 @@ const COLLECTIONS: CollectionItem[] = [
 ];
 
 const NAV_ITEMS = [
-    { key: 'grid', icon: 'grid-combo' },
-    { key: 'compass', icon: 'compass' },
-    { key: 'stack', icon: 'stack' },
-    { key: 'terrain', icon: 'terrain' },
-    { key: 'elevation', icon: 'elevation' },
-    { key: 'target', icon: 'target' },
-    { key: 'more', icon: '⋯' },
+    { key: 'all', type: 'text', label: 'All' },
+    { key: 'profile-1', type: 'icon', source: require('../../assets/profile/profile-1.svg') },
+    { key: 'profile-2', type: 'icon', source: require('../../assets/profile/profile-2.svg') },
+    { key: 'profile-3', type: 'icon', source: require('../../assets/profile/profile-3.svg') },
+    { key: 'profile-4', type: 'icon', source: require('../../assets/profile/profile-4.svg') },
+    { key: 'profile-5', type: 'icon', source: require('../../assets/profile/profile-5.svg') },
+    { key: 'profile-6', type: 'icon', source: require('../../assets/profile/profile-6.svg') },
 ] as const;
 
 const USER_POSTS: ProfilePost[] = [
@@ -141,7 +134,7 @@ const USER_POSTS: ProfilePost[] = [
 export default function ProfileScreen() {
     const router = useRouter();
     const [activeTab, setActiveTab] = useState<'posts' | 'saved'>('posts');
-    const [activeNav, setActiveNav] = useState('grid');
+    const [activeNav, setActiveNav] = useState('all');
     const followersValue = STATS.find((stat) => stat.label === 'Followers')?.value ?? '0';
     const followingValue = STATS.find((stat) => stat.label === 'Following')?.value ?? '0';
 
@@ -222,7 +215,11 @@ export default function ProfileScreen() {
                                     <Text style={[styles.followChatBelowText, styles.followChatButtonTextPrimary]}>Follow</Text>
                                 </View>
                                 <View style={styles.secondItemCardWrap}>
-                                    <TouchableOpacity style={[styles.followChatButton, styles.chatButtonSecondary]} activeOpacity={0.8}>
+                                    <TouchableOpacity
+                                        style={[styles.followChatButton, styles.chatButtonSecondary]}
+                                        activeOpacity={0.8}
+                                        onPress={() => router.push('/messages-list')}
+                                    >
                                         <Svg width={18} height={15} viewBox="0 0 31 25" fill="none">
                                             <Path d="M24.1253 0L4.94257 0.00158761C0.813781 0.169662 -0.000935775 1.89526 0 5.19387L0.00133372 13.4502C-0.000665515 16.7611 -0.0680461 20.0487 4.94257 19.8007L4.93893 22.9359C4.93886 23.407 4.63737 25.0678 5.5684 24.9979C5.83825 24.9775 13.119 20.3338 14.2006 19.8007H19.3296L23.612 19.8041C24.6863 19.8046 25.8855 19.9035 26.9295 19.676C29.906 19.0274 30.1596 17.0026 30.1596 14.8406L30.1585 4.12082C30.1475 0.28529 27.8711 -0.00157322 24.1253 0Z" fill="#616264" />
                                         </Svg>
@@ -235,31 +232,21 @@ export default function ProfileScreen() {
                     </View>
                 </View>
 
-                ////Herehe
-
-                //////here idiot =herer ere re re re rer er eraewm ejj tjt g;lksg
-
-
-
                 <View style={styles.gridComboWrap}>
                     <Svg width={24} height={24} viewBox="0 0 24 24" fill="none">
                         <Path d="M6.97024 4.25003L8.01024 4.25003C10.0202 4.25003 10.9902 5.18003 10.9902 7.10003L10.9902 18.9C10.9902 19.31 10.6502 19.65 10.2402 19.65C9.83023 19.65 9.49023 19.31 9.49023 18.9L9.49024 7.10003C9.49024 6.09003 9.28024 5.75003 8.01024 5.75003L6.97024 5.75003C5.70024 5.75003 5.49024 6.09003 5.49024 7.10003L5.49023 18.9C5.49023 19.31 5.15023 19.65 4.74023 19.65C4.33023 19.65 3.99023 19.31 3.99023 18.9L3.99024 7.10003C3.99024 5.18003 4.96024 4.25003 6.97024 4.25003Z" fill="#C4C4C4" />
                         <Path d="M15.4702 9.25003L16.5102 9.25003C18.5202 9.25003 19.4902 10.18 19.4902 12.1L19.4902 18.9C19.4902 19.31 19.1502 19.65 18.7402 19.65C18.3302 19.65 17.9902 19.31 17.9902 18.9L17.9902 12.1C17.9902 11.09 17.7802 10.75 16.5102 10.75L15.4702 10.75C14.2002 10.75 13.9902 11.09 13.9902 12.1L13.9902 18.9C13.9902 19.31 13.6502 19.65 13.2402 19.65C12.8302 19.65 12.4902 19.31 12.4902 18.9L12.4902 12.1C12.4902 10.18 13.4602 9.25003 15.4702 9.25003Z" fill="#C4C4C4" />
                         <Path d="M2 18.25L22 18.25C22.42 18.25 22.75 18.59 22.75 19C22.75 19.41 22.42 19.75 22 19.75L2 19.75C1.59 19.75 1.25 19.41 1.25 19C1.25 18.59 1.58 18.25 2 18.25Z" fill="#C4C4C4" />
                     </Svg>
-
                     <Svg width={2} height={28} viewBox="0 0 2 28" fill="none">
                         <Path d="M0.75 0.75L0.749999 26.75" stroke="#D9D9D9" strokeWidth={1.5} strokeLinecap="round" />
                     </Svg>
-
                     <Svg width={24} height={24} viewBox="0 0 24 24" fill="none">
                         <Path d="M9.37 22.75H4.62C2.32 22.75 1.25 21.68 1.25 19.38V14.63C1.25 12.32 2.32 11.25 4.62 11.25H7C7.41 11.25 7.75 11.59 7.75 12V14.37C7.75 15.83 8.17 16.25 9.62 16.25H12C12.41 16.25 12.75 16.59 12.75 17V19.38C12.75 21.68 11.68 22.75 9.37 22.75ZM4.62 12.75C3.17 12.75 2.75 13.17 2.75 14.63V19.38C2.75 20.83 3.17 21.25 4.62 21.25H9.37C10.83 21.25 11.25 20.83 11.25 19.38V17.75H9.62C7.32 17.75 6.25 16.68 6.25 14.37V12.75H4.62Z" fill="#1F1F1F" />
                         <Path d="M14.37 17.75H9.62C7.32 17.75 6.25 16.68 6.25 14.37V9.62C6.25 7.32 7.32 6.25 9.62 6.25H12C12.41 6.25 12.75 6.59 12.75 7V9.37C12.75 10.83 13.17 11.25 14.62 11.25H17C17.41 11.25 17.75 11.59 17.75 12V14.37C17.75 16.68 16.68 17.75 14.37 17.75ZM9.62 7.75C8.17 7.75 7.75 8.17 7.75 9.62V14.37C7.75 15.83 8.17 16.25 9.62 16.25H14.37C15.83 16.25 16.25 15.83 16.25 14.37V12.75H14.62C12.32 12.75 11.25 11.68 11.25 9.37V7.75H9.62Z" fill="#1F1F1F" />
                         <Path d="M19.37 12.75H14.62C12.32 12.75 11.25 11.68 11.25 9.37V4.62C11.25 2.32 12.32 1.25 14.62 1.25H19.37C21.68 1.25 22.75 2.32 22.75 4.62V9.37C22.75 11.68 21.68 12.75 19.37 12.75ZM14.62 2.75C13.17 2.75 12.75 3.17 12.75 4.62V9.37C12.75 10.83 13.17 11.25 14.62 11.25H19.37C20.83 11.25 21.25 10.83 21.25 9.37V4.62C21.25 3.17 20.83 2.75 19.37 2.75H14.62Z" fill="#1F1F1F" />
                     </Svg>
                 </View>
-
-
 
                 <View style={styles.navRow}>
                     {NAV_ITEMS.map((item) => {
@@ -269,59 +256,72 @@ export default function ProfileScreen() {
                                 key={item.key}
                                 style={[
                                     styles.navButton,
-                                    item.key === 'grid' && styles.navButtonWide,
                                     isActive && styles.navButtonActive,
                                 ]}
                                 activeOpacity={0.8}
                                 onPress={() => setActiveNav(item.key)}
                             >
-                                {item.icon === 'compass' ? <CompassIcon width={16} height={16} color={isActive ? '#F2F2F2' : '#1F1F1F'} /> : null}
-                                {item.icon === 'stack' ? <DocumentStackIcon width={16} height={16} color={isActive ? '#F2F2F2' : '#1F1F1F'} /> : null}
-                                {item.icon === 'terrain' ? <TerrainProfileIcon width={16} height={16} color={isActive ? '#F2F2F2' : '#1F1F1F'} /> : null}
-                                {item.icon === 'elevation' ? <ElevationProfileIcon width={16} height={16} color={isActive ? '#F2F2F2' : '#1F1F1F'} /> : null}
-                                {item.icon === 'target' ? <TargetCirclesIcon width={16} height={16} color={isActive ? '#F2F2F2' : '#1F1F1F'} /> : null}
-                                {/* {item.icon === 'grid-combo' ? (
-                                  
-                                ) : null} */}
-                                {item.icon === '⋯' ? <Text style={[styles.navText, isActive && styles.navTextActive]}>⋯</Text> : null}
+                                {item.type === 'text' ? <Text style={[styles.navText, isActive && styles.navTextActive]}>{item.label}</Text> : null}
+                                {item.type === 'icon' ? (
+                                    <SvgUri
+                                        uri={Image.resolveAssetSource(item.source).uri}
+                                        width={18}
+                                        height={18}
+                                    />
+                                ) : null}
                             </TouchableOpacity>
                         );
                     })}
                 </View>
+                <Text style={styles.atlasTitle}>Your Atlas</Text>
 
-                <View style={styles.gridContainer}>
-                    <View style={styles.gridColumnLeft}>
-                        {leftPosts.map((post) => (
-                            <TouchableOpacity
-                                key={post.id}
-                                style={styles.gridCard}
-                                activeOpacity={0.85}
-                                onPress={() => router.push('/activity-detail')}
-                            >
-                                <Image
-                                    source={post.image}
-                                    style={[styles.gridImage, { height: post.height }]}
-                                    resizeMode="cover"
-                                />
-                            </TouchableOpacity>
-                        ))}
-                    </View>
+                <View style={styles.atlasHeroWrap}>
+                    <Image source={IMAGES.landscape} style={styles.atlasHeroImage} resizeMode="cover" />
+                </View>
 
-                    <View style={styles.gridColumnRight}>
-                        {rightPosts.map((post) => (
-                            <TouchableOpacity
-                                key={post.id}
-                                style={styles.gridCard}
-                                activeOpacity={0.85}
-                                onPress={() => router.push('/activity-detail')}
-                            >
-                                <Image
-                                    source={post.image}
-                                    style={[styles.gridImage, { height: post.height }]}
-                                    resizeMode="cover"
-                                />
-                            </TouchableOpacity>
-                        ))}
+                <View style={styles.gridStackCard}>
+
+                    <View style={{
+                        width: 45, height: 6,
+                        borderRadius: 3,
+                        justifyContent: 'center',
+                        alignSelf: 'center',
+                        backgroundColor: "#A0A0A0"
+                    }} />
+                    <View style={styles.gridContainer}>
+                        <View style={styles.gridColumnLeft}>
+                            {leftPosts.map((post) => (
+                                <TouchableOpacity
+                                    key={post.id}
+                                    style={styles.gridCard}
+                                    activeOpacity={0.85}
+                                    onPress={() => router.push('/activity-detail')}
+                                >
+                                    <Image
+                                        source={post.image}
+                                        style={[styles.gridImage, { height: post.height }]}
+                                        resizeMode="cover"
+                                    />
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+
+                        <View style={styles.gridColumnRight}>
+                            {rightPosts.map((post) => (
+                                <TouchableOpacity
+                                    key={post.id}
+                                    style={styles.gridCard}
+                                    activeOpacity={0.85}
+                                    onPress={() => router.push('/activity-detail')}
+                                >
+                                    <Image
+                                        source={post.image}
+                                        style={[styles.gridImage, { height: post.height }]}
+                                        resizeMode="cover"
+                                    />
+                                </TouchableOpacity>
+                            ))}
+                        </View>
                     </View>
                 </View>
 
@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
         color: '#F2F2F2',
     },
     navRow: {
-        marginTop: 36,
+        marginTop: 20,
         paddingHorizontal: 30,
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -565,8 +565,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    navIconImage: {
+        width: 18,
+        height: 18,
+    },
     navButtonWide: {
-        width: 60,
+        width: 40,
     },
     navButtonActive: {
         backgroundColor: '#282828',
@@ -586,8 +590,34 @@ const styles = StyleSheet.create({
     navTextActive: {
         color: '#F2F2F2',
     },
+    atlasHeroWrap: {
+        marginTop: 6,
+        width: '100%',
+        borderTopRightRadius: 30
+    },
+    atlasHeroImage: {
+        width: '100%',
+        height: 220,
+        borderTopRightRadius: 30,
+        borderTopLeftRadius: 30,
+    },
+    gridStackCard: {
+        marginTop: -18,
+        backgroundColor: '#D9D9D9',
+        borderTopLeftRadius: 24,
+        borderTopRightRadius: 24,
+        paddingTop: 14,
+    },
+    atlasTitle: {
+        left: 16,
+        marginTop: 18,
+        fontSize: 16,
+        color: '#1F1F1F',
+        fontWeight: '700',
+        // paddingHorizontal: 12,
+    },
     gridContainer: {
-        marginTop: 39,
+        marginTop: 10,
         paddingHorizontal: 12,
         flexDirection: 'row',
         columnGap: 2,

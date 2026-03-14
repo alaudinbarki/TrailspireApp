@@ -8,9 +8,17 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Stack, useRouter } from 'expo-router';
 import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
+import { scaleHeight, scaleUniform, scaleWidth } from '../src/utils/globalScale';
+
+const HERO_PANEL_MIN_HEIGHT = scaleHeight(224);
+const HERO_PREVIEW_WIDTH = scaleWidth(100);
+const HERO_PREVIEW_HEIGHT = scaleHeight(170);
+const HERO_BADGE_WIDTH = scaleWidth(16);
+const HERO_BADGE_HEIGHT = scaleHeight(12);
+const HERO_BADGE_RADIUS = scaleUniform(6);
+const CONTENT_HORIZONTAL = scaleWidth(25);
 
 const DIFFICULTY_LEVELS = [
   { id: 1, label: 'Easy' },
@@ -32,411 +40,496 @@ export default function CreateActivityScreen() {
   const [selectedDifficulty, setSelectedDifficulty] = useState(3);
 
   return (
-    <SafeAreaView style={styles.screen} edges={['top']}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backBtn}
-          activeOpacity={0.7}
-          onPress={() => router.back()}
-        >
-          <BackArrowIcon width={20} height={20} color="#282828" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Create Activity</Text>
-        <View style={styles.headerSpacer} />
+    <View style={styles.screen}>
+      <Stack.Screen
+        options={{
+          headerShown: false,
+          presentation: 'fullScreenModal',
+          animation: 'slide_from_bottom',
+        }}
+      />
+
+      <View style={[styles.heroPanel, { minHeight: HERO_PANEL_MIN_HEIGHT }]}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backBtn}
+            activeOpacity={0.7}
+            onPress={() => router.back()}
+          >
+            <BackArrowIcon width={20} height={20} color="#282828" />
+
+
+          </TouchableOpacity>
+
+          <View style={[styles.heroPreviewWrap, { width: HERO_PREVIEW_WIDTH, height: HERO_PREVIEW_HEIGHT }]}>
+            <Image
+              source={require('../assets/images/feed/mountains_hero.png')}
+              style={styles.heroPreview}
+              resizeMode="cover"
+            />
+            <View style={[styles.heroBadge, { width: HERO_BADGE_WIDTH, height: HERO_BADGE_HEIGHT, borderRadius: HERO_BADGE_RADIUS }]}>
+              <Text style={styles.heroBadgeText}>1</Text>
+            </View>
+          </View>
+          <View style={styles.headerSpacer} />
+          <TouchableOpacity
+            style={styles.nextBtn}
+            activeOpacity={0.7}
+            onPress={() => router.push('/create-activity')}
+          >
+            <Text style={styles.nextBtnText}>Post</Text>
+          </TouchableOpacity>
+        </View>
+
+
       </View>
 
       <ScrollView
         style={styles.content}
-        contentContainerStyle={styles.contentInner}
+        contentContainerStyle={[styles.contentInner, { paddingHorizontal: CONTENT_HORIZONTAL }]}
         showsVerticalScrollIndicator={false}
       >
-        {/* Activity Card */}
-        <View style={styles.activityCard}>
-          <View style={styles.dateTag}>
-            <Text style={styles.dateDay}>16</Text>
-            <Text style={styles.dateMonth}>MAR</Text>
-          </View>
+        {/* Activity Section */}
+        <View style={styles.activitySection}>
+          <Text style={styles.sectionLabel}>Activity (1)</Text>
+          <View style={styles.activityRow}>
+            {/* Left: stacked action buttons */}
+            <View style={styles.activityActionBtns}>
+              <TouchableOpacity
+                style={[styles.activityActionBtn, { height: scaleHeight(63) }]}
+                activeOpacity={0.7}
+                onPress={() => router.push('/activity-filter-selection')}
+              >
+                <Text style={styles.activityActionPlus}>+</Text>
+                <Text style={styles.activityActionBtnText}>{'Import\nGPX'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.activityActionBtn, { height: scaleHeight(68) }]} activeOpacity={0.7} onPress={() => router.push('/activity-filter-selection')}>
+                <Text style={styles.activityActionPlus}>+</Text>
+                <Text style={styles.activityActionBtnText}>{'Select\nActivity'}</Text>
+              </TouchableOpacity>
+            </View>
 
-          <View style={styles.activityInfo}>
-            <View style={styles.activityIconBox}>
-              <View style={styles.cyclingIcon}>
-                <View style={styles.cyclingWheel} />
-                <View style={[styles.cyclingWheel, { marginLeft: 8 }]} />
+            {/* Vertical divider */}
+            <View style={styles.activityDivider} />
+
+            {/* Right: activity info card */}
+            <View style={styles.activityInfoCard}>
+              <View style={styles.activityCardHeader}>
+                <View>
+                  <Text style={styles.activityCardDay}>16</Text>
+                  <Text style={styles.activityCardMonth}>MAR</Text>
+                </View>
+                <View style={styles.cyclingCircle} />
+              </View>
+              <Text style={styles.activityCardType}>{'Gravel\nCycling'}</Text>
+              <View style={styles.activityCardFooter}>
+                <Text style={styles.activityCardDistance}>87 km</Text>
+                <View style={styles.routeIconBtn}>
+                  <View style={styles.routeIconInner} />
+                </View>
               </View>
             </View>
-            <View style={styles.activityStats}>
-              <Text style={styles.activityDistance}>87 km</Text>
-              <Text style={styles.activityType}>Cycling</Text>
-            </View>
-          </View>
-
-          {/* Action Buttons */}
-          <View style={styles.actionBtns}>
-            <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7} onPress={() => { }}>
-              <Text style={styles.actionBtnText}>Import GPX</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7} onPress={() => router.push('/activity-filter-selection')}>
-              <Text style={styles.actionBtnText}>Select Activity</Text>
-            </TouchableOpacity>
           </View>
         </View>
 
-        {/* Description */}
+        {/* Description Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Description</Text>
+          <Text style={styles.sectionLabel}>Decription</Text>
           <View style={styles.textareaContainer}>
-            <TextInput
-              style={styles.textarea}
-              placeholder="Add a description..."
-              placeholderTextColor="#A0A0A0"
-              value={description}
-              onChangeText={setDescription}
-              multiline
-              maxLength={100}
-            />
+            <View style={styles.textareaRow}>
+              <TextInput
+                style={styles.textarea}
+                placeholder="Add a description"
+                placeholderTextColor="#A0A0A0"
+                value={description}
+                onChangeText={setDescription}
+                multiline
+                maxLength={100}
+              />
+              <Text style={styles.pencilIcon}>✏</Text>
+            </View>
             <Text style={styles.charCount}>{description.length}/100</Text>
           </View>
         </View>
 
-        {/* Tag Friends */}
+        {/* Tag Friends Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Tag Friends</Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.friendsList}
-          >
-            {TAGGED_FRIENDS.map((friend) => (
-              <View key={friend.id} style={styles.friendChip}>
-                <Image source={friend.image} style={styles.friendAvatar} />
-                <Text style={styles.friendUsername}>{friend.username}</Text>
-                <TouchableOpacity style={styles.removeFriendBtn} activeOpacity={0.7}>
-                  <Text style={styles.removeFriendText}>×</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
+          <Text style={styles.sectionLabel}>Tag friends (1)</Text>
+          <View style={styles.tagFriendsRow}>
             <TouchableOpacity style={styles.addFriendBtn} activeOpacity={0.7} onPress={() => router.push('/friends-grid')}>
               <Text style={styles.addFriendText}>+</Text>
             </TouchableOpacity>
-          </ScrollView>
-        </View>
-
-        {/* Difficulty */}
-        <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Difficulty</Text>
-          <View style={styles.difficultyGrid}>
-            {DIFFICULTY_LEVELS.map((level) => (
-              <TouchableOpacity
-                key={level.id}
-                style={[
-                  styles.difficultyBtn,
-                  selectedDifficulty === level.id && styles.difficultyBtnActive,
-                ]}
-                activeOpacity={0.7}
-                onPress={() => setSelectedDifficulty(level.id)}
-              >
-                <View style={styles.difficultyCircles}>
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <View
-                      key={i}
-                      style={[
-                        styles.difficultyCircle,
-                        i < level.id && styles.difficultyCircleFilled,
-                        selectedDifficulty === level.id &&
-                        i < level.id &&
-                        styles.difficultyCircleActive,
-                      ]}
-                    />
-                  ))}
+            <View style={styles.tagFriendsDivider} />
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.friendAvatarList}>
+              {TAGGED_FRIENDS.map((friend) => (
+                <View key={friend.id} style={styles.friendItem}>
+                  <Image source={friend.image} style={styles.friendAvatar} />
+                  <Text style={styles.friendUsername}>{friend.username}</Text>
                 </View>
-                <Text
-                  style={[
-                    styles.difficultyLabel,
-                    selectedDifficulty === level.id && styles.difficultyLabelActive,
-                  ]}
-                >
-                  {level.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
+              ))}
+            </ScrollView>
           </View>
         </View>
 
-        {/* Post Button */}
-        <TouchableOpacity style={styles.postBtn} activeOpacity={0.8} onPress={() => router.push('/(tabs)/home')}>
-          <Text style={styles.postBtnText}>Post</Text>
-        </TouchableOpacity>
+        {/* Level / Difficulty Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>
+            {`Level - ${selectedDifficulty} ${DIFFICULTY_LEVELS.find(d => d.id === selectedDifficulty)?.label}`}
+          </Text>
+          <View style={styles.difficultyRow}>
+            {DIFFICULTY_LEVELS.map((level) => (
+              <View key={level.id} style={styles.difficultyItem}>
+                <TouchableOpacity
+                  style={[styles.difficultyCircle, selectedDifficulty === level.id && styles.difficultyCircleActive]}
+                  activeOpacity={0.7}
+                  onPress={() => setSelectedDifficulty(level.id)}
+                >
+                  <Text style={[styles.difficultyNumber, selectedDifficulty === level.id && styles.difficultyNumberActive]}>
+                    {level.id}
+                  </Text>
+                </TouchableOpacity>
+                <Text style={[styles.difficultyLabel, selectedDifficulty === level.id && styles.difficultyLabelActive]}>
+                  {level.label}
+                </Text>
+              </View>
+            ))}
+          </View>
+        </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#F2F2F2',
+    backgroundColor: '#282828',
+  },
+  heroPanel: {
+    backgroundColor: '#A0A0A0',
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    paddingBottom: 18,
+    paddingTop: 40,
   },
   header: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: "flex-start",
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#F2F2F2',
+    paddingHorizontal: 18,
+    paddingTop: 18,
+    paddingBottom: 10,
   },
   backBtn: {
-    width: 49,
-    height: 49,
+    width: 48,
+    height: 48,
     borderRadius: 15,
     backgroundColor: '#CFD0D1',
     alignItems: 'center',
     justifyContent: 'center',
   },
   headerSpacer: {
-    width: 49,
+    width: 48,
   },
-  headerTitle: {
+  heroPreviewWrap: {
+    borderRadius: 10,
+    overflow: 'hidden',
+    alignSelf: 'center',
+    marginTop: 2,
+    marginLeft: 75,
+    // height: 200
+  },
+
+  nextBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 15,
+    backgroundColor: '#007AFF',
+    gap: 4,
+  },
+  nextBtnText: {
     fontFamily: 'Inter',
-    fontSize: 20,
     fontWeight: '600',
-    color: '#282828',
+    fontSize: 16,
+    color: '#FFFFFF',
+  },
+  nextIcon: {
+    fontSize: 20,
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  heroPreview: {
+    width: '100%',
+    height: '100%',
+  },
+  heroBadge: {
+    position: 'absolute',
+    right: 4,
+    top: 4,
+    backgroundColor: '#007AFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  heroBadgeText: {
+    color: '#F2F2F2',
+    fontSize: 9,
+    fontWeight: '700',
   },
   content: {
     flex: 1,
   },
   contentInner: {
-    padding: 20,
+    paddingTop: 16,
+    paddingBottom: 20,
   },
-  activityCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+  // ── Activity Section ──────────────────────────────────────────
+  activitySection: {
+    marginBottom: 20,
   },
-  dateTag: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-    backgroundColor: '#007AFF',
-    borderRadius: 8,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    alignItems: 'center',
-  },
-  dateDay: {
-    fontFamily: 'Inter',
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  dateMonth: {
-    fontFamily: 'Inter',
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  activityInfo: {
+  activityRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
-    marginBottom: 16,
+    alignItems: 'flex-start',
   },
-  activityIconBox: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#F0F0F0',
-    alignItems: 'center',
-    justifyContent: 'center',
+  activityActionBtns: {
+    width: scaleWidth(91),
+    gap: 8,
   },
-  cyclingIcon: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  cyclingWheel: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    borderWidth: 2,
-    borderColor: '#282828',
-  },
-  activityStats: {
-    flex: 1,
-  },
-  activityDistance: {
-    fontFamily: 'Inter',
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#282828',
-    marginBottom: 2,
-  },
-  activityType: {
-    fontFamily: 'Inter',
-    fontSize: 14,
-    color: '#A0A0A0',
-  },
-  actionBtns: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  actionBtn: {
-    flex: 1,
-    height: 44,
-    borderRadius: 12,
-    backgroundColor: '#CFD0D1',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  actionBtnText: {
-    fontFamily: 'Inter',
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#282828',
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionLabel: {
-    fontFamily: 'Inter',
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#282828',
-    marginBottom: 12,
-  },
-  textareaContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 12,
-    minHeight: 100,
-  },
-  textarea: {
-    fontFamily: 'Inter',
-    fontSize: 15,
-    color: '#282828',
-    minHeight: 60,
-  },
-  charCount: {
-    fontFamily: 'Inter',
-    fontSize: 12,
-    color: '#A0A0A0',
-    textAlign: 'right',
-    marginTop: 4,
-  },
-  friendsList: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-  friendChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+  activityActionBtn: {
+    width: scaleWidth(91),
     borderRadius: 20,
-    paddingLeft: 4,
-    paddingRight: 8,
-    paddingVertical: 4,
+    borderWidth: 1,
+    borderColor: '#A0A0A0',
+    backgroundColor: 'transparent',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
     gap: 6,
   },
-  friendAvatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-  },
-  friendUsername: {
+  activityActionPlus: {
     fontFamily: 'Inter',
     fontSize: 14,
+    fontWeight: '400',
+    color: '#A0A0A0',
+  },
+  activityActionBtnText: {
+    fontFamily: 'Inter',
+    fontSize: 12,
+    fontWeight: '400',
+    color: '#F5F5F5',
+  },
+  activityDivider: {
+    width: 1,
+    backgroundColor: '#A0A0A0',
+    marginHorizontal: 12,
+    height: scaleHeight(58),
+    marginTop: scaleHeight(20),
+  },
+  activityInfoCard: {
+    width: scaleWidth(101),
+    height: scaleHeight(135),
+    backgroundColor: '#CFD0D1',
+    borderRadius: 20,
+    padding: 9,
+    justifyContent: 'space-between',
+  },
+  activityCardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  activityCardDay: {
+    fontFamily: 'Inter',
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#007AFF',
+    lineHeight: 26,
+  },
+  activityCardMonth: {
+    fontFamily: 'Inter',
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#007AFF',
+    lineHeight: 26,
+  },
+  cyclingCircle: {
+    width: 25,
+    height: 25,
+    borderRadius: 12.5,
+    backgroundColor: '#007AFF',
+  },
+  activityCardType: {
+    fontFamily: 'Inter',
+    fontSize: 12,
     fontWeight: '500',
     color: '#282828',
   },
-  removeFriendBtn: {
-    width: 20,
-    height: 20,
+  activityCardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  activityCardDistance: {
+    fontFamily: 'Inter',
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#007AFF',
+  },
+  routeIconBtn: {
+    width: 30,
+    height: 37,
     borderRadius: 10,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: '#A0A0A0',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  removeFriendText: {
-    fontSize: 16,
-    color: '#666',
+  routeIconInner: {
+    width: 16,
+    height: 22,
+    borderRadius: 2,
+    borderWidth: 1.5,
+    borderColor: '#555555',
+  },
+
+  // ── Shared Section ────────────────────────────────────────────
+  section: {
+    marginBottom: 20,
+  },
+  sectionLabel: {
+    fontFamily: 'Inter',
+    fontSize: 14,
     fontWeight: '600',
+    color: '#F5F5F5',
+    marginBottom: 12,
+  },
+
+  // ── Description Section ───────────────────────────────────────
+  textareaContainer: {
+    backgroundColor: 'transparent',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#A0A0A0',
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    paddingBottom: 10,
+    minHeight: scaleHeight(120),
+  },
+  textareaRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  textarea: {
+    flex: 1,
+    fontFamily: 'Inter',
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#F5F5F5',
+    minHeight: 60,
+    paddingTop: 0,
+  },
+  pencilIcon: {
+    fontSize: 18,
+    color: '#F5F5F5',
+    marginLeft: 8,
+    marginTop: 2,
+  },
+  charCount: {
+    fontFamily: 'Inter',
+    fontSize: 10,
+    fontWeight: '400',
+    color: '#A0A0A0',
+    marginTop: 6,
+  },
+
+  // ── Tag Friends Section ───────────────────────────────────────
+  tagFriendsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   addFriendBtn: {
-    width: 40,
-    height: 40,
+    width: scaleWidth(59),
+    height: scaleHeight(59),
     borderRadius: 20,
-    backgroundColor: '#CFD0D1',
+    borderWidth: 1,
+    borderColor: '#A0A0A0',
+    backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
   },
   addFriendText: {
     fontSize: 24,
-    color: '#282828',
+    color: '#F5F5F5',
     fontWeight: '300',
   },
-  difficultyGrid: {
+  tagFriendsDivider: {
+    width: 1,
+    height: scaleHeight(58),
+    backgroundColor: '#A0A0A0',
+    marginHorizontal: 14,
+  },
+  friendAvatarList: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     gap: 12,
+    alignItems: 'flex-start',
   },
-  difficultyBtn: {
-    width: '48%',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
+  friendItem: {
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'transparent',
+    gap: 4,
   },
-  difficultyBtnActive: {
-    borderColor: '#007AFF',
-    backgroundColor: '#F0F7FF',
+  friendAvatar: {
+    paddingTop: 2,
+    width: scaleWidth(50),
+    height: scaleHeight(50),
+    borderRadius: 20,
   },
-  difficultyCircles: {
+  friendUsername: {
+    fontFamily: 'Inter',
+    fontSize: 12,
+    fontWeight: '400',
+    color: '#F5F5F5',
+  },
+
+  // ── Difficulty Section ────────────────────────────────────────
+  difficultyRow: {
     flexDirection: 'row',
-    gap: 6,
-    marginBottom: 10,
+    justifyContent: 'space-between',
+  },
+  difficultyItem: {
+    alignItems: 'center',
+    gap: 8,
   },
   difficultyCircle: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: '#E0E0E0',
-  },
-  difficultyCircleFilled: {
-    backgroundColor: '#A0A0A0',
+    width: scaleWidth(60),
+    height: scaleHeight(62),
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: '#A0A0A0',
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   difficultyCircleActive: {
     backgroundColor: '#007AFF',
+    borderColor: '#007AFF',
+  },
+  difficultyNumber: {
+    fontFamily: 'Inter',
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#F5F5F5',
+  },
+  difficultyNumberActive: {
+    color: '#FFFFFF',
   },
   difficultyLabel: {
     fontFamily: 'Inter',
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '500',
-    color: '#282828',
+    color: '#F5F5F5',
   },
   difficultyLabelActive: {
     color: '#007AFF',
-    fontWeight: '600',
-  },
-  postBtn: {
-    height: 54,
-    borderRadius: 27,
-    backgroundColor: '#007AFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 8,
-    marginBottom: 20,
-  },
-  postBtnText: {
-    fontFamily: 'Inter',
-    fontSize: 17,
-    fontWeight: '600',
-    color: '#FFFFFF',
   },
 });

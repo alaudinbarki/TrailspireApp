@@ -7,15 +7,13 @@ import {
   Image,
   ScrollView,
   TextInput,
-  Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SearchIcon } from '../src/components/icons/SearchIcon';
 import { FilterIcon } from '../src/components/icons/FilterIcon';
 import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
-
-const { width: SCREEN_W } = Dimensions.get('window');
+import { scaleUniform } from '../src/utils/globalScale';
 
 interface Message {
   id: string;
@@ -91,11 +89,11 @@ export default function MessagesListScreen() {
               activeOpacity={0.7}
               onPress={() => router.back()}
             >
-              <BackArrowIcon width={20} height={20} color="#282828" />
+              <BackArrowIcon width={scaleUniform(20)} height={scaleUniform(20)} color="#282828" />
             </TouchableOpacity>
 
             <View style={styles.searchBar}>
-              <SearchIcon width={18} height={18} color="#8C8C8C" />
+              <SearchIcon width={scaleUniform(18)} height={scaleUniform(18)} color="#8C8C8C" />
               <TextInput
                 style={styles.searchInput}
                 placeholder="Search"
@@ -103,8 +101,8 @@ export default function MessagesListScreen() {
               />
             </View>
 
-            <TouchableOpacity style={styles.filterBtn} activeOpacity={0.7} onPress={() => {}}>
-              <FilterIcon width={18} height={18} color="#282828" />
+            <TouchableOpacity style={styles.filterBtn} activeOpacity={0.7} onPress={() => { }}>
+              <FilterIcon width={scaleUniform(18)} height={scaleUniform(18)} color="#282828" />
             </TouchableOpacity>
           </View>
         </SafeAreaView>
@@ -118,30 +116,26 @@ export default function MessagesListScreen() {
         {MESSAGES.map((msg, index) => (
           <TouchableOpacity
             key={msg.id}
-            style={[
-              styles.messageRow,
-              index < MESSAGES.length - 1 && styles.messageRowBorder,
-            ]}
+            style={styles.messageRow}
             activeOpacity={0.7}
             onPress={() => router.push('/chat-thread')}
           >
             <View style={styles.avatarContainer}>
+              {msg.unread ? <View style={styles.unreadDot} /> : null}
               <Image source={msg.avatar} style={styles.avatar} />
-              {msg.unread && <View style={styles.unreadDot} />}
             </View>
 
             <View style={styles.messageContent}>
               <View style={styles.messageHeader}>
                 <Text style={styles.messageName}>{msg.name}</Text>
-                <Text style={styles.messageTime}>{msg.time}</Text>
+                <View style={styles.timeWrap}>
+                  <Text style={styles.messageTime}>{msg.time}</Text>
+                  <Text style={styles.chevronText}>›</Text>
+                </View>
               </View>
-              <Text style={styles.messageText} numberOfLines={1}>
+              <Text style={styles.messageText} numberOfLines={2}>
                 {msg.message}
               </Text>
-            </View>
-
-            <View style={styles.chevron}>
-              <Text style={styles.chevronText}>›</Text>
             </View>
           </TouchableOpacity>
         ))}
@@ -157,15 +151,15 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#D9D9D9',
-    paddingHorizontal: 10,
-    paddingBottom: 12,
+    paddingHorizontal: 18,
+    paddingBottom: 16,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
   },
   headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 4,
   },
   backBtn: {
     width: 49,
@@ -187,7 +181,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    fontFamily: 'Inter',
+    fontFamily: 'SF Pro',
     fontSize: 16,
     color: '#282828',
   },
@@ -201,70 +195,88 @@ const styles = StyleSheet.create({
   },
   messagesList: {
     flex: 1,
+    marginTop: 1,
   },
   messageRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+    height: 86,
+    paddingTop: 12,
+    paddingRight: 16,
+    paddingBottom: 0,
+    paddingLeft: 8,
+    gap: 12,
     backgroundColor: '#A0A0A0',
   },
-  messageRowBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.12)',
-  },
   avatarContainer: {
-    position: 'relative',
-    marginRight: 12,
+    width: 63,
+    height: 74,
+    paddingBottom: 14,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    gap: 7,
   },
   avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 20,
+    width: 45,
+    height: 45,
+    borderRadius: 100,
   },
   unreadDot: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
     width: 11,
     height: 11,
     borderRadius: 5.5,
-    backgroundColor: '#007AFF',
-    borderWidth: 2,
-    borderColor: '#A0A0A0',
+    backgroundColor: '#0088FF',
   },
   messageContent: {
     flex: 1,
+    alignSelf: 'stretch',
+    height: 74,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 0, 0, 0.12)',
+    paddingBottom: 12,
   },
   messageHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 4,
+    height: 22,
+    marginBottom: 2,
   },
   messageName: {
-    fontFamily: 'Inter',
+    fontFamily: 'SF Pro',
     fontWeight: '600',
     fontSize: 17,
+    lineHeight: 22,
     color: '#000000',
+    flexShrink: 1,
+    paddingRight: 8,
+  },
+  timeWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 11,
   },
   messageTime: {
-    fontFamily: 'Inter',
+    fontFamily: 'SF Pro',
     fontWeight: '400',
     fontSize: 15,
+    lineHeight: 20,
     color: 'rgba(60,60,67,0.6)',
   },
   messageText: {
-    fontFamily: 'Inter',
+    fontFamily: 'SF Pro',
     fontWeight: '400',
     fontSize: 15,
+    lineHeight: 20,
     color: 'rgba(60,60,67,0.6)',
-  },
-  chevron: {
-    marginLeft: 8,
+    height: 40,
   },
   chevronText: {
-    fontSize: 20,
+    fontFamily: 'SF Pro',
+    fontWeight: '600',
+    fontSize: 13,
+    lineHeight: 20,
     color: 'rgba(60,60,67,0.3)',
   },
 });
