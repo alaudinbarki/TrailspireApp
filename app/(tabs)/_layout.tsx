@@ -79,6 +79,12 @@ export default function TabsLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="you-follow"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }

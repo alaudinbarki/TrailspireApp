@@ -19,3 +19,6 @@ export { ElevationProfileIcon } from './ElevationProfileIcon';
 export { NavigationArrowIcon } from './NavigationArrowIcon';
 export { SelectedCircleSvg } from './SelectedCircleSvg';
 export { MapIconSvg } from './MapIconSvg';
+export { MessageBubbleIcon } from './MessageBubbleIcon';
+export { ProfileCategoryIcon } from './ProfileCategoryIcon';
+export { SettingsIcon } from './SettingsIcon';

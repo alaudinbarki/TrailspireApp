@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Pressable,
   PixelRatio,
   useWindowDimensions,
 } from 'react-native';
@@ -261,10 +262,22 @@ export default function ExploreScreen() {
         {/* Green indicator dot */}
         {!isFilterOpen && <View style={styles.indicatorDot} />}
 
-        {/* Tab selector: static colors per spec */}
+        {/* Tab selector */}
         <View style={styles.tabRow}>
-          <Text style={styles.tabTextExplore}>Explore</Text>
-          <Text style={styles.tabTextFollow}>You Follow</Text>
+          <Pressable
+            onPress={() => router.replace('/(tabs)/explore')}
+            hitSlop={2}
+            pressRetentionOffset={{ top: 2, left: 2, right: 2, bottom: 2 }}
+          >
+            <Text style={[styles.tabText, styles.tabTextActive]}>Explore</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => router.replace('/(tabs)/home')}
+            hitSlop={2}
+            pressRetentionOffset={{ top: 2, left: 2, right: 2, bottom: 2 }}
+          >
+            <Text style={[styles.tabText]}>You Follow</Text>
+          </Pressable>
         </View>
 
         {/* Masonry Grid */}
@@ -448,7 +461,7 @@ const styles = StyleSheet.create({
     color: '#1F1F1F',
   },
 
-  /* ── Tab selector (Figma: 20px Bold, explore active #282828, follow inactive rgba(60,60,67,0.29)) ── */
+  /* ── Tab selector (Figma: 20px Bold, inactive #838385, active #282828) ── */
   tabRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -456,15 +469,13 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 6,
   },
-  tabTextExplore: {
+  tabText: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#282828',
+    color: '#838385',
   },
-  tabTextFollow: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: 'rgba(60,60,67,0.29)',
+  tabTextActive: {
+    color: '#282828',
   },
 
   /* ── Per-card user profile row ── */

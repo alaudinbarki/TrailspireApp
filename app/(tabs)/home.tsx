@@ -13,10 +13,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { TerrainProfileIcon } from '../../src/components/icons/TerrainProfileIcon';
-import { FilterIcon } from '../../src/components/icons/FilterIcon';
 import { ElevationProfileIcon } from '../../src/components/icons/ElevationProfileIcon';
-import { SelectedCircleSvg } from '../../src/components/icons/SelectedCircleSvg';
-import { MapIconSvg } from '../../src/components/icons/MapIconSvg';
+import { FilterIcon } from '../../src/components/icons/FilterIcon';
 import { SharedFeedFilterPanel } from '@/components/SharedFeedFilterPanel';
 
 const BASE_WIDTH = 393;
@@ -94,8 +92,8 @@ const CARD_DATA: CardItem[] = [
 /* ── Component ── */
 export default function HomeScreen() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'explore' | 'follow'>('explore');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [selectedView, setSelectedView] = useState<'home' | 'youFollow' | 'explore'>('home');
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
 
   const scaleX = screenWidth / BASE_WIDTH;
@@ -104,9 +102,15 @@ export default function HomeScreen() {
   const sy = (value: number) => PixelRatio.roundToNearestPixel(value * scaleY);
 
   const followingUsers = new Set(['@tony', '@julian_', '@_ashley', '@iamsimon', '@rebsix']);
-  const visibleCards = activeTab === 'explore'
-    ? CARD_DATA
-    : CARD_DATA.filter((item) => followingUsers.has(item.username));
+  const visibleCards = CARD_DATA.filter((item) => {
+    if (selectedView === 'home') {
+      return true;
+    }
+    if (selectedView === 'youFollow') {
+      return followingUsers.has(item.username);
+    }
+    return !followingUsers.has(item.username);
+  });
 
   const scaledColW = sx(COL_W);
   const scaledFullW = sx(BASE_WIDTH - SIDE_PAD * 2);
@@ -230,7 +234,6 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.screen} edges={['top']}>
       <View style={styles.headerBlock}>
-        {/* ── Frosted glass header (Figma 393×177, top -1) ── */}
         <View style={[styles.headerSection, isFilterOpen ? styles.headerSectionWithFilter : styles.headerSectionClosed]}>
           <View style={styles.mapWrapper}>
             <Image
@@ -238,17 +241,29 @@ export default function HomeScreen() {
               style={styles.mapImage}
               resizeMode="cover"
             />
-            <View style={styles.mapLocationMarker}>
-              <MapIconSvg width={sx(180)} height={sy(180)} />
+
+            <View style={styles.mapRightRadar} pointerEvents="none">
+              <View style={styles.radarRing180} />
+              <View style={styles.radarRing140} />
+              <View style={styles.radarRing95} />
+              <View style={styles.radarRing61} />
+              <View style={styles.radarRing36} />
+              <View style={styles.radarCoreDot} />
             </View>
-            <View
-              style={{
-                top: 50,
-                left: 10,
-              }}
-            >
-              <SelectedCircleSvg width={sx(40)} height={sy(40)} />
+
+            <View style={styles.mapLeftPulse}>
+              <View style={styles.mapLeftPulseOuter} />
+              <View style={styles.mapLeftPulseMid} />
+              <View style={styles.mapLeftPulseInner} />
+              <View style={styles.mapLeftPulseCore} />
             </View>
+
+            <View style={styles.mapBadgeIcon}>
+              <View style={{ transform: [{ rotate: '170deg' }] }}>
+                <TerrainProfileIcon width={sx(30)} height={sy(10)} color="#007AFF" />
+              </View>
+            </View>
+
             <View style={styles.headerTextBlock}>
               <Text style={styles.headerTitle}>Current Location</Text>
               <Text style={styles.headerSubtitle}>Oslo, Norway</Text>
@@ -260,9 +275,9 @@ export default function HomeScreen() {
             <TouchableOpacity
               style={styles.searchSideBtn}
               activeOpacity={0.7}
-              onPress={() => setIsFilterOpen((previous) => !previous)}
+              onPress={() => setIsFilterOpen((prev) => !prev)}
             >
-              <FilterIcon width={sx(31)} height={sy(19)} color={isFilterOpen ? '#007AFF' : '#616264'} />
+              <FilterIcon width={31} height={19} color={isFilterOpen ? '#007AFF' : '#616264'} />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.searchBar}
@@ -272,11 +287,16 @@ export default function HomeScreen() {
               <Text style={styles.searchBarText}>Search Location</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.searchSideBtn}
+              style={styles.searchSideBtnTarget}
               activeOpacity={0.7}
               onPress={() => router.replace('/(tabs)/explore')}
             >
-              <SelectedCircleSvg width={sx(43)} height={sy(43)} />
+              <View style={styles.targetDotActive}>
+                <View style={styles.targetDotActiveOuter} />
+                <View style={styles.targetDotActiveMid} />
+                <View style={styles.targetDotActiveInner} />
+                <View style={styles.targetDotActiveCore} />
+              </View>
             </TouchableOpacity>
           </View>
 
@@ -299,24 +319,25 @@ export default function HomeScreen() {
         bounces={false}
         showsVerticalScrollIndicator={false}
       >
-        {!isFilterOpen && <View style={styles.indicatorDot} />}
 
         <View style={styles.tabRow}>
           <Pressable
-            onPress={() => setActiveTab('explore')}
+            onPress={() => setSelectedView('explore')}
             hitSlop={2}
             pressRetentionOffset={{ top: 2, left: 2, right: 2, bottom: 2 }}
           >
-            <Text style={[styles.tabText, activeTab === 'explore' && styles.tabTextActive]}>
+            <Text style={[styles.tabText, selectedView === 'explore' && styles.tabTextActive]}>
               Explore
             </Text>
           </Pressable>
+
+
           <Pressable
-            onPress={() => setActiveTab('follow')}
+            onPress={() => setSelectedView('youFollow')}
             hitSlop={2}
             pressRetentionOffset={{ top: 2, left: 2, right: 2, bottom: 2 }}
           >
-            <Text style={[styles.tabText, activeTab === 'follow' && styles.tabTextActive]}>
+            <Text style={[styles.tabText, selectedView === 'youFollow' && styles.tabTextActive]}>
               You Follow
             </Text>
           </Pressable>
@@ -359,7 +380,6 @@ const styles = StyleSheet.create({
     paddingBottom: 132,
   },
 
-  /* ── Frosted header section ── */
   headerSection: {
     marginTop: -1,
     backgroundColor: 'rgba(217, 217, 217, 0.9)',
@@ -368,12 +388,12 @@ const styles = StyleSheet.create({
     height: 177,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
+    overflow: 'hidden',
   },
   headerSectionWithFilter: {
     minHeight: 177,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-    paddingBottom: 0,
     overflow: 'hidden',
   },
   mapWrapper: {
@@ -393,17 +413,115 @@ const styles = StyleSheet.create({
     height: '100%',
     opacity: 0.9,
   },
-  mapLocationMarker: {
+  mapRightRadar: {
     position: 'absolute',
-    top: -36,
-    right: 10,
+    right: -12,
+    top: -34,
     width: 180,
     height: 180,
-    opacity: 0.9,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radarRing180: {
+    position: 'absolute',
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    borderWidth: 0.25,
+    borderColor: 'rgba(21, 131, 251, 0.8)',
+    backgroundColor: 'rgba(21, 131, 251, 0.1)',
+  },
+  radarRing140: {
+    position: 'absolute',
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    borderWidth: 0.25,
+    borderColor: 'rgba(21, 131, 251, 0.8)',
+    backgroundColor: 'rgba(21, 131, 251, 0.1)',
+  },
+  radarRing95: {
+    position: 'absolute',
+    width: 95,
+    height: 95,
+    borderRadius: 47.5,
+    borderWidth: 0.25,
+    borderColor: 'rgba(21, 131, 251, 0.8)',
+    backgroundColor: 'rgba(21, 131, 251, 0.1)',
+  },
+  radarRing61: {
+    position: 'absolute',
+    width: 61,
+    height: 61,
+    borderRadius: 30.5,
+    borderWidth: 0.25,
+    borderColor: 'rgba(21, 131, 251, 0.8)',
+    backgroundColor: 'rgba(21, 131, 251, 0.1)',
+  },
+  radarRing36: {
+    position: 'absolute',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: 0.25,
+    borderColor: 'rgba(21, 131, 251, 0.8)',
+    backgroundColor: 'rgba(21, 131, 251, 0.1)',
+  },
+  radarCoreDot: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: '#007AFF',
+  },
+  mapLeftPulse: {
+    position: 'absolute',
+    left: 18,
+    top: 48,
+    width: 31,
+    height: 31,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  mapLeftPulseOuter: {
+    position: 'absolute',
+    width: 31,
+    height: 31,
+    borderRadius: 15.5,
+    backgroundColor: 'rgba(0, 122, 255, 0.05)',
+  },
+  mapLeftPulseMid: {
+    position: 'absolute',
+    width: 23.79,
+    height: 23.79,
+    borderRadius: 11.9,
+    backgroundColor: 'rgba(0, 122, 255, 0.2)',
+  },
+  mapLeftPulseInner: {
+    position: 'absolute',
+    width: 16.58,
+    height: 16.58,
+    borderRadius: 8.29,
+    backgroundColor: 'rgba(0, 122, 255, 0.5)',
+  },
+  mapLeftPulseCore: {
+    position: 'absolute',
+    width: 10.81,
+    height: 10.81,
+    borderRadius: 5.405,
+    backgroundColor: 'rgba(0, 122, 255, 0.8)',
+  },
+  mapBadgeIcon: {
+    position: 'absolute',
+    right: 8,
+    bottom: 6,
+    width: 28,
+    height: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   headerTextBlock: {
     position: 'absolute',
-    top: 54,
+    top: 48,
     left: 53,
   },
   headerTitle: {
@@ -413,27 +531,15 @@ const styles = StyleSheet.create({
   },
   headerSubtitle: {
     fontSize: 12,
-    color: '#282828',
-    marginTop: 1,
+    color: '#007AFF',
+    marginTop: 2,
   },
   headerCount: {
     fontSize: 12,
-    color: '#282828',
-    marginTop: 1,
-  },
-  indicatorDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: '#007AFF',
-    borderWidth: 1,
-    borderColor: '#A0A0A0',
-    alignSelf: 'flex-end',
-    marginTop: 8,
-    marginRight: 19,
+    color: '#007AFF',
+    marginTop: 2,
   },
 
-  /* ── Search bar row ── */
   searchBarRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -449,6 +555,49 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  searchSideBtnTarget: {
+    width: 49,
+    height: 49,
+    borderRadius: 15,
+    backgroundColor: '#CFD0D1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  targetDotActive: {
+    width: 43,
+    height: 43,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  targetDotActiveOuter: {
+    position: 'absolute',
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    backgroundColor: 'rgba(0, 122, 255, 0.05)',
+  },
+  targetDotActiveMid: {
+    position: 'absolute',
+    width: 33,
+    height: 33,
+    borderRadius: 16.5,
+    backgroundColor: 'rgba(0, 122, 255, 0.2)',
+  },
+  targetDotActiveInner: {
+    position: 'absolute',
+    width: 23,
+    height: 23,
+    borderRadius: 11.5,
+    backgroundColor: 'rgba(0, 122, 255, 0.5)',
+  },
+  targetDotActiveCore: {
+    position: 'absolute',
+    width: 15,
+    height: 15,
+    borderRadius: 7.5,
+    backgroundColor: 'rgba(0, 122, 255, 0.8)',
+  },
   searchBar: {
     width: 251,
     height: 49,
@@ -463,20 +612,20 @@ const styles = StyleSheet.create({
     color: '#1F1F1F',
   },
 
-  /* ── Tab selector ── */
   tabRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 26,
-    marginTop: 6,
+    marginTop: 18,
     marginBottom: 6,
   },
   tabText: {
     fontSize: 20,
     fontWeight: '700',
-    color: 'rgba(60,60,67,0.29)',
+    color: '#838385',
   },
   tabTextActive: {
+
     color: '#282828',
   },
 

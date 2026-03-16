@@ -300,7 +300,7 @@ export default function ActivityDetailScreen() {
               />
             </Svg>
           </View>
-          <TouchableOpacity style={styles.mapGpxBtn} activeOpacity={0.7} onPress={() => { }}>
+          <TouchableOpacity style={styles.mapGpxBtn} activeOpacity={0.7} onPress={() => router.push('/gpx-route-view')}>
             <Text style={styles.mapGpxBtnText}>GPX</Text>
           </TouchableOpacity>
         </View>
@@ -557,17 +557,21 @@ export default function ActivityDetailScreen() {
         <View style={styles.bottomSpacer} />
       </ScrollView >
 
-      {/* Bottom action button */}
-      < TouchableOpacity
+      {/* Bottom close button */}
+      <TouchableOpacity
         style={styles.actionBtn}
         activeOpacity={0.7}
-        onPress={() => { }
-        }
+        onPress={() => router.back()}
       >
-        <View style={styles.actionBtnDot} />
-        <View style={styles.actionBtnDot} />
-        <View style={styles.actionBtnDot} />
-      </TouchableOpacity >
+        <Svg width={18} height={18} viewBox="0 0 18 18" fill="none">
+          <Path
+            d="M2 2L16 16M16 2L2 16"
+            stroke="#1F1F1F"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+          />
+        </Svg>
+      </TouchableOpacity>
     </View >
   );
 }
@@ -1178,20 +1182,13 @@ const styles = StyleSheet.create({
   actionBtn: {
     position: 'absolute',
     bottom: 40,
-    right: 16,
+    left: '50%',
+    marginLeft: -30,
     width: 60,
-    height: 44,
+    height: 50,
     borderRadius: 15,
-    backgroundColor: '#000000',
+    backgroundColor: '#CFD0D1',
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
-    gap: 4,
-  },
-  actionBtnDot: {
-    width: 5,
-    height: 5,
-    borderRadius: 2.5,
-    backgroundColor: '#FFFFFF',
   },
 });

@@ -11,8 +11,9 @@ import {
 } from 'react-native';
 import type { DimensionValue } from 'react-native';
 import { useRouter, Stack } from 'expo-router';
-import Svg, { Path, SvgUri } from 'react-native-svg';
+import Svg, { Path } from 'react-native-svg';
 import { Ionicons } from '@expo/vector-icons';
+import { ProfileCategoryIcon } from '../src/components/icons/ProfileCategoryIcon';
 import { TerrainProfileIcon } from '../src/components/icons/TerrainProfileIcon';
 
 const BASE_WIDTH = 393;
@@ -277,18 +278,10 @@ export default function CollectionDetailFeedScreen() {
       <View style={styles.filterBar}>
         <View style={styles.filterBtns}>
           <TouchableOpacity style={styles.filterBtn} activeOpacity={0.7} onPress={() => { }}>
-            <SvgUri
-              uri={Image.resolveAssetSource(require('../assets/profile/profile-2.svg')).uri}
-              width={18}
-              height={18}
-            />
+            <ProfileCategoryIcon name="profile-2" width={18} height={18} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.filterBtn} activeOpacity={0.7} onPress={() => { }}>
-            <SvgUri
-              uri={Image.resolveAssetSource(require('../assets/profile/profile-4.svg')).uri}
-              width={18}
-              height={18}
-            />
+            <ProfileCategoryIcon name="profile-4" width={18} height={18} />
           </TouchableOpacity>
         </View>
         <Text style={styles.filterSelectedText}>Selected: Gravel Cycling / Hiking</Text>
