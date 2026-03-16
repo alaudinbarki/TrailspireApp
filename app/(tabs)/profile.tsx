@@ -14,6 +14,7 @@ import { MessageBubbleIcon } from '../../src/components/icons/MessageBubbleIcon'
 import { MapPinIcon } from '../../src/components/icons/MapPinIcon';
 import { ProfileCategoryIcon, type ProfileCategoryIconName } from '../../src/components/icons/ProfileCategoryIcon';
 import { SettingsIcon } from '../../src/components/icons/SettingsIcon';
+import { TerrainProfileIcon } from '../../src/components/icons/TerrainProfileIcon';
 
 interface ProfilePost {
     id: string;
@@ -396,16 +397,19 @@ export default function ProfileScreen() {
                                 <View key={item.id} style={styles.statsActivityCard}>
                                     <View style={styles.statsActivityMapWrap}>
                                         <Image source={IMAGES.activityMap} style={styles.statsActivityMapImg} resizeMode="cover" />
-                                        <Svg width={132} height={50} viewBox="0 0 132 50" fill="none" style={styles.statsMapRouteSvg}>
-                                            <Path d="M4 40C11 39 17 26 24 26C31 26 28 38 37 38C46 38 47 17 58 17C69 17 63 30 76 30C89 30 96 14 108 14C116 14 120 18 128 8" stroke="#007AFF" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
-                                        </Svg>
-                                        <Svg width={28} height={28} viewBox="0 0 28 28" fill="none" style={styles.statsMapCornerIcon}>
-                                            <Path d="M21.0727 11.1636C20.0916 8.55641 17.2201 7.23478 14.6714 8.23298L10.3628 9.9192L8.67661 5.61063C7.67842 3.06194 4.80696 1.74031 2.19979 2.72145C1.59625 2.94857 1.29063 3.62137 1.51776 4.22491C1.74488 4.82846 2.41767 5.13408 3.02122 4.90695C4.43201 4.37604 5.96967 5.09096 6.5085 6.46609L8.19699 10.7805L4.17721 12.3532C3.57366 12.5803 3.26804 13.2531 3.49517 13.8567C3.7223 14.4602 4.39509 14.7658 4.99863 14.5387L9.01842 12.966L10.7069 17.2804C11.2457 18.6556 10.5855 20.17 9.17469 20.7009C8.57115 20.9281 8.26553 21.6008 8.49266 22.2044C8.71979 22.8079 9.39258 23.1136 9.99612 22.8864C12.6033 21.9053 13.893 19.0503 12.8948 16.5016L11.2086 12.1931L15.5172 10.5069C16.928 9.97598 18.4656 10.6909 19.0045 12.066C19.2316 12.6696 19.9044 12.9752 20.5079 12.7481C21.1115 12.5209 21.4171 11.8481 21.19 11.2446L21.0727 11.1636Z" fill="#007AFF" />
-                                        </Svg>
-                                    </View>
+                                        <View style={styles.statsActivityStroke} pointerEvents="none">
+                                            <View style={{ transform: [{ rotate: '170deg' }] }}>
+                                                <TerrainProfileIcon width={120} height={40} color="#007AFF" />
+                                            </View>
+                                        </View>
 
-                                    <View style={styles.statsOpenPill}>
-                                        <Text style={styles.statsOpenText}>Open</Text>
+                                        <TouchableOpacity
+                                            style={styles.statsOpenPill}
+                                            activeOpacity={0.7}
+                                            onPress={() => router.push('/gpx-route-view')}
+                                        >
+                                            <Text style={styles.statsOpenText}>Open</Text>
+                                        </TouchableOpacity>
                                     </View>
 
                                     <View style={styles.statsActivityMetaWrap}>
@@ -1061,44 +1065,49 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         overflow: 'hidden',
-        paddingLeft: 10,
+        paddingHorizontal: 8,
     },
     statsActivityMapWrap: {
         width: 164,
         height: 91,
         borderRadius: 20,
         overflow: 'hidden',
+        position: 'relative',
+        justifyContent: 'center',
     },
     statsActivityMapImg: {
         width: 164,
         height: 91,
     },
-    statsMapRouteSvg: {
+    statsActivityStroke: {
         position: 'absolute',
-        left: 0,
-        bottom: 8,
-    },
-    statsMapCornerIcon: {
-        position: 'absolute',
-        right: 10,
-        bottom: 8,
+        left: 12,
+        top: 19,
     },
     statsOpenPill: {
         position: 'absolute',
-        left: 63,
-        top: 30,
+        left: 25,
+        top: 26,
         width: 85,
         height: 46,
         borderRadius: 15,
         backgroundColor: 'rgba(0,0,0,0.2)',
+        borderWidth: 1,
+        borderColor: 'rgba(40,40,40,0.08)',
         alignItems: 'center',
         justifyContent: 'center',
+        zIndex: 3,
+        shadowColor: '#000000',
+        shadowOpacity: 0.12,
+        shadowRadius: 6,
+        shadowOffset: { width: 0, height: 2 },
+        elevation: 3,
     },
     statsOpenText: {
         fontSize: 16,
-        lineHeight: 19,
+        lineHeight: 18,
         fontWeight: '700',
-        color: '#282828',
+        color: '#000000',
     },
     statsActivityMetaWrap: {
         flex: 1,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,8 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import Svg, { Path } from 'react-native-svg';
 import { TerrainProfileIcon } from '../../src/components/icons/TerrainProfileIcon';
 import { ElevationProfileIcon } from '../../src/components/icons/ElevationProfileIcon';
 import { FilterIcon } from '../../src/components/icons/FilterIcon';
@@ -92,9 +93,30 @@ const CARD_DATA: CardItem[] = [
 /* ── Component ── */
 export default function HomeScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ view?: string }>();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [selectedView, setSelectedView] = useState<'home' | 'youFollow' | 'explore'>('home');
+  const [selectedView, setSelectedView] = useState<'home' | 'youFollow' | 'explore'>(
+    params.view === 'youFollow' ? 'youFollow' : params.view === 'explore' ? 'explore' : 'home'
+  );
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+
+  useEffect(() => {
+    if (params.view === 'youFollow') {
+      setSelectedView('youFollow');
+      return;
+    }
+    if (params.view === 'explore') {
+      setSelectedView('explore');
+      return;
+    }
+    setSelectedView('home');
+  }, [params.view]);
+
+  useEffect(() => {
+    if (selectedView !== 'explore' && isFilterOpen) {
+      setIsFilterOpen(false);
+    }
+  }, [selectedView, isFilterOpen]);
 
   const scaleX = screenWidth / BASE_WIDTH;
   const scaleY = screenHeight / 852;
@@ -242,69 +264,154 @@ export default function HomeScreen() {
               resizeMode="cover"
             />
 
-            <View style={styles.mapRightRadar} pointerEvents="none">
-              <View style={styles.radarRing180} />
-              <View style={styles.radarRing140} />
-              <View style={styles.radarRing95} />
-              <View style={styles.radarRing61} />
-              <View style={styles.radarRing36} />
-              <View style={styles.radarCoreDot} />
-            </View>
+            {selectedView === 'explore' ? (
+              <>
+                <View style={styles.mapRightRadar} pointerEvents="none">
+                  <View style={styles.radarRing180} />
+                  <View style={styles.radarRing140} />
+                  <View style={styles.radarRing95} />
+                  <View style={styles.radarRing61} />
+                  <View style={styles.radarRing36} />
+                  <View style={styles.radarCoreDot} />
+                </View>
 
-            <View style={styles.mapLeftPulse}>
-              <View style={styles.mapLeftPulseOuter} />
-              <View style={styles.mapLeftPulseMid} />
-              <View style={styles.mapLeftPulseInner} />
-              <View style={styles.mapLeftPulseCore} />
-            </View>
+                <View style={styles.mapLeftPulse}>
+                  <View style={styles.mapLeftPulseOuter} />
+                  <View style={styles.mapLeftPulseMid} />
+                  <View style={styles.mapLeftPulseInner} />
+                  <View style={styles.mapLeftPulseCore} />
+                </View>
 
-            <View style={styles.mapBadgeIcon}>
-              <View style={{ transform: [{ rotate: '170deg' }] }}>
-                <TerrainProfileIcon width={sx(30)} height={sy(10)} color="#007AFF" />
-              </View>
-            </View>
+                <View style={styles.mapBadgeIcon}>
+                  <View style={{ transform: [{ rotate: '170deg' }] }}>
+                    <TerrainProfileIcon width={sx(30)} height={sy(10)} color="#007AFF" />
+                  </View>
+                </View>
 
-            <View style={styles.headerTextBlock}>
-              <Text style={styles.headerTitle}>Current Location</Text>
-              <Text style={styles.headerSubtitle}>Oslo, Norway</Text>
-              <Text style={styles.headerCount}>3,576 activities found</Text>
-            </View>
+                <View style={styles.headerTextBlock}>
+                  <Text style={styles.headerTitle}>Current Location</Text>
+                  <Text style={styles.headerSubtitle}>Oslo, Norway</Text>
+                  <Text style={styles.headerCount}>3,576 activities found</Text>
+                </View>
+              </>
+            ) : (
+              <>
+                <View style={styles.routeLineWrap}>
+                  <Svg width={sx(184)} height={sy(78)} viewBox="0 0 184 78" fill="none">
+                    <Path
+                      d="M147.971 21.1565L139.669 26.4986C137.511 27.8874 135.194 29.0127 132.768 29.8502L125.491 32.3625C122.807 33.2888 120.552 35.1598 119.147 37.6262C118.068 39.5193 116.482 41.0733 114.567 42.113L105.108 47.249C102.076 48.8957 99.2261 50.8557 96.6512 53.1534C92.1805 57.143 86.3965 62.4039 86.1515 62.5166C85.8214 62.6683 74.8898 61.0041 72.9163 63.7338C68.9576 69.2092 62.9078 56.5238 59.5059 50.6861C56.8548 46.137 54.165 41.2552 54.0484 39.9872C54.0061 39.5268 53.5649 39.1454 52.8716 38.8295C45.9353 35.6689 35.004 32.1499 30.5381 38.3271C25.8989 44.7439 20.6132 50.6422 15.3723 56.5778C15.057 56.935 14.7696 57.2894 14.5178 57.6377C11.5576 61.7322 10.1062 58.0434 4.59148 58.5506C1.85631 58.8022 1.03285 62.7957 1.00036 66.9908C0.96653 71.3577 4.26106 74.8697 8.46626 76.0473C10.669 76.6641 13.0074 76.5947 15.1696 75.8482L21.1363 73.7883C24.9703 72.4648 28.4897 70.3895 31.6532 67.8512C39.0103 61.9481 49.6624 54.4055 55.3265 53.8846C62.3853 53.2355 69.297 52.5998 71.8705 52.3631L76.286 51.957C81.9387 51.4372 87.1615 48.7192 90.8308 44.3879C91.6945 43.3684 92.462 42.2712 93.1235 41.1103L95.9599 36.1327C96.9466 34.7678 110.588 25.8687 103.854 25.2139C102.386 25.0712 101.621 24.7224 101.305 24.2704C100.513 23.1397 106.151 17.3081 107.111 16.3164C107.331 16.0892 107.625 15.9484 107.94 15.9195L114.911 15.2784C117.986 14.9956 121.085 15.4212 123.97 16.5224L125.159 16.9765C126.818 17.6096 128.537 18.0691 130.291 18.3477L147.971 21.1565ZM147.971 21.1565L151.28 20.8522M151.28 20.8522L164.05 14.5814C166.976 13.3385 168.462 14.1757 171.771 13.8714C175.08 13.5671 180.303 -2.20243 180.652 1.58779C181.352 9.20191 182.043 16.715 182.743 24.3291C182.836 25.3339 181.808 25.6358 180.537 25.635C177.578 25.633 174.615 25.0766 171.668 25.3476L164.877 25.9722C162.213 26.2172 159.573 25.2987 157.637 23.4529L156.994 22.8404C155.466 21.3838 153.382 20.6589 151.28 20.8522Z"
+                      stroke="#007AFF"
+                      strokeWidth={2}
+                    />
+                  </Svg>
+                </View>
+                <TouchableOpacity
+                  style={styles.openButton}
+                  activeOpacity={0.7}
+                  onPress={() => router.push('/activity-detail')}
+                >
+                  <Text style={styles.openButtonText}>Open</Text>
+                </TouchableOpacity>
+                <View style={styles.mapBadgeIconLeft}>
+                  <Svg width={25} height={25} viewBox="0 0 25 25" fill="none">
+                    <Path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M11.6667 2.80889C11.6667 1.25758 12.9103 0 14.4444 0C15.9785 0 17.2221 1.25758 17.2221 2.80889C17.2221 4.3602 15.9785 5.61779 14.4444 5.61779C12.9103 5.61779 11.6667 4.3602 11.6667 2.80889ZM9.00731 4.41349C9.58056 4.06567 10.3175 4.18019 10.761 4.68601C11.7807 5.84892 13.3428 6.72788 14.9986 7.3164C16.6492 7.9031 18.2361 8.14579 19.1665 8.14579C21.7744 8.14579 23.8886 10.2837 23.8886 12.9209C23.8886 13.9574 23.562 14.9168 23.0072 15.6995C22.8913 15.863 23.0495 16.1151 23.2425 16.0614C23.9821 15.8558 24.7465 16.2953 24.9499 17.0432C25.1533 17.7911 24.7186 18.5641 23.979 18.7698L1.75746 24.9494C1.01788 25.155 0.253449 24.7155 0.0500635 23.9676C-0.153322 23.2197 0.281353 22.4467 1.02094 22.241C1.61515 22.0758 1.72773 21.1587 1.30458 20.71C0.4965 19.8531 0.000350171 18.6927 0.000350171 17.4151C0.000350171 14.7779 2.1145 12.64 4.72244 12.64C7.33037 12.64 9.44452 14.7779 9.44452 17.4151C9.44452 18.3966 10.4416 19.6212 11.3871 19.3583L12.6154 19.0167C14.101 18.6036 14.7119 15.1375 14.4933 13.6111C14.4611 13.3857 14.4444 13.1553 14.4444 12.9209C14.4444 12.3846 14.5318 11.8689 14.6931 11.3876C14.8799 10.83 14.6316 10.1633 14.0775 9.96637C13.4742 9.75196 12.8551 9.49545 12.2445 9.19183C11.4636 8.80356 10.5352 8.74031 9.78706 9.18839C9.52455 9.3456 9.59184 9.73234 9.88852 9.8072C10.0696 9.85289 10.239 9.89765 10.3929 9.94175C11.0829 10.1395 11.842 10.4165 12.4341 10.9974C13.0721 11.6235 13.3428 12.421 13.4488 13.2832C13.5507 14.1129 13.5165 15.1444 13.4228 16.3975C13.3649 17.1709 12.698 17.7505 11.9332 17.692C11.1683 17.6336 10.5952 16.9592 10.653 16.1857C10.7458 14.9438 10.757 14.1569 10.6922 13.6295C10.6325 13.1429 10.527 13.0399 10.5009 13.0145L10.4997 13.0132C10.4299 12.9448 10.2443 12.8186 9.63564 12.6442C9.28067 12.5425 8.90474 12.4543 8.44392 12.3461C8.0803 12.2607 7.66383 12.1629 7.1631 12.0363C6.54241 11.8794 5.99524 11.6859 5.54256 11.4372C5.09637 11.1921 4.64979 10.8425 4.3676 10.3289C3.70421 9.12138 4.37219 8.01143 4.8425 7.44932C5.35632 6.8352 6.10091 6.27164 6.80415 5.79452C7.4462 5.35891 8.15074 4.93228 8.77675 4.5532C8.85492 4.50586 8.93186 4.45927 9.00731 4.41349ZM19.1665 10.9547C18.0926 10.9547 17.2221 11.835 17.2221 12.9209C17.2221 14.0068 18.0926 14.8871 19.1665 14.8871C20.2403 14.8871 21.1109 14.0068 21.1109 12.9209C21.1109 11.835 20.2403 10.9547 19.1665 10.9547ZM4.72244 15.4489C3.64858 15.4489 2.77805 16.3292 2.77805 17.4151C2.77805 18.5011 3.64858 19.3814 4.72244 19.3814C5.79629 19.3814 6.66683 18.5011 6.66683 17.4151C6.66683 16.3292 5.79629 15.4489 4.72244 15.4489ZM24.9411 21.5063C25.1615 22.2492 24.7446 23.0322 24.0099 23.2551L18.4545 24.9404C17.7198 25.1633 16.9455 24.7417 16.7251 23.9987C16.5047 23.2558 16.9216 22.4729 17.6563 22.25L23.2117 20.5646C23.9464 20.3417 24.7207 20.7633 24.9411 21.5063Z"
+                      fill="#007AFF"
+                    />
+                  </Svg>
+                </View>
+                <View style={styles.headerTextBlockHome}>
+                  <Text style={styles.headerTitle}>Your last activity</Text>
+                  <Text style={styles.headerSubtitle}>Oslo, Norway</Text>
+                  <Text style={styles.headerCount}>87 km gravel ride</Text>
+                </View>
+              </>
+            )}
           </View>
 
           <View style={styles.searchBarRow}>
-            <TouchableOpacity
-              style={styles.searchSideBtn}
-              activeOpacity={0.7}
-              onPress={() => setIsFilterOpen((prev) => !prev)}
-            >
-              <FilterIcon width={31} height={19} color={isFilterOpen ? '#007AFF' : '#616264'} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.searchBar}
-              activeOpacity={0.7}
-              onPress={() => router.push('/search')}
-            >
-              <Text style={styles.searchBarText}>Search Location</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.searchSideBtnTarget}
-              activeOpacity={0.7}
-              onPress={() => router.replace('/(tabs)/explore')}
-            >
-              <View style={styles.targetDotActive}>
-                <View style={styles.targetDotActiveOuter} />
-                <View style={styles.targetDotActiveMid} />
-                <View style={styles.targetDotActiveInner} />
-                <View style={styles.targetDotActiveCore} />
-              </View>
-            </TouchableOpacity>
+            {selectedView === 'explore' ? (
+              <>
+                <TouchableOpacity
+                  style={styles.searchSideBtn}
+                  activeOpacity={0.7}
+                  onPress={() => setIsFilterOpen((prev) => !prev)}
+                >
+                  <FilterIcon width={31} height={19} color={isFilterOpen ? '#007AFF' : '#616264'} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.searchBar}
+                  activeOpacity={0.7}
+                  onPress={() => router.push('/search')}
+                >
+                  <Text style={styles.searchBarText}>Search Location</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.searchSideBtnTarget}
+                  activeOpacity={0.7}
+                  onPress={() => router.replace('/(tabs)/explore')}
+                >
+                  <View style={styles.targetDotActive}>
+                    <View style={styles.targetDotActiveOuter} />
+                    <View style={styles.targetDotActiveMid} />
+                    <View style={styles.targetDotActiveInner} />
+                    <View style={styles.targetDotActiveCore} />
+                  </View>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <>
+                <TouchableOpacity
+                  style={styles.searchSideBtn}
+                  activeOpacity={0.7}
+                  onPress={() => router.push('/create-modal')}
+                >
+                  <Text style={styles.plusIcon}>+</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.searchBar}
+                  activeOpacity={0.7}
+                  onPress={() => router.push('/search')}
+                >
+                  <Text style={styles.searchBarText}>Search Users</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.searchSideBtn}
+                  activeOpacity={0.7}
+                  onPress={() => router.push('/messages-list')}
+                >
+                  <Svg width={31} height={25} viewBox="0 0 31 25" fill="none">
+                    <Path
+                      d="M24.1253 6.42268e-06L4.94257 0.00158761C0.813781 0.169662 -0.000935775 1.89526 0 5.19387L0.00133372 13.4502C-0.000665515 16.7611 -0.0680461 20.0487 4.94257 19.8007L4.93893 22.9359C4.93886 23.407 4.63737 25.0678 5.5684 24.9979C5.83825 24.9775 13.119 20.3338 14.2006 19.8007H19.3296L23.612 19.8041C24.6863 19.8046 25.8855 19.9035 26.9295 19.676C29.906 19.0274 30.1596 17.0026 30.1596 14.8406L30.1585 4.12082C30.1475 0.28529 27.8711 -0.00157322 24.1253 6.42268e-06Z"
+                      fill="#616264"
+                    />
+                    <Path
+                      d="M7.48927 8.26378C9.52724 8.15463 9.70158 10.6132 7.81744 10.9072C5.88347 11.0604 5.51519 8.61699 7.48927 8.26378Z"
+                      fill="#CFD0D1"
+                    />
+                    <Path
+                      d="M14.6852 8.26398C16.94 8.22401 17.1618 10.3785 15.3689 10.9074C13.3832 11.1141 12.8275 9.06928 14.6852 8.26398Z"
+                      fill="#CFD0D1"
+                    />
+                    <Path
+                      d="M22.503 8.26331C24.3847 8.0687 24.7542 10.4336 22.8986 10.9067C20.8165 11.0398 20.5132 8.50594 22.503 8.26331Z"
+                      fill="#CFD0D1"
+                    />
+                  </Svg>
+                </TouchableOpacity>
+              </>
+            )}
           </View>
 
-          <SharedFeedFilterPanel
-            visible={isFilterOpen}
-            onClose={() => setIsFilterOpen(false)}
-            attached
-          />
+          {selectedView === 'explore' && (
+            <SharedFeedFilterPanel
+              visible={isFilterOpen}
+              onClose={() => setIsFilterOpen(false)}
+              attached
+            />
+          )}
         </View>
 
       </View>
@@ -413,6 +520,27 @@ const styles = StyleSheet.create({
     height: '100%',
     opacity: 0.9,
   },
+  routeLineWrap: {
+    position: 'absolute',
+    top: 8,
+    right: 28,
+  },
+  openButton: {
+    position: 'absolute',
+    right: 10,
+    top: 47,
+    width: 85,
+    height: 46,
+    borderRadius: 15,
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  openButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#282828',
+  },
   mapRightRadar: {
     position: 'absolute',
     right: -12,
@@ -519,9 +647,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  mapBadgeIconLeft: {
+    position: 'absolute',
+    left: 14,
+    top: 45,
+    width: 25,
+    height: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   headerTextBlock: {
     position: 'absolute',
     top: 48,
+    left: 53,
+  },
+  headerTextBlockHome: {
+    position: 'absolute',
+    top: 55,
     left: 53,
   },
   headerTitle: {
@@ -610,6 +752,36 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     color: '#1F1F1F',
+  },
+  plusIcon: {
+    fontSize: 30,
+    lineHeight: 30,
+    fontWeight: '300',
+    color: '#282828',
+    marginTop: -2,
+  },
+  messagesIconWrap: {
+    width: 30,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  messagesGlyph: {
+    fontSize: 20,
+    lineHeight: 20,
+    color: '#616264',
+    fontWeight: '700',
+  },
+  messagesDot: {
+    position: 'absolute',
+    top: 1,
+    right: 0,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#007AFF',
+    borderWidth: 1,
+    borderColor: '#CFD0D1',
   },
 
   tabRow: {

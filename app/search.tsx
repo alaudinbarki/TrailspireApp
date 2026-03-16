@@ -20,6 +20,8 @@ import { ProfileCategoryIcon, type ProfileCategoryIconName } from '../src/compon
 import { FilterIcon } from '../src/components/icons/FilterIcon';
 import { TerrainProfileIcon } from '../src/components/icons/TerrainProfileIcon';
 import { ElevationProfileIcon } from '../src/components/icons/ElevationProfileIcon';
+import Svg, { Defs, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
+
 
 const BASE_WIDTH = 393;
 const BASE_HEIGHT = 852;
@@ -273,6 +275,9 @@ export default function SearchScreen() {
             {/* Search Title + Close */}
             {showResults ? <View style={{
               flexDirection: 'row',
+              alignContent: "space-between",
+              justifyContent: "space-between",
+              marginBottom: 18,
             }}>
               <View>
                 <Text style={styles.searchTitle}>Olso, Norway
@@ -364,6 +369,7 @@ export default function SearchScreen() {
                   </TouchableOpacity>
                 ))}
               </View>
+
             </View>
           ) : (
             <View style={styles.resultsFeedWrap}>
@@ -379,9 +385,13 @@ export default function SearchScreen() {
               {fullCards[1] ? renderCard(fullCards[1]) : null}
               {fullCards[2] ? renderCard(fullCards[2]) : null}
               <View style={styles.bottomSpacer} />
+
             </View>
+
           )}
         </ScrollView>
+
+
 
         {/* Search Input at bottom */}
         <View style={styles.searchInputContainer}>
@@ -592,6 +602,22 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingBottom: 12,
   },
+
+  actionBtn: {
+    position: 'absolute',
+    bottom: 40,
+    left: '50%',
+    marginLeft: -30,
+    width: 60,
+    height: 50,
+    borderRadius: 15,
+    backgroundColor: '#CFD0D1',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+
+
   activityChip: {
     width: 40,
     height: 40,

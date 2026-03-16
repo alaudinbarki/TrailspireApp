@@ -170,7 +170,7 @@ export default function ActivityFilterSelectionScreen() {
                 <TouchableOpacity
                   style={styles.openBtn}
                   activeOpacity={0.7}
-                  onPress={() => router.push('/activity-detail')}
+                  onPress={() => router.push('/gpx-route-view')}
                 >
                   <Text style={styles.openBtnText}>Open</Text>
                 </TouchableOpacity>
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'space-between',
     paddingHorizontal: 18,
-    paddingTop: 60,
+    paddingTop: 30,
     paddingBottom: 18,
     backgroundColor: '#D9D9D9',
     borderBottomLeftRadius: 30,
