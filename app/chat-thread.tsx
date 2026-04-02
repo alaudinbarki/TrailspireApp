@@ -23,6 +23,8 @@ const WAVEFORM_HEIGHTS = [
     18, 24, 16, 28, 34, 24, 18, 20, 10, 4,
 ];
 
+const RECEIVED_BUBBLE_COLOR = 'rgba(120, 120, 128, 0.16)';
+
 function SentTail() {
     return (
         <Svg width={scaleUniform(17)} height={scaleUniform(18)} viewBox="0 0 17 18" style={styles.sentTail}>
@@ -39,7 +41,7 @@ function ReceivedTail() {
         <Svg width={scaleUniform(17)} height={scaleUniform(18)} viewBox="0 0 17 18" style={styles.receivedTail}>
             <Path
                 d="M1.8 11C2.79 11 3.44 11.31 4.77 12.24C5.48 12.74 8.22 14.84 10.49 16.09C12.45 17.17 14.13 17.91 14.55 17.94C15.81 18.04 15.97 16.85 15.48 16.21C14.99 15.57 14.43 14.74 14.21 14.29C13.73 13.28 13.58 12.75 13.58 11.24C13.58 9.38 14.9 8 15.94 7.08C16.03 7 16.15 6.9 16.29 6.79C16.53 6.6 16.76 6.41 16.99 6.22V0H0V11H1.8Z"
-                fill="rgba(120,120,128,0.16)"
+                fill={RECEIVED_BUBBLE_COLOR}
             />
         </Svg>
     );
@@ -332,7 +334,7 @@ const styles = StyleSheet.create({
         overflow: 'visible',
     },
     bubbleReceived: {
-        backgroundColor: 'rgba(120,120,128,0.16)',
+        backgroundColor: RECEIVED_BUBBLE_COLOR,
         borderBottomLeftRadius: 20,
         overflow: 'visible',
     },
