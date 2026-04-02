@@ -36,7 +36,7 @@ export default function UserProfileAtlasScreen() {
   const [atlasTab, setAtlasTab] = useState<'your' | 'all'>('your');
 
   return (
-    <SafeAreaView style={styles.screen} edges={['top']}>
+    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity

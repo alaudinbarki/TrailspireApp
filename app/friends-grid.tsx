@@ -12,11 +12,12 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
 import { SearchIcon } from '../src/components/icons/SearchIcon';
+import Svg, { Path } from 'react-native-svg';
 import { scaleUniform, scaleWidth } from '../src/utils/globalScale';
 
 const GRID_SIDE_PADDING = 16.5;
 const GRID_GAP = 5.61;
-const CARD_SIZE = scaleWidth((342 - (GRID_GAP * 3)) / 4);
+const CARD_SIZE = scaleWidth((342 - (GRID_GAP * 4)) / 4);
 
 const FRIENDS = [
   { id: 1, username: '@rowbat88', image: require('../assets/images/feed/friend_rowbat88.png'), selected: true },
@@ -47,7 +48,7 @@ export default function FriendsGridScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.screen} >
+    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
       <View style={styles.header}>
         <View style={styles.controlsRow}>
           <TouchableOpacity
@@ -70,7 +71,16 @@ export default function FriendsGridScreen() {
           </View>
 
           <TouchableOpacity style={styles.confirmBtn} activeOpacity={0.7} onPress={() => router.back()}>
-            <Text style={styles.confirmIcon}>⌄</Text>
+            <Svg width={24} height={16} viewBox="0 0 24 16" fill="none" style={styles.confirmIcon}>
+              <Path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M10.7352 14.1824C10.7507 14.1687 10.7659 14.1544 10.7808 14.1395L22.7132 2.20711C23.1037 1.81658 23.1037 1.18342 22.7132 0.792893C22.3227 0.402369 21.6895 0.402369 21.299 0.792893L9.98528 12.1066L2.20711 4.32843C1.81658 3.9379 1.18342 3.9379 0.792893 4.32843C0.402369 4.71895 0.402368 5.35212 0.792893 5.74264L9.27817 14.2279C9.6687 14.6184 10.3019 14.6184 10.6924 14.2279C10.7072 14.2131 10.7215 14.1979 10.7352 14.1824Z"
+                fill="#D9D9D9"
+                stroke="#D9D9D9"
+                strokeLinecap="round"
+              />
+            </Svg>
           </TouchableOpacity>
         </View>
 
@@ -172,11 +182,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   confirmIcon: {
-    marginTop: -6,
-    fontSize: 30,
-    lineHeight: 30,
-    fontWeight: '700',
-    color: '#FFFFFF',
+    marginTop: -2,
   },
   content: {
     flex: 1,

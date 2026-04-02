@@ -23,6 +23,15 @@
       },
       "package": "com.atlas.trailspire"
     },
+    "androidStatusBar": {
+      "backgroundColor": "#F2F2F2",
+      "barStyle": "dark-content",
+      "translucent": false
+    },
+    "androidNavigationBar": {
+      "backgroundColor": "#F2F2F2",
+      "barStyle": "dark-content"
+    },
     "web": {
       "bundler": "metro",
       "output": "single"

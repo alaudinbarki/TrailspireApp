@@ -10,9 +10,7 @@ import {
 } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
-import { SearchIcon } from '../src/components/icons/SearchIcon';
-import { TerrainProfileIcon } from '../src/components/icons/TerrainProfileIcon';
+import { BackArrowIcon, ConfirmCheckIcon, SearchIcon, TerrainProfileIcon } from '../src/components/icons';
 import { scaleUniform } from '../src/utils/globalScale';
 
 const ACTIVITIES = [
@@ -77,7 +75,7 @@ export default function ActivityFilterSelectionScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.screen} >
+    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
       <Stack.Screen
         options={{
           headerShown: false,
@@ -105,7 +103,7 @@ export default function ActivityFilterSelectionScreen() {
         </View>
 
         <TouchableOpacity style={styles.confirmBtn} activeOpacity={0.7} onPress={() => router.back()}>
-          <Text style={styles.confirmIcon}>⌄</Text>
+          <ConfirmCheckIcon width={scaleUniform(18)} height={scaleUniform(12)} color="#D9D9D9" />
         </TouchableOpacity>
       </View>
 
@@ -192,14 +190,11 @@ export default function ActivityFilterSelectionScreen() {
                 activeOpacity={0.7}
                 onPress={() => toggleSelection(activity.id)}
               >
-                <Text
-                  style={[
-                    styles.checkBtnText,
-                    selectedIds.includes(activity.id) ? styles.checkBtnTextActive : styles.checkBtnTextInactive,
-                  ]}
-                >
-                  ⌄
-                </Text>
+                <ConfirmCheckIcon
+                  width={scaleUniform(15)}
+                  height={scaleUniform(15)}
+                  color={selectedIds.includes(activity.id) ? '#FFFFFF' : '#D9D9D9'}
+                />
               </TouchableOpacity>
             </View>
           ))}
@@ -220,7 +215,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 18,
     paddingTop: 30,
-    paddingBottom: 18,
+    paddingBottom: 6,
     backgroundColor: '#D9D9D9',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
@@ -258,13 +253,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#007AFF',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  confirmIcon: {
-    fontSize: 30,
-    lineHeight: 30,
-    marginTop: -6,
-    color: '#FFFFFF',
-    fontWeight: '700',
   },
   content: {
     flex: 1,
@@ -450,9 +438,9 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   checkBtn: {
-    width: 39,
-    height: 39,
-    borderRadius: 19.5,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 8,
@@ -462,17 +450,5 @@ const styles = StyleSheet.create({
   },
   checkBtnInactive: {
     backgroundColor: '#A0A0A0',
-  },
-  checkBtnText: {
-    fontSize: 26,
-    lineHeight: 26,
-    marginTop: -8,
-    fontWeight: '700',
-  },
-  checkBtnTextActive: {
-    color: '#FFFFFF',
-  },
-  checkBtnTextInactive: {
-    color: '#D9D9D9',
   },
 });

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Tabs, useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GridIcon } from '../../src/components/icons/GridIcon';
 import { PlusIcon } from '../../src/components/icons/PlusIcon';
 import { DocumentStackIcon } from '../../src/components/icons/DocumentStackIcon';
@@ -8,12 +9,19 @@ import { Colors } from '../../src/constants/theme';
 
 export default function TabsLayout() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarStyle: styles.tabBar,
+        tabBarStyle: [
+          styles.tabBar,
+          {
+            height: 80 + insets.bottom,
+            paddingBottom: Math.max(12, insets.bottom),
+          },
+        ],
         tabBarShowLabel: false,
         tabBarActiveTintColor: '#007AFF',
         tabBarInactiveTintColor: '#FFFFFF',
@@ -96,8 +104,10 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     height: 80,
     position: 'absolute',
+    bottom: 0,
     borderTopWidth: 0,
     paddingTop: 12,
+    paddingBottom: 12,
     elevation: 0,
     shadowOpacity: 0,
   },

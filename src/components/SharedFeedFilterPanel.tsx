@@ -82,6 +82,7 @@ export function SharedFeedFilterPanel({ visible, onClose, attached = false }: Sh
     );
 }
 
+
 const styles = StyleSheet.create({
     container: {
         marginTop: 0,
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 12,
         borderBottomLeftRadius: 22,
         borderBottomRightRadius: 22,
-        backgroundColor: '#D9D9D9',
+        backgroundColor: 'rgba(255, 255, 255, 0.35)',
         paddingHorizontal: 12,
         paddingTop: 10,
         paddingBottom: 14,
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 0,
         borderBottomLeftRadius: 0,
         borderBottomRightRadius: 0,
-        backgroundColor: 'transparent',
+        backgroundColor: 'rgba(255, 255, 255, 0.25)',
         paddingHorizontal: 18,
         paddingBottom: 18,
     },

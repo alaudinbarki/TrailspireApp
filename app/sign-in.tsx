@@ -35,7 +35,7 @@ export default function SignInScreen() {
     };
 
     return (
-        <SafeAreaView style={styles.screen} edges={['left', 'right']}>
+        <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
             <ScrollView
                 style={styles.scroll}
                 contentContainerStyle={{ minHeight: screenHeight }}

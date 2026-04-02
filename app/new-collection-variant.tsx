@@ -31,7 +31,7 @@ export default function NewCollectionVariantScreen() {
       <TouchableOpacity style={styles.dismissArea2} activeOpacity={1} onPress={() => router.back()} />
 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardView}>
-        <SafeAreaView style={styles.sheet} edges={['bottom']}>
+        <SafeAreaView style={styles.sheet} edges={['top', 'bottom']}>
           <View style={styles.handle} />
           <Text style={styles.sheetTitle}>New Collection</Text>
 

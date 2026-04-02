@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
-  Switch,
   Image,
   ScrollView,
 } from 'react-native';
@@ -21,101 +20,278 @@ export default function EditCollectionScreen() {
 
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} activeOpacity={0.7} onPress={() => router.back()}>
-          <BackArrowIcon width={20} height={20} color="#FFFFFF" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Edit Collection</Text>
-        <TouchableOpacity activeOpacity={0.7} onPress={() => router.back()}>
-          <Text style={styles.doneBtn}>Done</Text>
-        </TouchableOpacity>
-      </View>
-
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-        {/* Cover photo */}
-        <View style={styles.coverSection}>
-          <Image source={require('../assets/images/feed/edit_collection_cover.png')} style={styles.coverImage} />
-          <TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/photo-gallery')}>
-            <Text style={styles.updateCoverText}>Update cover photo</Text>
+        <View style={styles.panel}>
+          <View style={styles.header}>
+            <TouchableOpacity style={styles.backBtn} activeOpacity={0.7} onPress={() => router.back()}>
+              <BackArrowIcon width={20} height={20} color="#282828" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Edit Collection</Text>
+            <TouchableOpacity style={styles.doneBtnWrap} activeOpacity={0.7} onPress={() => router.back()}>
+              <Text style={styles.doneBtn}>Done</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.coverSection}>
+            <Image source={require('../assets/images/feed/edit_collection_cover.png')} style={styles.coverImage} />
+            <TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/photo-gallery')}>
+              <Text style={styles.updateCoverText}>Update cover photo</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.nameBlock}>
+            <Text style={styles.nameLabel}>Name</Text>
+            <View style={styles.nameInputWrap}>
+              <TextInput
+                style={styles.nameInput}
+                value={name}
+                onChangeText={setName}
+                placeholder="Collection name"
+                placeholderTextColor="#6B6B6B"
+              />
+            </View>
+          </View>
+
+          <View style={styles.optionRow}>
+            <View style={styles.optionTextWrap}>
+              <Text style={styles.optionTitle}>Make private</Text>
+              <Text style={styles.optionSub}>Only you will see this collection</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.toggleTrack}
+              activeOpacity={0.8}
+              onPress={() => setIsPrivate((prev) => !prev)}
+            >
+              <View style={[styles.toggleKnob, isPrivate && styles.toggleKnobOn]} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.optionRow}>
+            <View style={styles.optionTextWrap}>
+              <Text style={styles.optionTitle}>Collaborative</Text>
+              <Text style={styles.optionSub}>Invite your friends</Text>
+            </View>
+            <TouchableOpacity
+              style={[styles.toggleButton, isCollaborative && styles.toggleButtonActive]}
+              activeOpacity={0.8}
+              onPress={() => setIsCollaborative((prev) => !prev)}
+            >
+              <Text
+                style={[
+                  styles.toggleButtonText,
+                  isCollaborative ? styles.toggleButtonTextActive : styles.toggleButtonTextInactive,
+                ]}
+              >
+                Invite
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* {isCollaborative && (
+            <TouchableOpacity style={styles.inviteRow} activeOpacity={0.7} onPress={() => router.push('/friends-grid')}>
+              <Text style={styles.inviteText}>Invite</Text>
+              <Text style={styles.inviteChevron}>›</Text>
+            </TouchableOpacity>
+          )} */}
+
+          <TouchableOpacity style={styles.deleteBtn} activeOpacity={0.7} onPress={() => router.back()}>
+            <Text style={styles.deleteBtnText}>Delete Collection</Text>
           </TouchableOpacity>
         </View>
-
-        {/* Name field */}
-        <View style={styles.field}>
-          <Text style={styles.label}>Name</Text>
-          <TextInput
-            style={styles.input}
-            value={name}
-            onChangeText={setName}
-            placeholderTextColor="#666"
-          />
-        </View>
-
-        {/* Make private toggle */}
-        <View style={styles.toggleRow}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.toggleLabel}>Make private</Text>
-            <Text style={styles.toggleDesc}>Only you can see this collection</Text>
-          </View>
-          <Switch
-            value={isPrivate}
-            onValueChange={setIsPrivate}
-            trackColor={{ false: '#3A3A3A', true: '#007AFF' }}
-            thumbColor="#FFFFFF"
-          />
-        </View>
-
-        {/* Collaborative toggle */}
-        <View style={styles.toggleRow}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.toggleLabel}>Collaborative</Text>
-            <Text style={styles.toggleDesc}>Allow others to add to this collection</Text>
-          </View>
-          <Switch
-            value={isCollaborative}
-            onValueChange={setIsCollaborative}
-            trackColor={{ false: '#3A3A3A', true: '#007AFF' }}
-            thumbColor="#FFFFFF"
-          />
-        </View>
-
-        {/* Invite link */}
-        {isCollaborative && (
-          <TouchableOpacity style={styles.inviteRow} activeOpacity={0.7} onPress={() => router.push('/friends-grid')}>
-            <Text style={styles.inviteText}>Invite</Text>
-            <Text style={styles.inviteChevron}>›</Text>
-          </TouchableOpacity>
-        )}
-
-        {/* Delete button */}
-        <TouchableOpacity style={styles.deleteBtn} activeOpacity={0.7} onPress={() => router.back()}>
-          <Text style={styles.deleteBtnText}>Delete Collection</Text>
-        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#282828' },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 12 },
-  backBtn: { width: 49, height: 49, borderRadius: 15, backgroundColor: '#3A3A3A', alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontFamily: 'Inter', fontSize: 18, fontWeight: '600', color: '#FFFFFF' },
-  doneBtn: { fontFamily: 'Inter', fontSize: 16, fontWeight: '600', color: '#007AFF' },
-  scrollContent: { padding: 16, paddingBottom: 40 },
-  coverSection: { alignItems: 'center', marginBottom: 28 },
-  coverImage: { width: 67, height: 67, borderRadius: 14 },
-  updateCoverText: { fontFamily: 'Inter', fontSize: 14, fontWeight: '600', color: '#007AFF', marginTop: 10 },
-  field: { marginBottom: 24 },
-  label: { fontFamily: 'Inter', fontSize: 13, fontWeight: '600', color: '#A0A0A0', marginBottom: 8, textTransform: 'uppercase' },
-  input: { backgroundColor: '#3A3A3A', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, fontFamily: 'Inter', fontSize: 16, color: '#FFFFFF' },
-  toggleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 14, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'rgba(255,255,255,0.1)' },
-  toggleLabel: { fontFamily: 'Inter', fontSize: 16, fontWeight: '600', color: '#FFFFFF' },
-  toggleDesc: { fontFamily: 'Inter', fontSize: 12, color: '#A0A0A0', marginTop: 2 },
-  inviteRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 14, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'rgba(255,255,255,0.1)' },
-  inviteText: { fontFamily: 'Inter', fontSize: 16, fontWeight: '600', color: '#007AFF' },
-  inviteChevron: { fontSize: 22, color: '#007AFF' },
-  deleteBtn: { borderRadius: 14, paddingVertical: 16, alignItems: 'center', marginTop: 40 },
-  deleteBtnText: { fontFamily: 'Inter', fontSize: 16, fontWeight: '700', color: '#D92121' },
+  screen: {
+    flex: 1,
+    backgroundColor: '#A0A0A0',
+  },
+  scrollContent: {
+    paddingBottom: 24,
+  },
+  panel: {
+    minHeight: 852,
+    backgroundColor: '#282828',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingHorizontal: 15,
+    paddingTop: 64,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  backBtn: {
+    width: 49,
+    height: 49,
+    borderRadius: 15,
+    backgroundColor: '#CFD0D1',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerTitle: {
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#F2F2F2',
+  },
+  doneBtnWrap: {
+    width: 76,
+    height: 49,
+    borderRadius: 15,
+    backgroundColor: '#CFD0D1',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  doneBtn: {
+    fontFamily: 'Inter',
+    fontSize: 17,
+    fontWeight: '500',
+    color: '#282828',
+  },
+  coverSection: {
+    marginTop: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  coverImage: {
+    width: 67.04,
+    height: 67.04,
+    borderRadius: 20,
+  },
+  updateCoverText: {
+    fontFamily: 'Inter',
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#007AFF',
+    maxWidth: 222,
+  },
+  nameBlock: {
+    marginTop: 18,
+  },
+  nameLabel: {
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#6B6B6B',
+    marginBottom: 8,
+  },
+  nameInputWrap: {
+    width: '100%',
+    height: 49,
+    borderRadius: 15,
+    backgroundColor: '#353535',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  nameInput: {
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#B8B8B8',
+    paddingVertical: 0,
+  },
+  optionRow: {
+    marginTop: 22,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  optionTextWrap: {
+    flex: 1,
+  },
+  optionTitle: {
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#F2F2F2',
+  },
+  optionSub: {
+    fontFamily: 'Inter',
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#A0A0A0',
+    marginTop: 3,
+  },
+  toggleTrack: {
+    width: 76,
+    height: 40,
+    borderRadius: 15,
+    backgroundColor: '#353535',
+    flexShrink: 0,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    paddingHorizontal: 3,
+  },
+  toggleKnob: {
+    width: 38,
+    height: 34,
+    borderRadius: 15,
+    backgroundColor: '#CFD0D1',
+    alignSelf: 'flex-start',
+  },
+  toggleKnobOn: {
+    alignSelf: 'flex-end',
+  },
+  toggleButton: {
+    width: 76,
+    height: 40,
+    borderRadius: 15,
+    backgroundColor: '#353535',
+    flexShrink: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  toggleButtonActive: {
+    backgroundColor: '#353535',
+  },
+  toggleButtonText: {
+    fontFamily: 'Inter',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  toggleButtonTextActive: {
+    color: '#F2F2F2',
+  },
+  toggleButtonTextInactive: {
+    color: '#6B6B6B',
+  },
+  inviteRow: {
+    marginTop: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  inviteText: {
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#F2F2F2',
+  },
+  inviteChevron: {
+    fontSize: 20,
+    color: '#CFD0D1',
+    marginRight: 2,
+  },
+  deleteBtn: {
+    marginTop: 240,
+    width: 183,
+    height: 40,
+    borderRadius: 15,
+    backgroundColor: '#353535',
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  deleteBtnText: {
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#D92121',
+  },
 });

@@ -364,8 +364,8 @@ export default function GpxRouteViewScreen() {
                 <View style={{
                     backgroundColor: 'rgba(242, 242, 242, 1)',
                     padding: 12,
-                    marginBottom: 12,
-                    marginTop: 12,
+                    // marginBottom: 12,
+                    marginTop: 5,
                     marginHorizontal: -10,
                     borderRadius: 20,
                 }}>
@@ -424,7 +424,7 @@ export default function GpxRouteViewScreen() {
                     backgroundColor: 'rgba(242, 242, 242, 1)',
                     padding: 12,
                     marginBottom: 12,
-                    marginTop: 12,
+                    marginTop: 8,
                     marginHorizontal: -10,
                     borderRadius: 20,
                     paddingBottom: 24,
@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
     mapContainer: {
         flex: 1,
         // position: 'relative',
-        height: 500,
+        height: 600,
         zIndex: 3,
         // paddingTop: 160, // to avoid overlap with status bar
         // bo
@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         resizeMode: "cover"
-        , paddingTop: 50
+        , paddingTop: 150
     },
     topLeftBtn: {
         position: 'absolute',
@@ -495,8 +495,8 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         paddingHorizontal: 18,
-        paddingBottom: 32,
-        paddingTop: 12,
+        paddingBottom: 10,
+        paddingTop: 8,
         marginTop: -30,
         zIndex: 5,
     },
@@ -506,21 +506,21 @@ const styles = StyleSheet.create({
         height: 5,
         borderRadius: 10,
         backgroundColor: '#616264',
-        marginBottom: 16,
+        marginBottom: 0,
     },
 
     // ── Title row ────────────────────────────────────────────────
     titleRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 12,
+        marginBottom: 0,
     },
     titleText: {
         fontFamily: 'Inter',
         fontSize: 20,
         fontWeight: '600',
         color: '#282828',
-        lineHeight: 24,
+        lineHeight: 20,
     },
     subtitleText: {
         fontFamily: 'Inter',
@@ -528,15 +528,15 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         color: '#007AFF',
         lineHeight: 18,
-        marginTop: 2,
+        // marginTop: 2,
     },
     gpxDownloadBtn: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#282828',
-        borderRadius: 15,
+        borderRadius: 12,
         paddingHorizontal: 14,
-        paddingVertical: 12,
+        paddingVertical: 8,
         gap: 6,
     },
     gpxDownloadText: {
@@ -609,7 +609,7 @@ const styles = StyleSheet.create({
     divider: {
         height: 0.5,
         backgroundColor: '#999',
-        marginBottom: 10,
+        marginBottom: 5,
     },
 
     // ── Chart ────────────────────────────────────────────────────
@@ -639,7 +639,7 @@ const styles = StyleSheet.create({
 
     // ── Slider ───────────────────────────────────────────────────
     sliderWrap: {
-        marginTop: 14,
+        marginTop: 8,
         paddingHorizontal: 4,
     },
     sliderTrack: {

@@ -173,7 +173,16 @@ export default function PhotoCropPortraitScreen() {
               onPress={() => router.push('/create-activity')}
             >
               <Text style={styles.nextBtnText}>Next</Text>
-              <Text style={styles.nextIcon}>›</Text>
+              <Svg width={13} height={23} viewBox="0 0 13 23" fill="none" style={styles.nextIcon}>
+                <Path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M0.643816 22.0332C0.836216 22.2256 1.14816 22.2256 1.34056 22.0332L11.1641 12.2097C11.6451 11.7287 11.6451 10.9488 11.1641 10.4678L1.34057 0.644271C1.14817 0.451871 0.836228 0.451871 0.643828 0.644271C0.451428 0.836672 0.451428 1.14861 0.643828 1.34101L10.4674 11.1646C10.5636 11.2608 10.5636 11.4167 10.4674 11.5129L0.643815 21.3365C0.451415 21.5289 0.451415 21.8408 0.643816 22.0332Z"
+                  fill="#F2F2F2"
+                  stroke="#F2F2F2"
+                  strokeLinecap="round"
+                />
+              </Svg>
             </TouchableOpacity>
           </View>
 
@@ -287,9 +296,8 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   nextIcon: {
-    fontSize: 20,
-    color: '#FFFFFF',
-    fontWeight: '600',
+    width: 13,
+    height: 23,
   },
   photoContainer: {
     marginTop: 0,
@@ -297,13 +305,14 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: '#A0A0A0',
     alignSelf: 'center',
-    width: PREVIEW_MAX_WIDTH,
+    // width: PREVIEW_MAX_WIDTH,
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    borderRadius: 0,
-    borderBottomRightRadius: 40,
-    borderBottomLeftRadius: 40,
+    // borderRadius: 0,
+    borderBottomRightRadius: 30,
+    borderBottomLeftRadius: 30,
+    // paddingHorizontal: 100
   },
   photoStage: {
     marginTop: 100,

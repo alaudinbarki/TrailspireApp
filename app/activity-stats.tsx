@@ -39,7 +39,7 @@ export default function ActivityStatsScreen() {
   const maxVal = Math.max(...CURRENT_DATA);
 
   return (
-    <SafeAreaView style={styles.screen} edges={['top']}>
+    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} activeOpacity={0.7} onPress={() => router.back()}>

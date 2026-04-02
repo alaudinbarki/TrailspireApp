@@ -64,7 +64,7 @@ export default function OtherUserProfileScreen() {
   const router = useRouter();
 
   return (
-    <SafeAreaView style={styles.screen} edges={['top']}>
+    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         <View style={styles.topHeaderRow}>
           <View style={styles.profileSection}>

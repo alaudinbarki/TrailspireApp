@@ -39,7 +39,7 @@ export default function LandingScreen() {
   const sy = (value: number) => PixelRatio.roundToNearestPixel(value * scaleY);
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['left', 'right']}>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.scrollContent, { minHeight: screenHeight }]}

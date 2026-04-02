@@ -1,13 +1,41 @@
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
+import React, { useEffect } from 'react';
+import { Stack, usePathname } from 'expo-router';
+import { StatusBar, setStatusBarBackgroundColor, setStatusBarStyle } from 'expo-status-bar';
+import * as NavigationBar from 'expo-navigation-bar';
+import { Platform } from 'react-native';
 import { enableGlobalStyleScaling } from '../src/utils/globalScale';
+import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 
 enableGlobalStyleScaling();
 
 export default function RootLayout() {
+  const pathname = usePathname();
+  const darkStatusRoutes = ['/image-viewer', '/photo-fullscreen-1', '/photo-fullscreen-2'];
+  const isDark = darkStatusRoutes.includes(pathname);
+  const statusBarStyle = isDark ? 'light' : 'dark';
+  const statusBarBackground = isDark ? '#000000' : '#F2F2F2';
+  const navBarBackground = isDark ? '#000000' : '#F2F2F2';
+  const navBarButtonStyle = isDark ? 'light' : 'dark';
+
+  // Re-apply imperatively on every render (fixes Expo Go hot-reload issue)
+  useEffect(() => {
+    setStatusBarBackgroundColor(statusBarBackground, false);
+    setStatusBarStyle(statusBarStyle);
+  }, [statusBarBackground, statusBarStyle]);
+
+  useEffect(() => {
+    if (Platform.OS !== 'android') {
+      return;
+    }
+
+    NavigationBar.setPositionAsync('relative');
+    NavigationBar.setBackgroundColorAsync(navBarBackground);
+    NavigationBar.setButtonStyleAsync(navBarButtonStyle);
+  }, [navBarBackground, navBarButtonStyle]);
+
   return (
-    <>
-      <StatusBar style="dark" />
+    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+      <StatusBar style={statusBarStyle} backgroundColor={statusBarBackground} translucent={false} />
       <Stack
         screenOptions={{
           headerShown: false,
@@ -147,6 +175,6 @@ export default function RootLayout() {
           options={{ animation: 'slide_from_right' }}
         />
       </Stack>
-    </>
+    </SafeAreaProvider>
   );
 }

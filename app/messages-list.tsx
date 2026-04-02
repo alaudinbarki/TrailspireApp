@@ -10,9 +10,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { SearchIcon } from '../src/components/icons/SearchIcon';
-import { FilterIcon } from '../src/components/icons/FilterIcon';
-import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
+import { BackArrowIcon, EditIcon, SearchIcon } from '../src/components/icons';
 import { scaleUniform } from '../src/utils/globalScale';
 
 interface Message {
@@ -102,7 +100,7 @@ export default function MessagesListScreen() {
             </View>
 
             <TouchableOpacity style={styles.filterBtn} activeOpacity={0.7} onPress={() => { }}>
-              <FilterIcon width={scaleUniform(18)} height={scaleUniform(18)} color="#282828" />
+              <EditIcon width={scaleUniform(18)} height={scaleUniform(18)} color="#282828" />
             </TouchableOpacity>
           </View>
         </SafeAreaView>
@@ -151,8 +149,9 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#D9D9D9',
+    paddingTop: 20,
     paddingHorizontal: 18,
-    paddingBottom: 16,
+    paddingBottom: 10,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
   },
@@ -275,8 +274,9 @@ const styles = StyleSheet.create({
   chevronText: {
     fontFamily: 'SF Pro',
     fontWeight: '600',
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: 30,
+    lineHeight: 32,
     color: 'rgba(60,60,67,0.3)',
+    marginTop: -6,
   },
 });

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { BlurView } from 'expo-blur';
 import Svg, { Path } from 'react-native-svg';
 import { TerrainProfileIcon } from '../../src/components/icons/TerrainProfileIcon';
 import { ElevationProfileIcon } from '../../src/components/icons/ElevationProfileIcon';
@@ -19,8 +20,8 @@ import { FilterIcon } from '../../src/components/icons/FilterIcon';
 import { SharedFeedFilterPanel } from '@/components/SharedFeedFilterPanel';
 
 const BASE_WIDTH = 393;
-const COL_GAP = 6;
-const SIDE_PAD = 2;
+const COL_GAP = 8;
+const SIDE_PAD = 0;
 const COL_W = (BASE_WIDTH - SIDE_PAD * 2 - COL_GAP) / 2;
 
 /* ── Image assets (Figma node 1:3129 "02") ── */
@@ -217,44 +218,77 @@ export default function HomeScreen() {
       </TouchableOpacity>
 
       {/* Stats section – below image (Figma: positioned below card, not overlaid) */}
-      <View style={styles.statsSection}>
-        <Text style={styles.statsActivityType}>{item.activityType}</Text>
-        {/* Elevation row: label | Vector18 line | value (all inline) */}
-        <View style={styles.statsRow}>
-          <Text style={styles.statsLabelFixed}>Elevation</Text>
-          <ElevationProfileIcon
-            width={sx(87)}
-            height={sy(10)}
-            color="#282828"
-            variant={item.elevationVariant ?? 1}
-          />
-          <Text style={styles.statsValueRight}>{item.elevation}</Text>
-        </View>
-        {/* Distance row: label | Rectangle133 progress bar | value (all inline) */}
-        <View style={styles.statsRow}>
-          <Text style={styles.statsLabelFixed}>Distance </Text>
-          <View style={styles.statsProgressBar}>
-            <View
-              style={[
-                styles.statsProgressFill,
-                { width: scaledStatBarW * (item.progress ?? 1) },
-              ]}
+      <View style={styles.statsRowWithActions}>
+        <View style={styles.statsSection}>
+          <Text style={styles.statsActivityType}>{item.activityType}</Text>
+          {/* Elevation row: label | Vector18 line | value (all inline) */}
+          <View style={styles.statsRow}>
+            <Text style={styles.statsLabelFixed}>Elevation</Text>
+            <ElevationProfileIcon
+              width={sx(87)}
+              height={sy(10)}
+              color="#282828"
+              variant={item.elevationVariant ?? 1}
             />
+            <Text style={styles.statsValueRight}>{item.elevation}</Text>
           </View>
-          <Text style={styles.statsValueRight}>{item.distance}</Text>
+          {/* Distance row: label | Rectangle133 progress bar | value (all inline) */}
+          <View style={styles.statsRow}>
+            <Text style={styles.statsLabelFixed}>Distance </Text>
+            <View style={styles.statsProgressBar}>
+              <View
+                style={[
+                  styles.statsProgressFill,
+                  { width: scaledStatBarW * (item.progress ?? 1) },
+                ]}
+              />
+            </View>
+            <Text style={styles.statsValueRight}>{item.distance}</Text>
+          </View>
+          {/* Time row: label | spacer | value */}
+          <View style={styles.statsRow}>
+            <Text style={styles.statsLabelFixed}>Time</Text>
+            <View style={styles.statsTimeSpacer} />
+            <Text style={styles.statsValueRight}>{item.time}</Text>
+          </View>
         </View>
-        {/* Time row: label | spacer | value */}
-        <View style={styles.statsRow}>
-          <Text style={styles.statsLabelFixed}>Time</Text>
-          <View style={styles.statsTimeSpacer} />
-          <Text style={styles.statsValueRight}>{item.time}</Text>
-        </View>
+
+        {selectedView !== 'explore' && (
+          <View style={styles.cardActionsRow}>
+            <TouchableOpacity style={styles.elevationChip} activeOpacity={0.8}>
+              <View style={styles.elevationIconWrap}>
+                <Svg width={16} height={23} viewBox="0 0 16 23" fill="none">
+                  <Path
+                    d="M7.17006 0.525604C7.76248 -0.446227 9.32284 0.0275002 9.21952 1.14768L8.45712 9.41308H14.8967C15.7466 9.41308 16.2764 10.2937 15.8487 10.9954L8.8523 22.4743C8.25882 23.4481 6.69531 22.9703 6.80331 21.8482L7.59478 13.6235H7.06369L7.05995 13.6235H1.1033C0.253368 13.6235 -0.276434 12.7429 0.151331 12.0412L7.17006 0.525604Z"
+                    fill="#007AFF"
+                  />
+                </Svg>
+              </View>
+              <Text style={styles.elevationChipText}>249</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.trendChip} activeOpacity={0.8}>
+              <Svg width={22} height={22} viewBox="0 0 22 22" fill="none">
+                <Path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M4.62915 0.5C4.25395 0.5 3.94983 0.804118 3.94983 1.17932C3.94983 1.55453 4.25395 1.85864 4.62915 1.85864L18.3604 1.85864L-0.954971 21.174C-1.22027 21.4393 -1.22027 21.8694 -0.954971 22.1347C-0.689671 22.4 -0.259566 22.4 0.00573444 22.1347L19.3211 2.81932L19.3211 16.5506C19.3211 16.9258 19.6252 17.2299 20.0004 17.2299C20.3756 17.2299 20.6797 16.9258 20.6797 16.5506L20.6797 2.19834C20.6797 1.26034 19.9194 0.5 18.9814 0.5L4.62915 0.5Z"
+                  fill="#282828"
+                  stroke="#282828"
+                  strokeWidth={0.75}
+                  strokeLinecap="round"
+                />
+              </Svg>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
+
     </View>
   );
 
   return (
-    <SafeAreaView style={styles.screen} edges={['top']}>
+    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
       <View style={styles.headerBlock}>
         <View style={[styles.headerSection, isFilterOpen ? styles.headerSectionWithFilter : styles.headerSectionClosed]}>
           <View style={styles.mapWrapper}>
@@ -416,57 +450,68 @@ export default function HomeScreen() {
 
       </View>
 
-      <ScrollView
-        style={styles.mainScroll}
-        contentContainerStyle={styles.mainContent}
-        scrollEnabled
-        directionalLockEnabled
-        canCancelContentTouches
-        keyboardShouldPersistTaps="handled"
-        bounces={false}
-        showsVerticalScrollIndicator={false}
-      >
+      <View style={styles.contentWrapper}>
+        <ScrollView
+          style={styles.mainScroll}
+          contentContainerStyle={styles.mainContent}
+          scrollEnabled
+          directionalLockEnabled
+          canCancelContentTouches
+          keyboardShouldPersistTaps="handled"
+          bounces={false}
+          showsVerticalScrollIndicator={false}
+        >
 
-        <View style={styles.tabRow}>
-          <Pressable
-            onPress={() => setSelectedView('explore')}
-            hitSlop={2}
-            pressRetentionOffset={{ top: 2, left: 2, right: 2, bottom: 2 }}
-          >
-            <Text style={[styles.tabText, selectedView === 'explore' && styles.tabTextActive]}>
-              Explore
-            </Text>
-          </Pressable>
+          <View style={styles.tabRow}>
+            <Pressable
+              onPress={() => setSelectedView('explore')}
+              hitSlop={2}
+              pressRetentionOffset={{ top: 2, left: 2, right: 2, bottom: 2 }}
+            >
+              <Text style={[styles.tabText, selectedView === 'explore' && styles.tabTextActive]}>
+                Explore
+              </Text>
+            </Pressable>
 
 
-          <Pressable
-            onPress={() => setSelectedView('youFollow')}
-            hitSlop={2}
-            pressRetentionOffset={{ top: 2, left: 2, right: 2, bottom: 2 }}
-          >
-            <Text style={[styles.tabText, selectedView === 'youFollow' && styles.tabTextActive]}>
-              You Follow
-            </Text>
-          </Pressable>
-        </View>
-
-        <View style={styles.feedContainer}>
-          {fullCards[0] && renderCard(fullCards[0])}
-
-          <View style={styles.masonryContainer}>
-            <View style={styles.masonryCol}>
-              {leftCards.map(renderCard)}
-            </View>
-            <View style={styles.masonryCol}>
-              {rightCards.map(renderCard)}
-            </View>
+            <Pressable
+              onPress={() => setSelectedView('youFollow')}
+              hitSlop={2}
+              pressRetentionOffset={{ top: 2, left: 2, right: 2, bottom: 2 }}
+            >
+              <Text style={[styles.tabText, selectedView === 'youFollow' && styles.tabTextActive]}>
+                You Follow
+              </Text>
+            </Pressable>
           </View>
 
-          {fullCards[1] && renderCard(fullCards[1])}
-          {fullCards[2] && renderCard(fullCards[2])}
-          <View style={styles.bottomSpacer} />
-        </View>
-      </ScrollView>
+          <View style={styles.feedContainer}>
+            {fullCards[0] && renderCard(fullCards[0])}
+
+            <View style={styles.masonryContainer}>
+              <View style={styles.masonryCol}>
+                {leftCards.map(renderCard)}
+              </View>
+              <View style={styles.masonryCol}>
+                {rightCards.map(renderCard)}
+              </View>
+            </View>
+
+            {fullCards[1] && renderCard(fullCards[1])}
+            {fullCards[2] && renderCard(fullCards[2])}
+            <View style={styles.bottomSpacer} />
+          </View>
+        </ScrollView>
+
+        {isFilterOpen && (
+          <BlurView
+            intensity={35}
+            tint="light"
+            pointerEvents="none"
+            style={styles.contentBlurOverlay}
+          />
+        )}
+      </View>
     </SafeAreaView>
   );
 }
@@ -485,6 +530,14 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     paddingBottom: 132,
+  },
+  contentWrapper: {
+    flex: 1,
+    position: 'relative',
+  },
+  contentBlurOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
   },
 
   headerSection: {
@@ -680,6 +733,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#007AFF',
     marginTop: 2,
+    bottom: 6,
   },
 
   searchBarRow: {
@@ -806,7 +860,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 24,
-    paddingRight: 4,
+    paddingRight: -2,
     paddingVertical: 4,
     gap: 4,
   },
@@ -848,6 +902,48 @@ const styles = StyleSheet.create({
     paddingLeft: 11,
     paddingTop: 5,
     paddingBottom: 2,
+  },
+  statsRowWithActions: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+  },
+  cardActionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingRight: 8,
+    paddingBottom: 6,
+  },
+  elevationChip: {
+    width: 73,
+    height: 50,
+    borderRadius: 15,
+    backgroundColor: '#B8B8B8',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  elevationIconWrap: {
+    width: 16,
+    height: 23,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  elevationChipText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#282828',
+    textAlign: 'center',
+  },
+  trendChip: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#B8B8B8',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   statsActivityType: {
     fontSize: 10,
@@ -966,11 +1062,16 @@ const styles = StyleSheet.create({
   /* ── Grid / masonry ── */
   feedContainer: {
     marginTop: 0,
-    paddingHorizontal: SIDE_PAD,
+    width: '100%',
+    // right: -2,
+    // left: -2,
+    // paddingRight: -12
+    // marginHorizontal: -12,
+    // paddingHorizontal: SIDE_PAD,
   },
   masonryContainer: {
     flexDirection: 'row',
-    gap: COL_GAP,
+    gap: COL_GAP
   },
   masonryCol: {
     width: COL_W,

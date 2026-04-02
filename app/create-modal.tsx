@@ -149,6 +149,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#F2F2F2',
     borderRadius: 1,
     marginVertical: 4,
+    paddingBottom: -4,
+    marginBottom: 20
   },
   iconWrap: {
     width: 42,

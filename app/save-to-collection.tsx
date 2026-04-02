@@ -27,7 +27,7 @@ export default function SaveToCollectionScreen() {
   return (
     <View style={styles.backdrop}>
       <TouchableOpacity style={styles.dismissArea} activeOpacity={1} onPress={() => router.back()} />
-      <SafeAreaView style={styles.sheet} edges={['bottom']}>
+      <SafeAreaView style={styles.sheet} edges={['top', 'bottom']}>
         {/* Activity preview header */}
         <View style={styles.activityHeader}>
           <Image source={require('../assets/images/feed/activity_data_bg.png')} style={styles.activityBg} />

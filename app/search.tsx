@@ -13,13 +13,16 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '../src/constants/theme';
 import { SearchIcon } from '../src/components/icons/SearchIcon';
 import { ProfileCategoryIcon, type ProfileCategoryIconName } from '../src/components/icons/ProfileCategoryIcon';
 import { FilterIcon } from '../src/components/icons/FilterIcon';
 import { TerrainProfileIcon } from '../src/components/icons/TerrainProfileIcon';
 import { ElevationProfileIcon } from '../src/components/icons/ElevationProfileIcon';
+import { GridIcon } from '../src/components/icons/GridIcon';
+import { PlusIcon } from '../src/components/icons/PlusIcon';
+import { DocumentStackIcon } from '../src/components/icons/DocumentStackIcon';
 import Svg, { Defs, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
 
 
@@ -40,12 +43,12 @@ const RECENT_SEARCHES = [
 
 const NAV_ITEMS = [
   { key: 'plus', type: 'plus' as const },
-  { key: 'profile-1', type: 'icon', iconName: 'profile-1' as ProfileCategoryIconName },
-  { key: 'profile-2', type: 'icon', iconName: 'profile-2' as ProfileCategoryIconName },
-  { key: 'profile-3', type: 'icon', iconName: 'profile-3' as ProfileCategoryIconName },
-  { key: 'profile-4', type: 'icon', iconName: 'profile-4' as ProfileCategoryIconName },
-  { key: 'profile-5', type: 'icon', iconName: 'profile-5' as ProfileCategoryIconName },
-  { key: 'profile-6', type: 'icon', iconName: 'profile-6' as ProfileCategoryIconName },
+  { key: 'profile-1', type: 'icon' as const, iconName: 'profile-1' as ProfileCategoryIconName },
+  { key: 'profile-2', type: 'icon' as const, iconName: 'profile-2' as ProfileCategoryIconName },
+  { key: 'profile-3', type: 'icon' as const, iconName: 'profile-3' as ProfileCategoryIconName },
+  { key: 'profile-4', type: 'icon' as const, iconName: 'profile-4' as ProfileCategoryIconName },
+  { key: 'profile-5', type: 'icon' as const, iconName: 'profile-5' as ProfileCategoryIconName },
+  { key: 'profile-6', type: 'icon' as const, iconName: 'profile-6' as ProfileCategoryIconName },
 ] as const;
 
 const RESULT_IMAGES = {
@@ -105,9 +108,10 @@ const RESULT_CARD_DATA: CardItem[] = [
 
 export default function SearchScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const [searchText, setSearchText] = useState('');
-  const [activeNav, setActiveNav] = useState('all');
+  const [activeNav, setActiveNav] = useState<(typeof NAV_ITEMS)[number]['key']>('profile-1');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
@@ -119,6 +123,9 @@ export default function SearchScreen() {
   const scaledColW = sx(COL_W);
   const scaledFullW = sx(BASE_WIDTH - SIDE_PAD * 2);
   const scaledStatBarW = sx(87);
+  const visibleNavItems = showResults
+    ? NAV_ITEMS.filter((item) => item.type === 'icon').slice(0, 2)
+    : NAV_ITEMS;
 
   const leftCards = RESULT_CARD_DATA.filter((c) => c.layout === 'left');
   const rightCards = RESULT_CARD_DATA.filter((c) => c.layout === 'right');
@@ -291,34 +298,62 @@ export default function SearchScreen() {
                 }}>
                   235 activities found in this location</Text>
               </View>
-              {/* <TouchableOpacity
-                onPress={() => router.back()}
-                activeOpacity={0.7}
-                style={styles.closeButton}
-              >
-              </TouchableOpacity> */}
-              <TouchableOpacity
-                onPress={() => router.back()}
-                activeOpacity={0.7}
-                style={styles.closeButton}
-              >
-                <Text style={styles.closeIcon}>✕</Text>
-              </TouchableOpacity>
-            </View> : <View style={styles.searchTitleRow}>
-              <Text style={styles.searchTitle}>Search</Text>
-              <TouchableOpacity
-                onPress={() => router.back()}
-                activeOpacity={0.7}
-                style={styles.closeButton}
-              >
-                <Text style={styles.closeIcon}>✕</Text>
-              </TouchableOpacity>
-            </View>
+              <View style={styles.headerActionsRow}>
+                {showResults ? (
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    style={styles.headerEditButton}
+                  >
+                    <Svg width={24} height={24} viewBox="0 0 40 40" fill="none">
+                      <Path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M27.2075 9.25993L26.2132 10.2543L29.7487 13.7898L30.7431 12.7955C31.1702 12.3683 31.1702 11.6758 30.7431 11.2487L28.7543 9.25993C28.3272 8.83279 27.6347 8.83279 27.2075 9.25993ZM9.69566 26.7718L25.3293 11.1382L28.8648 14.6737L13.2312 30.3073C13.0517 30.4868 12.8153 30.5983 12.5627 30.6226L9.04121 30.9618L9.38035 27.4403C9.40469 27.1876 9.51616 26.9513 9.69566 26.7718ZM8.81178 25.8879C8.42713 26.2726 8.18825 26.779 8.13611 27.3205L7.74246 31.408C7.69536 31.897 8.10597 32.3076 8.595 32.2605L12.6825 31.8669C13.224 31.8147 13.7304 31.5759 14.1151 31.1912L31.6269 13.6793C32.5422 12.7641 32.5422 11.2801 31.6269 10.3648L29.6382 8.37604C28.7229 7.46075 27.2389 7.46075 26.3236 8.37604L8.81178 25.8879ZM12.513 28.3739L25.3845 15.5024C25.6286 15.2583 25.6286 14.8626 25.3845 14.6185C25.1405 14.3744 24.7447 14.3744 24.5007 14.6185L11.6291 27.49C11.385 27.7341 11.385 28.1298 11.6291 28.3739C11.8732 28.618 12.2689 28.618 12.513 28.3739Z"
+                        fill="#007AFF"
+                      />
+                    </Svg>
+                  </TouchableOpacity>) : null}
+                <TouchableOpacity
+                  onPress={() => router.back()}
+                  activeOpacity={0.7}
+                  style={styles.closeButton}
+                >
+                  <Text style={styles.closeIcon}>✕</Text>
+                </TouchableOpacity>
+              </View>
+            </View> :
+
+
+              <View style={styles.searchTitleRow}>
+                <Text style={styles.searchTitle}>Search</Text>
+                <View style={styles.headerActionsRow}>
+                  {/* <TouchableOpacity
+                    activeOpacity={0.7}
+                    style={styles.headerEditButton}
+                  >
+                    <Svg width={24} height={24} viewBox="0 0 40 40" fill="none">
+                      <Path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M27.2075 9.25993L26.2132 10.2543L29.7487 13.7898L30.7431 12.7955C31.1702 12.3683 31.1702 11.6758 30.7431 11.2487L28.7543 9.25993C28.3272 8.83279 27.6347 8.83279 27.2075 9.25993ZM9.69566 26.7718L25.3293 11.1382L28.8648 14.6737L13.2312 30.3073C13.0517 30.4868 12.8153 30.5983 12.5627 30.6226L9.04121 30.9618L9.38035 27.4403C9.40469 27.1876 9.51616 26.9513 9.69566 26.7718ZM8.81178 25.8879C8.42713 26.2726 8.18825 26.779 8.13611 27.3205L7.74246 31.408C7.69536 31.897 8.10597 32.3076 8.595 32.2605L12.6825 31.8669C13.224 31.8147 13.7304 31.5759 14.1151 31.1912L31.6269 13.6793C32.5422 12.7641 32.5422 11.2801 31.6269 10.3648L29.6382 8.37604C28.7229 7.46075 27.2389 7.46075 26.3236 8.37604L8.81178 25.8879ZM12.513 28.3739L25.3845 15.5024C25.6286 15.2583 25.6286 14.8626 25.3845 14.6185C25.1405 14.3744 24.7447 14.3744 24.5007 14.6185L11.6291 27.49C11.385 27.7341 11.385 28.1298 11.6291 28.3739C11.8732 28.618 12.2689 28.618 12.513 28.3739Z"
+                        fill="#007AFF"
+                      />
+                    </Svg>
+                  </TouchableOpacity> */}
+                  <TouchableOpacity
+                    onPress={() => router.back()}
+                    activeOpacity={0.7}
+                    style={styles.closeButton}
+                  >
+                    <Text style={styles.closeIcon}>✕</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             }
 
 
             <View style={styles.navRow}>
-              {NAV_ITEMS.map((item) => {
+              {visibleNavItems.map((item) => {
                 const isActive = item.key === activeNav;
                 return (
                   <TouchableOpacity
@@ -326,17 +361,20 @@ export default function SearchScreen() {
                     style={[
                       styles.navButton,
                       item.type === 'plus' && styles.navButtonPlus,
-                      item.type !== 'plus' && isActive && styles.navButtonActive,
+                      // isActive && styles.navButtonActive,
                     ]}
                     activeOpacity={0.8}
-                    onPress={() => item.type !== 'plus' && setActiveNav(item.key)}
+                    onPress={() => {
+                      if (item.type !== 'plus') {
+                        setActiveNav(item.key);
+                      }
+                    }}
                   >
                     {item.type === 'plus' ? (
                       <Text style={styles.plusText}>+</Text>
-                    ) : null}
-                    {item.type === 'icon' ? (
+                    ) : (
                       <ProfileCategoryIcon name={item.iconName} width={18} height={18} />
-                    ) : null}
+                    )}
                   </TouchableOpacity>
                 );
               })}
@@ -347,7 +385,7 @@ export default function SearchScreen() {
           </View>
 
           {!showResults ? (
-            <View style={styles.resultsFeedWrap}>
+            <View style={styles.recentFeedWrap}>
               <View style={styles.recentSection}>
                 <View style={{ height: 20 }}></View>
                 <Text style={styles.recentTitle}>Recent</Text>
@@ -372,7 +410,9 @@ export default function SearchScreen() {
 
             </View>
           ) : (
+
             <View style={styles.resultsFeedWrap}>
+              <Text style={styles.resultsTitle}>Results</Text>
               {fullCards[0] ? renderCard(fullCards[0]) : null}
               <View style={styles.masonryContainer}>
                 <View style={styles.masonryCol}>
@@ -384,7 +424,7 @@ export default function SearchScreen() {
               </View>
               {fullCards[1] ? renderCard(fullCards[1]) : null}
               {fullCards[2] ? renderCard(fullCards[2]) : null}
-              <View style={styles.bottomSpacer} />
+              <View style={[styles.bottomSpacer, styles.bottomSpacerWithBar]} />
 
             </View>
 
@@ -394,18 +434,68 @@ export default function SearchScreen() {
 
 
         {/* Search Input at bottom */}
-        <View style={styles.searchInputContainer}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search location or activity..."
-            placeholderTextColor="#838385"
-            value={searchText}
-            onChangeText={setSearchText}
-            returnKeyType="search"
-            onSubmitEditing={() => setShowResults(true)}
-          />
-        </View>
+        {!showResults ? (
+          <View style={styles.searchInputContainer}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search location or activity..."
+              placeholderTextColor="#838385"
+              value={searchText}
+              onChangeText={setSearchText}
+              returnKeyType="search"
+              onSubmitEditing={() => setShowResults(true)}
+            />
+          </View>) : null}
       </KeyboardAvoidingView>
+
+      {showResults ? (
+        <>
+          <TouchableOpacity
+            style={[styles.actionBtn, { bottom: 82 + insets.bottom }]}
+            activeOpacity={0.7}
+            onPress={() => router.back()}
+          >
+            <Svg width={18} height={18} viewBox="0 0 18 18" fill="none">
+              <Path
+                d="M2 2L16 16M16 2L2 16"
+                stroke="#1F1F1F"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+              />
+            </Svg>
+          </TouchableOpacity>
+
+          <View
+            style={[
+              styles.resultsBottomBar,
+              {
+                height: 80 + insets.bottom,
+                paddingBottom: Math.max(12, insets.bottom),
+              },
+            ]}
+          >
+            <View style={styles.resultsBottomBarRow}>
+              <TouchableOpacity style={styles.resultsTabBtn} activeOpacity={0.8} onPress={() => router.replace('/(tabs)/explore')}>
+                <GridIcon width={26} height={26} color="#FFFFFF" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.resultsTabBtn} activeOpacity={0.8} onPress={() => router.push('/create-modal')}>
+                <PlusIcon width={26} height={26} color="#FFFFFF" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.resultsTabBtn} activeOpacity={0.8} onPress={() => router.replace('/(tabs)/activity')}>
+                <DocumentStackIcon width={23} height={26} color="#F2F2F2" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.resultsTabBtn} activeOpacity={0.8} onPress={() => router.replace('/(tabs)/profile')}>
+                <View style={styles.resultsProfileTab}>
+                  <Image
+                    source={require('../assets/images/feed/profile_photo1.png')}
+                    style={styles.resultsProfileImage}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </>
+      ) : null}
     </View>
   );
 }
@@ -582,6 +672,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  headerActionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  headerEditButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   closeIcon: {
     fontSize: 18,
     color: '#282828',
@@ -605,7 +707,6 @@ const styles = StyleSheet.create({
 
   actionBtn: {
     position: 'absolute',
-    bottom: 40,
     left: '50%',
     marginLeft: -30,
     width: 60,
@@ -614,6 +715,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#CFD0D1',
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 50,
+    elevation: 8,
   },
 
 
@@ -638,6 +741,7 @@ const styles = StyleSheet.create({
   },
   recentSection: {
     marginTop: 8,
+    marginLeft: 10
   },
   recentTitle: {
     fontFamily: 'Inter',
@@ -686,7 +790,8 @@ const styles = StyleSheet.create({
     marginTop: 0,
     paddingHorizontal: 8,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
+    gap: 8,
   },
   navButton: {
     width: 44,
@@ -737,10 +842,26 @@ const styles = StyleSheet.create({
   },
   resultsTitle: {
     fontFamily: 'Inter',
-    fontWeight: '600',
+    fontWeight: '700',
     fontSize: 16,
-    color: '#282828',
-    marginTop: 8,
+    color: 'rgba(31, 31, 31, 1)',
+    marginTop: 12,
+    marginLeft: 4,
+    marginBottom: 8,
+    paddingHorizontal: 20,
+
+  },
+  recentFeedWrap: {
+    // paddingHorizontal: SIDE_PAD,
+    top: -70,
+    zIndex: 3,
+    paddingTop: -100,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    marginHorizontal: -20,
+    backgroundColor: 'rgba(160, 160, 160, 1)',
+    // marginRight: 10
+    paddingHorizontal: 20,
   },
   resultsFeedWrap: {
     // paddingHorizontal: SIDE_PAD,
@@ -751,7 +872,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30,
     marginHorizontal: -20,
     backgroundColor: 'rgba(160, 160, 160, 1)',
-    paddingHorizontal: 20,
+    // marginRight: 10
+    // paddingHorizontal: 20,
   },
 
   cardWrapper: {
@@ -913,5 +1035,44 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 100,
+  },
+  bottomSpacerWithBar: {
+    height: 180,
+  },
+  resultsBottomBar: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#282828',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderTopWidth: 0,
+    paddingTop: 12,
+    zIndex: 30,
+  },
+  resultsBottomBarRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    paddingHorizontal: 12,
+  },
+  resultsTabBtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 44,
+    height: 44,
+  },
+  resultsProfileTab: {
+    width: 29,
+    height: 29,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  resultsProfileImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 8,
   },
 });

@@ -7,21 +7,17 @@ import {
   TextInput,
   Switch,
   Image,
-  Dimensions,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { SearchIcon } from '../src/components/icons/SearchIcon';
-
-const { width: SCREEN_W } = Dimensions.get('window');
+import { CloseIcon } from '../src/components/icons';
 
 export default function NewCollectionModalScreen() {
   const router = useRouter();
   const [name, setName] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
-  const [isCollaborative, setIsCollaborative] = useState(false);
 
   return (
     <View style={styles.backdrop}>
@@ -35,9 +31,15 @@ export default function NewCollectionModalScreen() {
       <TouchableOpacity style={styles.dismissArea2} activeOpacity={1} onPress={() => router.back()} />
 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardView}>
-        <SafeAreaView style={styles.sheet} edges={['bottom']}>
+        <SafeAreaView style={styles.sheet} edges={['top', 'bottom']}>
           <View style={styles.handle} />
-          <Text style={styles.sheetTitle}>New Collection</Text>
+          <View style={styles.sheetHeader}>
+            <View style={styles.sheetHeaderSpacer} />
+            <Text style={styles.sheetTitle}>New Collection</Text>
+            <TouchableOpacity style={styles.closeButton} activeOpacity={0.7} onPress={() => router.back()}>
+              <CloseIcon />
+            </TouchableOpacity>
+          </View>
 
           {/* Name field */}
           <View style={styles.field}>
@@ -114,7 +116,10 @@ const styles = StyleSheet.create({
   keyboardView: { justifyContent: 'flex-end' },
   sheet: { backgroundColor: '#282828', borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 20 },
   handle: { width: 36, height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.3)', alignSelf: 'center', marginBottom: 16 },
-  sheetTitle: { fontFamily: 'Inter', fontSize: 20, fontWeight: '700', color: '#FFFFFF', textAlign: 'center', marginBottom: 24 },
+  sheetHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 24 },
+  sheetHeaderSpacer: { width: 36, height: 36 },
+  sheetTitle: { flex: 1, fontFamily: 'Inter', fontSize: 20, fontWeight: '700', color: '#FFFFFF', textAlign: 'center' },
+  closeButton: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
   field: { marginBottom: 20 },
   label: { fontFamily: 'Inter', fontSize: 13, fontWeight: '600', color: '#A0A0A0', marginBottom: 8, textTransform: 'uppercase' },
   input: { backgroundColor: '#3A3A3A', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, fontFamily: 'Inter', fontSize: 16, color: '#FFFFFF' },

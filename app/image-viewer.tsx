@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-  StatusBar,
   Text,
 } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -17,8 +16,6 @@ export default function ImageViewerScreen() {
 
   return (
     <View style={styles.screen}>
-      <StatusBar barStyle="light-content" />
-
       {/* Full-screen rounded image */}
       <View style={styles.imageContainer}>
         <Image

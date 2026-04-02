@@ -20,16 +20,33 @@ type CollectionItem = {
   id: string;
   title: string;
   count: number;
+  starred?: boolean;
   privacy: 'Shared library' | 'Private';
   images: [any, any, any];
   collaborators?: any[];
 };
+
+const STAR_PATH_D = 'M7.62233 0.375792C7.36776 -0.125264 6.63224 -0.125264 6.37767 0.375792L4.75218 3.57516C4.6511 3.77413 4.45569 3.91204 4.22965 3.94395L0.59496 4.45699C0.0257289 4.53734 -0.201562 5.21686 0.210338 5.60688L2.84042 8.09724C3.00399 8.25212 3.07863 8.47526 3.04001 8.69395L2.41913 12.2104C2.3219 12.7611 2.91696 13.1811 3.42609 12.9211L6.67705 11.2608C6.87923 11.1576 7.12077 11.1576 7.32295 11.2608L10.5739 12.9211C11.083 13.1811 11.6781 12.7611 11.5809 12.2104L10.96 8.69395C10.9214 8.47526 10.996 8.25212 11.1596 8.09724L13.7897 5.60688C14.2016 5.21686 13.9743 4.53734 13.405 4.45699L9.77035 3.94395C9.54431 3.91204 9.3489 3.77413 9.24782 3.57516L7.62233 0.375792Z';
+
+function CollectionStarIcon({ filled }: { filled: boolean }) {
+  return (
+    <Svg width={14} height={13} viewBox="0 0 14 13" fill="none" style={styles.titleStarIcon}>
+      <Path
+        d={STAR_PATH_D}
+        fill={filled ? '#1F1F1F' : 'none'}
+        stroke="#1F1F1F"
+        strokeWidth={1}
+      />
+    </Svg>
+  );
+}
 
 const COLLECTIONS: CollectionItem[] = [
   {
     id: '1',
     title: 'Skitouring Switzerland',
     count: 11,
+    starred: true,
     privacy: 'Shared library',
     images: [
       require('../assets/images/feed/collection_preview_2.png'),
@@ -47,6 +64,7 @@ const COLLECTIONS: CollectionItem[] = [
     id: '2',
     title: 'Solo Rides',
     count: 6,
+    starred: false,
     privacy: 'Private',
     images: [
       require('../assets/images/feed/collection_preview_1.png'),
@@ -58,6 +76,7 @@ const COLLECTIONS: CollectionItem[] = [
     id: '3',
     title: 'Zurich',
     count: 88,
+    starred: true,
     privacy: 'Shared library',
     images: [
       require('../assets/images/feed/collection_preview_2.png'),
@@ -75,6 +94,7 @@ const COLLECTIONS: CollectionItem[] = [
     id: '4',
     title: 'Skitouring Dolomites',
     count: 11,
+    starred: false,
     privacy: 'Private',
     images: [
       require('../assets/images/feed/collection_preview_1.png'),
@@ -86,14 +106,21 @@ const COLLECTIONS: CollectionItem[] = [
 
 export default function SavedCollectionsScreen() {
   const router = useRouter();
-  const { width: screenWidth } = useWindowDimensions();
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const [activeTab, setActiveTab] = useState<TabMode>('collections');
   const [showMenu, setShowMenu] = useState(false);
+  const [activeCardMenu, setActiveCardMenu] = useState<{ id: string; x: number; y: number } | null>(null);
   const responsiveSvgWidth = Math.min(screenWidth - 34, 350);
   const responsiveSvgHeight = (responsiveSvgWidth * 40) / 350;
+  const cardMenuLeft = activeCardMenu
+    ? Math.min(Math.max(17, activeCardMenu.x - 196), screenWidth - 224 - 17)
+    : 17;
+  const cardMenuTop = activeCardMenu
+    ? Math.min(Math.max(110, activeCardMenu.y + 8), screenHeight - 148 - 24)
+    : 110;
 
   return (
-    <SafeAreaView style={styles.screen} edges={['top']}>
+    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
       <View style={styles.topActionsRow}>
         <TouchableOpacity style={styles.iconButton} activeOpacity={0.8} onPress={() => setShowMenu((prev) => !prev)}>
           <Text style={styles.moreText}>⋯</Text>
@@ -175,6 +202,43 @@ export default function SavedCollectionsScreen() {
           </View>
         </>
       )}
+
+      {activeCardMenu && (
+        <>
+          <Pressable style={styles.menuBackdrop} onPress={() => setActiveCardMenu(null)} />
+          <View style={[styles.cardPopupMenu, { left: cardMenuLeft, top: cardMenuTop }]}>
+            <TouchableOpacity style={styles.menuItem} activeOpacity={0.8} onPress={() => setActiveCardMenu(null)}>
+              <Text style={styles.menuText}>Rename</Text>
+              <Svg width={20} height={20} viewBox="0 0 20 20" fill="none">
+                <Path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M15.8446 1.27803L15.0353 2.08728L17.9127 4.96466L18.722 4.15541C19.0696 3.80779 19.0696 3.24418 18.722 2.89655L17.1034 1.27803C16.7558 0.930403 16.1922 0.930403 15.8446 1.27803ZM1.59261 15.53L14.316 2.80662L17.1934 5.68401L10.8317 12.0457L4.47 18.4074C4.32391 18.5535 4.13155 18.6442 3.9259 18.664L1.05999 18.94L1.336 16.0741C1.3558 15.8684 1.44652 15.6761 1.59261 15.53ZM0.873267 14.8107C0.560219 15.1237 0.365812 15.5359 0.323372 15.9766L0.00300142 19.3032C-0.0353281 19.7012 0.298848 20.0353 0.696843 19.997L4.02342 19.6766C4.4641 19.6342 4.8763 19.4398 5.18934 19.1267L19.4413 4.87476C20.1862 4.12985 20.1862 2.92212 19.4413 2.17721L17.8228 0.55868C17.0779 -0.186227 15.8701 -0.186227 15.1252 0.55868L0.873267 14.8107Z"
+                  fill="#FCFCFC"
+                />
+              </Svg>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.menuItem} activeOpacity={0.8} onPress={() => setActiveCardMenu(null)}>
+              <Text style={styles.menuText}>Collaborate</Text>
+              <Svg width={20} height={20} viewBox="0 0 19 20" fill="none">
+                <Path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M10 0.909091C4.97923 0.909091 0.909091 4.97923 0.909091 10C0.909091 12.047 1.58562 13.9359 2.72727 15.4554V15C2.72727 12.7407 4.55884 10.9091 6.81818 10.9091H9.54545C10.6134 10.9091 11.5858 11.3183 12.3143 11.9885C12.5597 11.8773 12.8281 11.8182 13.1026 11.8182H15.9938C16.9718 11.8182 17.9136 12.1684 18.6518 12.7993C18.9369 11.9175 19.0909 10.9767 19.0909 10C19.0909 4.97923 15.0208 0.909091 10 0.909091ZM18.2996 13.7151L18.2437 13.6592C17.6469 13.0625 16.8376 12.7273 15.9938 12.7273H13.1026C13.0529 12.7273 13.0035 12.731 12.9548 12.7383C13.3855 13.3861 13.6364 14.1638 13.6364 15V18.3345C15.7072 17.4297 17.3758 15.7757 18.2996 13.7151ZM10 19.0909C7.52232 19.0909 5.27614 18.0997 3.63636 16.4922V15C3.63636 13.2427 5.06091 11.8182 6.81818 11.8182H9.54545C11.3027 11.8182 12.7273 13.2427 12.7273 15V18.6747C11.8663 18.9451 10.9502 19.0909 10 19.0909ZM0 10C0 4.47715 4.47715 0 10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10ZM8.63636 3.63636H7.72727C6.72312 3.63636 5.90909 4.45039 5.90909 5.45455V7.27273C5.90909 8.27688 6.72312 9.09091 7.72727 9.09091H8.63636C9.64052 9.09091 10.4545 8.27688 10.4545 7.27273V5.45455C10.4545 4.45039 9.64052 3.63636 8.63636 3.63636ZM7.72727 2.72727C6.22104 2.72727 5 3.94831 5 5.45455V7.27273C5 8.77896 6.22104 10 7.72727 10H8.63636C10.1426 10 11.3636 8.77896 11.3636 7.27273V5.45455C11.3636 3.94831 10.1426 2.72727 8.63636 2.72727H7.72727ZM15.9091 8.18182V9.09091C15.9091 9.59299 15.5021 10 15 10C14.4979 10 14.0909 9.59299 14.0909 9.09091V8.18182C14.0909 7.67974 14.4979 7.27273 15 7.27273C15.5021 7.27273 15.9091 7.67974 15.9091 8.18182ZM13.1818 8.18182C13.1818 7.17767 13.9958 6.36364 15 6.36364C16.0042 6.36364 16.8182 7.17766 16.8182 8.18182V9.09091C16.8182 10.0951 16.0042 10.9091 15 10.9091C13.9958 10.9091 13.1818 10.0951 13.1818 9.09091V8.18182Z"
+                  fill="#F2F2F2"
+                />
+              </Svg>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.menuItem} activeOpacity={0.8} onPress={() => setActiveCardMenu(null)}>
+              <Text style={[styles.menuText, { color: "red" }]}>Delete</Text>
+
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
+
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
 
         <View style={styles.svgRowWrapper}>
@@ -208,8 +272,21 @@ export default function SavedCollectionsScreen() {
 
                 <View style={styles.cardRightInfo}>
                   <View style={styles.titleRow}>
-                    <Text style={styles.cardTitle}>{item.title} {item.count} elements</Text>
-                    <Text style={styles.moreText}>⋯</Text>
+                    <Text style={styles.cardTitle}>{item.title} {item.count}</Text>
+                    <CollectionStarIcon filled={Boolean(item.starred)} />
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={(event) => {
+                        setShowMenu(false);
+                        setActiveCardMenu({
+                          id: item.id,
+                          x: event.nativeEvent.pageX,
+                          y: event.nativeEvent.pageY,
+                        });
+                      }}
+                    >
+                      <Text style={styles.moreText}>⋯</Text>
+                    </TouchableOpacity>
                   </View>
 
                   <View style={styles.footerRow}>
@@ -220,7 +297,17 @@ export default function SavedCollectionsScreen() {
                       <Path d="M4.71801 12.7334C3.74426 12.7334 2.81009 12.4584 2.08967 11.9584C1.39301 11.4667 0.989258 10.7584 0.989258 10.0084C0.989258 9.26671 1.39301 8.55837 2.08967 8.0667C3.03967 7.40004 4.37759 7.14171 5.66801 7.38338C5.99259 7.44171 6.20634 7.76671 6.15093 8.10837C6.09551 8.45004 5.78676 8.68337 5.46218 8.61671C4.48051 8.43337 3.44343 8.62504 2.74676 9.10837C2.37468 9.3667 2.17676 9.68337 2.17676 10.0084C2.17676 10.3334 2.38259 10.6584 2.74676 10.9167C3.43551 11.4 4.46467 11.5917 5.43842 11.4167C5.76301 11.3584 6.07176 11.5917 6.12718 11.925C6.18259 12.2667 5.96884 12.5917 5.64426 12.65C5.33551 12.7084 5.02676 12.7334 4.71801 12.7334Z" fill="#007AFF" />
                       <Path d="M9.4996 12.8167C9.47585 12.8167 9.46001 12.8167 9.43626 12.8167H9.39668C7.90043 12.7667 6.78418 11.55 6.78418 10.05C6.78418 8.51669 7.97168 7.27502 9.42043 7.27502C10.8692 7.27502 12.0567 8.52503 12.0567 10.05C12.0488 11.5584 10.9325 12.775 9.50751 12.825C9.50751 12.8167 9.50751 12.8167 9.4996 12.8167ZM9.42043 8.5167C8.62085 8.5167 7.97168 9.20003 7.97168 10.0417C7.97168 10.8667 8.58126 11.5334 9.36501 11.5667C9.37293 11.5584 9.43626 11.5584 9.50751 11.5667C10.2754 11.525 10.8692 10.8584 10.8771 10.0417C10.8771 9.20836 10.2279 8.5167 9.42043 8.5167Z" fill="#007AFF" />
                       <Path d="M9.49936 18.9666C8.54936 18.9666 7.59936 18.7083 6.86311 18.1833C6.16644 17.6916 5.7627 16.9916 5.7627 16.2416C5.7627 15.4999 6.15853 14.7833 6.86311 14.2916C8.34353 13.2583 10.6631 13.2583 12.1356 14.2916C12.8323 14.7833 13.236 15.4833 13.236 16.2333C13.236 16.9749 12.8402 17.6916 12.1356 18.1833C11.3994 18.6999 10.4494 18.9666 9.49936 18.9666ZM7.5202 15.3416C7.14811 15.5999 6.9502 15.9249 6.9502 16.2499C6.9502 16.5749 7.15603 16.8916 7.5202 17.1499C8.58895 17.9083 10.4019 17.9083 11.4706 17.1499C11.8427 16.8916 12.0406 16.5666 12.0406 16.2416C12.0406 15.9166 11.8348 15.5999 11.4706 15.3416C10.4098 14.5833 8.59686 14.5916 7.5202 15.3416Z" fill="#007AFF" />
-                    </Svg>) : <View />}
+                    </Svg>) :
+                      <Svg width={17} height={18} viewBox="0 0 17 18" fill="none" style={styles.lockPill}>
+                        <Path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M2.56579 6.23864C2.56579 3.35797 5.1107 1.02273 8.25 1.02273C11.3893 1.02273 13.9342 3.35797 13.9342 6.23864V7.98521C13.8648 7.97995 13.7946 7.97727 13.7237 7.97727H2.77632C2.70542 7.97727 2.63521 7.97995 2.56579 7.98521V6.23864ZM1.72368 8.18747V6.23864C1.72368 2.9312 4.64562 0.25 8.25 0.25C11.8544 0.25 14.7763 2.9312 14.7763 6.23864V8.18747C15.646 8.55375 16.25 9.35988 16.25 10.2955V14.9318C16.25 16.2121 15.1189 17.25 13.7237 17.25H2.77632C1.38107 17.25 0.25 16.2121 0.25 14.9318V10.2955C0.25 9.35988 0.853987 8.55375 1.72368 8.18747ZM15.4079 10.2955C15.4079 9.44192 14.6538 8.75 13.7237 8.75H2.77632C1.84615 8.75 1.09211 9.44192 1.09211 10.2955V14.9318C1.09211 15.7853 1.84615 16.4773 2.77632 16.4773H13.7237C14.6538 16.4773 15.4079 15.7853 15.4079 14.9318V10.2955ZM8.67105 13.3864V11.8409C8.67105 11.6275 8.48254 11.4545 8.25 11.4545C8.01745 11.4545 7.82894 11.6275 7.82894 11.8409V13.3864C7.82894 13.5997 8.01745 13.7727 8.25 13.7727C8.48254 13.7727 8.67105 13.5997 8.67105 13.3864ZM9.51316 11.8409C9.51316 11.2008 8.94762 10.6818 8.25 10.6818C7.55237 10.6818 6.98684 11.2008 6.98684 11.8409V13.3864C6.98684 14.0265 7.55237 14.5455 8.25 14.5455C8.94762 14.5455 9.51316 14.0265 9.51316 13.3864V11.8409Z"
+                          fill="#007AFF"
+                          stroke="#007AFF"
+                          strokeWidth={0.5}
+                        />
+                      </Svg>}
                     <Text style={styles.privacyText}>{item.privacy}</Text>
                     {item.collaborators && item.collaborators.length > 0 ? (
                       <View style={styles.avatarsRow}>
@@ -233,9 +320,7 @@ export default function SavedCollectionsScreen() {
                         ))}
                       </View>
                     ) : (
-                      <View style={styles.lockPill}>
-                        <Text style={styles.lockText}>🔒</Text>
-                      </View>
+                      null
                     )}
                   </View>
                 </View>
@@ -349,6 +434,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     zIndex: 9,
   },
+  cardPopupMenu: {
+    position: 'absolute',
+    width: 224,
+    height: 148,
+    borderRadius: 30,
+    backgroundColor: '#282828',
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    justifyContent: 'space-between',
+    zIndex: 10,
+  },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -434,6 +530,9 @@ const styles = StyleSheet.create({
     color: '#000000',
     fontSize: 22,
     lineHeight: 22,
+  },
+  titleStarIcon: {
+    marginRight: 6,
   },
   footerRow: {
     flexDirection: 'row',

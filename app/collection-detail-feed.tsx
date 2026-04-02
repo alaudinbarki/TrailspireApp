@@ -12,7 +12,6 @@ import {
 import type { DimensionValue } from 'react-native';
 import { useRouter, Stack } from 'expo-router';
 import Svg, { Path } from 'react-native-svg';
-import { Ionicons } from '@expo/vector-icons';
 import { ProfileCategoryIcon } from '../src/components/icons/ProfileCategoryIcon';
 import { TerrainProfileIcon } from '../src/components/icons/TerrainProfileIcon';
 
@@ -262,14 +261,30 @@ export default function CollectionDetailFeedScreen() {
             activeOpacity={0.7}
             onPress={() => router.push('/edit-collection')}
           >
-            <Ionicons name="create-outline" size={20} color="#282828" />
+            <Svg width={40} height={40} viewBox="0 0 40 40" fill="none">
+              <Path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M27.207 9.25993L26.2127 10.2543L29.7482 13.7898L30.7426 12.7955C31.1697 12.3683 31.1697 11.6758 30.7426 11.2487L28.7538 9.25993C28.3267 8.83279 27.6342 8.83279 27.207 9.25993ZM9.69518 26.7718L25.3288 11.1382L28.8643 14.6737L13.2307 30.3073C13.0512 30.4868 12.8149 30.5983 12.5622 30.6226L9.04073 30.9618L9.37986 27.4403C9.4042 27.1876 9.51567 26.9513 9.69518 26.7718ZM8.81129 25.8879C8.42664 26.2726 8.18777 26.779 8.13562 27.3205L7.74197 31.408C7.69487 31.897 8.10548 32.3076 8.59452 32.2605L12.682 31.8669C13.2235 31.8147 13.7299 31.5759 14.1146 31.1912L31.6265 13.6793C32.5417 12.7641 32.5417 11.2801 31.6264 10.3648L29.6377 8.37604C28.7224 7.46075 27.2384 7.46075 26.3231 8.37604L8.81129 25.8879ZM12.5125 28.3739L25.384 15.5024C25.6281 15.2583 25.6281 14.8626 25.384 14.6185C25.14 14.3744 24.7442 14.3744 24.5002 14.6185L11.6286 27.49C11.3845 27.7341 11.3845 28.1298 11.6286 28.3739C11.8727 28.618 12.2684 28.618 12.5125 28.3739Z"
+                fill="#007AFF"
+              />
+            </Svg>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.headerIconBtn}
             activeOpacity={0.7}
             onPress={() => router.back()}
           >
-            <Ionicons name="close" size={22} color="#282828" />
+            <Svg width={40} height={40} viewBox="0 0 49 49" fill="none">
+              <Path
+                d="M31.1141 18.8423L18.972 30.9014C18.5571 31.3135 17.8691 31.3135 17.4542 30.9014C17.0393 30.4894 17.0393 29.8061 17.4542 29.394L29.5963 17.3349C30.0112 16.9229 30.6992 16.9229 31.1141 17.3349C31.529 17.747 31.529 18.4303 31.1141 18.8423Z"
+                fill="#1F1F1F"
+              />
+              <Path
+                d="M31.1141 30.9015C30.6992 31.3135 30.0112 31.3135 29.5963 30.9015L17.4542 18.8424C17.0393 18.4303 17.0393 17.747 17.4542 17.335C17.8691 16.9229 18.5571 16.9229 18.972 17.335L31.1141 29.3941C31.529 29.8061 31.529 30.4894 31.1141 30.9015Z"
+                fill="#1F1F1F"
+              />
+            </Svg>
           </TouchableOpacity>
         </View>
       </View>
@@ -418,7 +433,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: '#CFD0D1',
+    // backgroundColor: '#CFD0D1',
     alignItems: 'center',
     justifyContent: 'center',
   },

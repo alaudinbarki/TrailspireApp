@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function PhotoPreviewFlowScreen() {
     const router = useRouter();
     const [showSecond, setShowSecond] = useState(false);
 
     return (
-        <View style={styles.screen}>
+        <View style={styles.screen} >
             <Stack.Screen options={{ headerShown: false }} />
             <TouchableOpacity
                 style={styles.fullTapArea}

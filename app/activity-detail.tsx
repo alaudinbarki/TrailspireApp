@@ -6,18 +6,66 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  TextInput,
 } from 'react-native';
 import type { DimensionValue } from 'react-native';
 import { useRouter, Stack } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
+import { SearchIcon } from '../src/components/icons/SearchIcon';
 const ROUTE_ICON_W = 139;
 const ROUTE_ICON_H = 72;
 
 const DATA_PANEL_H = 82;
-const COL_W = 191;
+const COL_W = 200;
 const GAP = 6;
 const FULL_W = COL_W * 2 + GAP;
-const SIDE_PAD = 2;
+const SIDE_PAD = 0;
+
+interface CollectionOption {
+  id: number;
+  title: string;
+  count: number;
+  privacy: 'private' | 'shared';
+  image: any;
+}
+
+const COLLECTION_OPTIONS: CollectionOption[] = [
+  {
+    id: 1,
+    title: 'Skitouring Switzerland',
+    count: 29,
+    privacy: 'private',
+    image: require('../assets/images/feed/skitouring_cover.png'),
+  },
+  {
+    id: 2,
+    title: 'Utah Trails',
+    count: 9,
+    privacy: 'shared',
+    image: require('../assets/images/feed/collection_preview_1.png'),
+  },
+  {
+    id: 3,
+    title: 'Bikers',
+    count: 46,
+    privacy: 'private',
+    image: require('../assets/images/feed/bikers_cover.png'),
+  },
+  {
+    id: 4,
+    title: 'Norway ski trip',
+    count: 12,
+    privacy: 'private',
+    image: require('../assets/images/feed/norway_ski_cover.png'),
+  },
+];
+
+const CURRENT_COLLECTION = {
+  title: 'Profile',
+  privacy: 'private' as const,
+  image: require('../assets/images/feed/profile_photo1.png'),
+};
 
 function StatCurve() {
   return (
@@ -30,6 +78,34 @@ function StatCurve() {
         />
       </Svg>
     </View>
+  );
+}
+
+function LockMetaIcon() {
+  return (
+    <Svg width={16} height={18} viewBox="0 0 16 18" fill="none">
+      <Path
+        d="M4.53333 8V5.86667C4.53333 3.95542 6.08876 2.4 8 2.4C9.91124 2.4 11.4667 3.95542 11.4667 5.86667V8M5.6 17H10.4C12.6419 17 13.7629 17 14.4595 16.3035C15.156 15.6069 15.156 14.4859 15.156 12.244V12.2227C15.156 9.9808 15.156 8.85984 14.4595 8.16329C13.7629 7.46674 12.6419 7.46674 10.4 7.46674H5.6C3.3581 7.46674 2.23715 7.46674 1.54059 8.16329C0.844044 8.85984 0.844044 9.9808 0.844044 12.2227V12.244C0.844044 14.4859 0.844044 15.6069 1.54059 16.3035C2.23715 17 3.3581 17 5.6 17Z"
+        stroke="#6B6B6B"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
+
+function SharedMetaIcon() {
+  return (
+    <Svg width={16} height={17} viewBox="0 0 16 17" fill="none">
+      <Path
+        d="M11.7712 5.54492C13.1661 5.54492 14.297 4.41397 14.297 3.01905C14.297 1.62413 13.1661 0.493179 11.7712 0.493179C10.3762 0.493179 9.2453 1.62413 9.2453 3.01905C9.2453 4.41397 10.3762 5.54492 11.7712 5.54492ZM4.22744 5.54492C5.62236 5.54492 6.75331 4.41397 6.75331 3.01905C6.75331 1.62413 5.62236 0.493179 4.22744 0.493179C2.83252 0.493179 1.70157 1.62413 1.70157 3.01905C1.70157 4.41397 2.83252 5.54492 4.22744 5.54492ZM11.7712 16.4932C13.1661 16.4932 14.297 15.3622 14.297 13.9673C14.297 12.5724 13.1661 11.4414 11.7712 11.4414C10.3762 11.4414 9.2453 12.5724 9.2453 13.9673C9.2453 15.3622 10.3762 16.4932 11.7712 16.4932ZM4.22744 16.4932C5.62236 16.4932 6.75331 15.3622 6.75331 13.9673C6.75331 12.5724 5.62236 11.4414 4.22744 11.4414C2.83252 11.4414 1.70157 12.5724 1.70157 13.9673C1.70157 15.3622 2.83252 16.4932 4.22744 16.4932ZM5.91156 4.59772L10.0844 11.4415M10.0884 4.59772L5.91562 11.4415"
+        stroke="#6B6B6B"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
   );
 }
 
@@ -227,12 +303,19 @@ function ActivityCard({ card, width }: { card: CardData; width: number }) {
 
 export default function ActivityDetailScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
+  const [isCollectionSheetOpen, setIsCollectionSheetOpen] = useState(false);
+  const [selectedCollectionId, setSelectedCollectionId] = useState(2);
+  const [collectionSearch, setCollectionSearch] = useState('');
   const relatedCards = [...RELATED_LEFT, ...RELATED_RIGHT];
   const fullCards = relatedCards.filter((_, i) => i % 5 === 0);
   const gridCards = relatedCards.filter((_, i) => i % 5 !== 0);
   const leftCards = gridCards.filter((_, i) => i % 2 === 0);
   const rightCards = gridCards.filter((_, i) => i % 2 === 1);
+  const filteredCollections = COLLECTION_OPTIONS.filter((collection) =>
+    collection.title.toLowerCase().includes(collectionSearch.trim().toLowerCase())
+  );
 
   return (
     <View style={styles.screen}>
@@ -346,7 +429,7 @@ export default function ActivityDetailScreen() {
               </TouchableOpacity>
               <TouchableOpacity style={styles.morePopupItem} activeOpacity={0.7} onPress={() => setIsMoreMenuOpen(false)}>
                 <View style={styles.morePopupItemContent}>
-                  <Text style={styles.morePopupText}>Report</Text>
+                  <Text style={[styles.morePopupText, { color: "red" }]}>Report</Text>
                   <View style={styles.morePopupIconSpacer} />
                 </View>
               </TouchableOpacity>
@@ -377,7 +460,11 @@ export default function ActivityDetailScreen() {
             </Svg>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.primaryRectBtn} activeOpacity={0.7} onPress={() => { }}>
+          <TouchableOpacity
+            style={styles.primaryRectBtn}
+            activeOpacity={0.7}
+            onPress={() => setIsCollectionSheetOpen(true)}
+          >
             <View style={styles.primaryPlusIcon}>
               <View style={styles.primaryPlusH} />
               <View style={styles.primaryPlusV} />
@@ -559,7 +646,7 @@ export default function ActivityDetailScreen() {
 
       {/* Bottom close button */}
       <TouchableOpacity
-        style={styles.actionBtn}
+        style={[styles.actionBtn, { bottom: 40 + insets.bottom }]}
         activeOpacity={0.7}
         onPress={() => router.back()}
       >
@@ -572,6 +659,124 @@ export default function ActivityDetailScreen() {
           />
         </Svg>
       </TouchableOpacity>
+
+      {isCollectionSheetOpen && (
+        <View style={styles.collectionSheetOverlay}>
+          <TouchableOpacity
+            style={styles.collectionSheetDismiss}
+            activeOpacity={1}
+            onPress={() => setIsCollectionSheetOpen(false)}
+          />
+
+          <View style={styles.collectionSheetWrap}>
+            <View style={styles.collectionSheetTopBar}>
+              <Text style={styles.collectionSheetTopTitle}>Activity Data</Text>
+              <Text style={styles.collectionSheetTopSub}>11:18 PM · May 31, 2026 · Oslo, Norway</Text>
+            </View>
+
+            <Image
+              source={require('../assets/images/feed/figma_card_7.png')}
+              style={styles.collectionSheetHero}
+              resizeMode="cover"
+            />
+
+            <View style={styles.collectionSheetPanel}>
+              {/* <View style={styles.collectionSheetHandle} /> */}
+
+              <View style={styles.collectionSheetHeaderRow}>
+                <Text style={styles.collectionSheetTitle}>Your Collections</Text>
+                <TouchableOpacity
+                  style={styles.collectionSheetCloseBtn}
+                  activeOpacity={0.7}
+                  onPress={() => setIsCollectionSheetOpen(false)}
+                >
+                  <Svg width={18} height={18} viewBox="0 0 18 18" fill="none">
+                    <Path
+                      d="M2 2L16 16M16 2L2 16"
+                      stroke="#F2F2F2"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </Svg>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.collectionSheetCurrentRow}>
+                <Image source={CURRENT_COLLECTION.image} style={styles.collectionSheetCurrentThumb} />
+
+                <View style={styles.collectionSheetCurrentInfo}>
+                  <Text style={styles.collectionSheetCurrentTitle}>{CURRENT_COLLECTION.title}</Text>
+                  <View style={styles.collectionSheetMetaRow}>
+                    <LockMetaIcon />
+                    <Text style={styles.collectionSheetMetaText}>{CURRENT_COLLECTION.privacy}</Text>
+                  </View>
+                </View>
+
+                <View style={[styles.collectionSelectCircle, styles.collectionSelectCircleActive]}>
+                  <View style={styles.collectionSelectCircleInner} />
+                </View>
+              </View>
+
+              <View style={styles.collectionSheetSearchWrap}>
+                <SearchIcon width={16} height={16} color="#6B6B6B" />
+                <TextInput
+                  style={styles.collectionSheetSearchInput}
+                  placeholder="Search"
+                  placeholderTextColor="#6B6B6B"
+                  value={collectionSearch}
+                  onChangeText={setCollectionSearch}
+                />
+              </View>
+
+              <View style={styles.collectionSheetCollectionsHeader}>
+                <Text style={styles.collectionSheetListLabel}>Collections</Text>
+                <TouchableOpacity
+                  style={styles.collectionSheetNewBtn}
+                  activeOpacity={0.8}
+                  onPress={() => router.push('/new-collection-modal')}
+                >
+                  <Text style={styles.collectionSheetNewBtnText}>+ New</Text>
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView
+                style={styles.collectionSheetList}
+                contentContainerStyle={styles.collectionSheetListContent}
+                showsVerticalScrollIndicator={false}
+              >
+                {filteredCollections.map((collection) => {
+                  const isSelected = selectedCollectionId === collection.id;
+
+                  return (
+                    <TouchableOpacity
+                      key={collection.id}
+                      style={styles.collectionSheetItem}
+                      activeOpacity={0.8}
+                      onPress={() => setSelectedCollectionId(collection.id)}
+                    >
+                      <Image source={collection.image} style={styles.collectionSheetThumb} />
+
+                      <View style={styles.collectionSheetItemInfo}>
+                        <Text style={styles.collectionSheetItemTitle}>{collection.title}</Text>
+                        <View style={styles.collectionSheetMetaRow}>
+                          {collection.privacy === 'private' ? <LockMetaIcon /> : <SharedMetaIcon />}
+                          <Text style={styles.collectionSheetMetaText}>
+                            {collection.privacy}  -  {collection.count} elements
+                          </Text>
+                        </View>
+                      </View>
+
+                      <View style={[styles.collectionSelectCircle, isSelected && styles.collectionSelectCircleActive]}>
+                        {isSelected && <View style={styles.collectionSelectCircleInner} />}
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          </View>
+        </View>
+      )}
     </View >
   );
 }
@@ -583,11 +788,13 @@ const styles = StyleSheet.create({
   },
   scroll: {
     flex: 1,
+    // marginRight: -2
   },
   scrollContent: {
     paddingTop: 0,
-    paddingHorizontal: 0,
     paddingBottom: 100,
+    // paddingRight: -10,
+    // marginRight: -10
   },
 
 
@@ -632,8 +839,8 @@ const styles = StyleSheet.create({
     maxWidth: 389,
     height: 477,
     alignSelf: 'center',
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     overflow: 'hidden',
@@ -806,6 +1013,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
+    // marginBottom: ,
   },
   commentThreadWrap: {
     flexDirection: 'row',
@@ -955,6 +1163,241 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  collectionSheetOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 40,
+    justifyContent: 'flex-end',
+  },
+  collectionSheetDismiss: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.12)',
+  },
+  collectionSheetWrap: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#A0A0A0',
+  },
+  collectionSheetTopBar: {
+    width: 389,
+    height: 112.58,
+    alignSelf: 'center',
+    backgroundColor: '#D9D9D9',
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 26,
+  },
+  collectionSheetTopTitle: {
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '700',
+    lineHeight: 19,
+    color: '#6B6B6B',
+    textAlign: 'center',
+  },
+  collectionSheetTopSub: {
+    marginTop: 2,
+    width: '100%',
+    fontFamily: 'Inter',
+    fontSize: 14,
+    fontWeight: '400',
+    lineHeight: 19,
+    color: '#6B6B6B',
+    textAlign: 'center',
+    paddingHorizontal: 12,
+  },
+  collectionSheetHero: {
+    width: 390,
+    height: 477,
+    alignSelf: 'center',
+    borderRadius: 20,
+    marginTop: 1.5,
+  },
+  collectionSheetPanel: {
+    position: 'absolute',
+    left: 1,
+    right: 0,
+    bottom: 0,
+    height: 627,
+    backgroundColor: '#282828',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingTop: 21,
+    paddingHorizontal: 15,
+  },
+  collectionSheetHandle: {
+    width: 46,
+    height: 6,
+    borderRadius: 10,
+    backgroundColor: '#616264',
+    alignSelf: 'center',
+    marginBottom: 18,
+  },
+  collectionSheetHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+    minHeight: 24,
+  },
+  collectionSheetTitle: {
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '600',
+    lineHeight: 19,
+    color: '#F2F2F2',
+    textAlign: 'center',
+  },
+  collectionSheetCurrentRow: {
+    width: 350,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 18,
+  },
+  collectionSheetCurrentThumb: {
+    width: 67.04,
+    height: 67.04,
+    borderRadius: 20,
+  },
+  collectionSheetCurrentInfo: {
+    flex: 1,
+    marginLeft: 13,
+    marginRight: 12,
+  },
+  collectionSheetCurrentTitle: {
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '600',
+    lineHeight: 19,
+    color: '#F2F2F2',
+    marginBottom: 4,
+  },
+  collectionSheetCloseBtn: {
+    position: 'absolute',
+    right: 2,
+    width: 28,
+    height: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  collectionSheetSearchWrap: {
+    width: 363,
+    height: 49,
+    borderRadius: 15,
+    backgroundColor: '#353535',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    gap: 12,
+  },
+  collectionSheetSearchInput: {
+    flex: 1,
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#F2F2F2',
+    paddingVertical: 0,
+  },
+  collectionSheetCollectionsHeader: {
+    marginTop: 14,
+    marginBottom: 10,
+    width: 350,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  collectionSheetListLabel: {
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '600',
+    lineHeight: 19,
+    color: '#6B6B6B',
+  },
+  collectionSheetNewBtn: {
+    minWidth: 80,
+    height: 48,
+    borderRadius: 16,
+    backgroundColor: '#353535',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  collectionSheetNewBtnText: {
+    fontFamily: 'Inter',
+    fontSize: 17,
+    fontWeight: '700',
+    lineHeight: 22,
+    color: '#F2F2F7',
+  },
+  collectionSheetList: {
+    flex: 1,
+  },
+  collectionSheetListContent: {
+    paddingBottom: 24,
+    gap: 22,
+  },
+  collectionSheetItem: {
+    width: 350,
+    minHeight: 67.04,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  collectionSheetThumb: {
+    width: 67.04,
+    height: 67.04,
+    borderRadius: 20,
+  },
+  collectionSheetItemInfo: {
+    flex: 1,
+    marginLeft: 13,
+    marginRight: 12,
+  },
+  collectionSheetItemTitle: {
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '700',
+    lineHeight: 19,
+    color: '#F2F2F2',
+    marginBottom: 4,
+  },
+  collectionSheetMetaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  collectionSheetMetaText: {
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '400',
+    lineHeight: 19,
+    color: '#6B6B6B',
+  },
+  collectionSelectCircle: {
+    width: 27,
+    height: 27,
+    borderRadius: 13.5,
+    borderWidth: 1,
+    borderColor: '#A0A0A0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  collectionSelectCircleActive: {
+    backgroundColor: '#007AFF',
+    borderColor: '#007AFF',
+  },
+  collectionSelectCircleInner: {
+    width: 9,
+    height: 9,
+    borderRadius: 4.5,
+    // backgroundColor: '#F2F2F2',
+  },
   primaryPlusIcon: {
     width: 18,
     height: 18,
@@ -1059,7 +1502,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: GAP,
-    paddingHorizontal: SIDE_PAD,
+    // paddingHorizontal: ,
   },
   column: {
     width: COL_W,
@@ -1069,12 +1512,15 @@ const styles = StyleSheet.create({
   // Card
   cardWrapper: {
     marginBottom: 4,
+    right: 0,
+    left: 0,
+    width: '100%',
   },
   cardUserRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 24,
-    paddingRight: 4,
+    // paddingRight: 4,
     paddingVertical: 4,
     gap: 4,
   },
@@ -1083,6 +1529,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: 'transparent',
     position: 'relative',
+    width: '100%',
   },
   cardImage: {
     width: '100%',
@@ -1181,7 +1628,6 @@ const styles = StyleSheet.create({
   // Action button (bottom floating, black, 3 dots)
   actionBtn: {
     position: 'absolute',
-    bottom: 40,
     left: '50%',
     marginLeft: -30,
     width: 60,

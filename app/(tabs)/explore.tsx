@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { BlurView } from 'expo-blur';
 import Svg, { Path } from 'react-native-svg';
 import { TargetCirclesIcon } from '../../src/components/icons/TargetCirclesIcon';
 import { TerrainProfileIcon } from '../../src/components/icons/TerrainProfileIcon';
@@ -20,8 +21,8 @@ import { SharedFeedFilterPanel } from '@/components/SharedFeedFilterPanel';
 
 const DATA_PANEL_H = 82;
 const BASE_WIDTH = 393;
-const COL_GAP = 6;
-const SIDE_PAD = 2;
+const COL_GAP = 8;
+const SIDE_PAD = 0;
 const COL_W = (BASE_WIDTH - SIDE_PAD * 2 - COL_GAP) / 2;
 
 function StatCurve() {
@@ -187,7 +188,7 @@ export default function ExploreScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.screen} edges={['top']}>
+    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
       <View style={styles.headerBlock}>
         {/* Frosted glass header section */}
         <View style={[styles.headerSection, isFilterOpen ? styles.headerSectionWithFilter : styles.headerSectionClosed]}>
@@ -249,54 +250,65 @@ export default function ExploreScreen() {
 
       </View>
 
-      <ScrollView
-        style={styles.mainScroll}
-        contentContainerStyle={styles.mainContent}
-        scrollEnabled
-        directionalLockEnabled
-        canCancelContentTouches
-        keyboardShouldPersistTaps="handled"
-        bounces={false}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Green indicator dot */}
-        {!isFilterOpen && <View style={styles.indicatorDot} />}
+      <View style={styles.contentWrapper}>
+        <ScrollView
+          style={styles.mainScroll}
+          contentContainerStyle={styles.mainContent}
+          scrollEnabled
+          directionalLockEnabled
+          canCancelContentTouches
+          keyboardShouldPersistTaps="handled"
+          bounces={false}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Green indicator dot */}
+          {!isFilterOpen && <View style={styles.indicatorDot} />}
 
-        {/* Tab selector */}
-        <View style={styles.tabRow}>
-          <Pressable
-            onPress={() => router.replace('/(tabs)/explore')}
-            hitSlop={2}
-            pressRetentionOffset={{ top: 2, left: 2, right: 2, bottom: 2 }}
-          >
-            <Text style={[styles.tabText, styles.tabTextActive]}>Explore</Text>
-          </Pressable>
-          <Pressable
-            onPress={() => router.replace('/(tabs)/home')}
-            hitSlop={2}
-            pressRetentionOffset={{ top: 2, left: 2, right: 2, bottom: 2 }}
-          >
-            <Text style={[styles.tabText]}>You Follow</Text>
-          </Pressable>
-        </View>
-
-        {/* Masonry Grid */}
-        <View style={styles.gridContent}>
-          <View style={styles.masonryContainer}>
-            {/* Left column */}
-            <View style={styles.masonryColumn}>
-              {leftColumn.map((card) => renderCard(card))}
-            </View>
-            {/* Right column */}
-            <View style={styles.masonryColumn}>
-              {rightColumn.map((card) => renderCard(card))}
-            </View>
+          {/* Tab selector */}
+          <View style={styles.tabRow}>
+            <Pressable
+              onPress={() => router.replace('/(tabs)/explore')}
+              hitSlop={2}
+              pressRetentionOffset={{ top: 2, left: 2, right: 2, bottom: 2 }}
+            >
+              <Text style={[styles.tabText, styles.tabTextActive]}>Explore</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => router.replace('/(tabs)/home')}
+              hitSlop={2}
+              pressRetentionOffset={{ top: 2, left: 2, right: 2, bottom: 2 }}
+            >
+              <Text style={[styles.tabText]}>You Follow</Text>
+            </Pressable>
           </View>
 
-          {fullCards.map((card) => renderCard(card, true))}
-          <View style={styles.bottomSpacer} />
-        </View>
-      </ScrollView>
+          {/* Masonry Grid */}
+          <View style={styles.gridContent}>
+            <View style={styles.masonryContainer}>
+              {/* Left column */}
+              <View style={styles.masonryColumn}>
+                {leftColumn.map((card) => renderCard(card))}
+              </View>
+              {/* Right column */}
+              <View style={styles.masonryColumn}>
+                {rightColumn.map((card) => renderCard(card))}
+              </View>
+            </View>
+
+            {fullCards.map((card) => renderCard(card, true))}
+            <View style={styles.bottomSpacer} />
+          </View>
+        </ScrollView>
+
+        {isFilterOpen && (
+          <BlurView
+            intensity={35}
+            tint="light"
+            pointerEvents="none"
+            style={styles.contentBlurOverlay}
+          />
+        )}
+      </View>
     </SafeAreaView>
   );
 }
@@ -314,6 +326,14 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     paddingBottom: 132,
+  },
+  contentWrapper: {
+    flex: 1,
+    position: 'relative',
+  },
+  contentBlurOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
   },
 
   /* ── Frosted header section (Figma: full-width, 177h, bottom radii 30, rgba(217,217,217,0.9)) ── */
@@ -368,13 +388,15 @@ const styles = StyleSheet.create({
   },
   headerSubtitle: {
     fontSize: 12,
-    color: '#282828',
+    color: '#007AFF',
     marginTop: 1,
   },
   headerCount: {
     fontSize: 12,
-    color: '#282828',
+    color: '#007AFF',
     marginTop: 1,
+    bottom: 4,
+
   },
   indicatorDot: {
     width: 10,
@@ -385,7 +407,7 @@ const styles = StyleSheet.create({
     borderColor: '#A0A0A0',
     alignSelf: 'flex-end',
     marginRight: 19,
-    marginTop: 8,
+    marginTop: 12,
   },
 
   /* ── Search bar row (Figma: 251w bar, 49h, two 48.9 side buttons) ── */
@@ -466,7 +488,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 22,
-    marginTop: 4,
+    marginTop: -8,
     marginBottom: 6,
   },
   tabText: {
@@ -485,7 +507,7 @@ const styles = StyleSheet.create({
   userRowTop: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 24,
+    paddingLeft: 10,
     paddingRight: 4,
     paddingVertical: 4,
     gap: 4,
@@ -566,7 +588,8 @@ const styles = StyleSheet.create({
 
   /* ── Grid ── */
   gridContent: {
-    paddingHorizontal: SIDE_PAD,
+    // paddingHorizontal: SIDE_PAD,
+
   },
   masonryContainer: {
     flexDirection: 'row',

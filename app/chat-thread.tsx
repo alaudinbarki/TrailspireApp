@@ -50,13 +50,13 @@ export default function ChatThreadScreen() {
     const [message, setMessage] = useState('');
 
     return (
-        <KeyboardAvoidingView
-            style={styles.screen}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            keyboardVerticalOffset={0}
-        >
-            <View style={styles.header}>
-                <SafeAreaView edges={['top']}>
+        <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
+            <KeyboardAvoidingView
+                style={styles.keyboardContainer}
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                keyboardVerticalOffset={0}
+            >
+                <View style={styles.header}>
                     <View style={styles.headerContent}>
                         <TouchableOpacity
                             style={styles.backBtn}
@@ -75,152 +75,157 @@ export default function ChatThreadScreen() {
                             style={styles.headerAvatar}
                         />
                     </View>
-                </SafeAreaView>
-            </View>
-
-            <ScrollView
-                style={styles.messagesScroll}
-                contentContainerStyle={styles.messagesContent}
-                showsVerticalScrollIndicator={false}
-            >
-                <View style={[styles.timestampRow, styles.timestampTop]}>
-                    <Text style={styles.timestampDay}>Yesterday</Text>
-                    <Text style={styles.timestampTime}>8:22 AM</Text>
                 </View>
 
-                <View style={[styles.messageRow, styles.messageRowRight]}>
-                    <View style={[styles.bubble, styles.bubbleSent, styles.w170]}>
-                        <Text style={styles.textSent}>Thanks for the rec</Text>
-                        <SentTail />
+                <ScrollView
+                    style={styles.messagesScroll}
+                    contentContainerStyle={styles.messagesContent}
+                    showsVerticalScrollIndicator={false}
+                >
+                    <View style={[styles.timestampRow, styles.timestampTop]}>
+                        <Text style={styles.timestampDay}>Yesterday</Text>
+                        <Text style={styles.timestampTime}>8:22 AM</Text>
                     </View>
-                </View>
 
-                <View style={[styles.messageRow, styles.messageRowRight]}>
-                    <View style={[styles.bubble, styles.bubbleSent, styles.w280, styles.h61]}>
-                        <Text style={styles.textSent}>I thought that place was great 😊</Text>
-                        <SentTail />
-                    </View>
-                </View>
-
-                <View style={[styles.messageRow, styles.messageRowLeft]}>
-                    <View style={[styles.bubble, styles.bubbleReceived, styles.w152]}>
-                        <Text style={styles.textReceived}>Yea it really was</Text>
-                        <ReceivedTail />
-                    </View>
-                </View>
-
-                <View style={[styles.messageRow, styles.messageRowRight]}>
-                    <View style={[styles.bubble, styles.bubbleSent, styles.audioBubble, styles.w280]}>
-                        <TouchableOpacity style={styles.playBtn} activeOpacity={0.7} onPress={() => { }}>
-                            <View style={styles.playIcon} />
-                        </TouchableOpacity>
-                        <View style={styles.waveform}>
-                            {WAVEFORM_HEIGHTS.map((barHeight, i) => (
-                                <View
-                                    key={`bar-${i}`}
-                                    style={[
-                                        styles.waveBar,
-                                        { height: scaleUniform(barHeight) },
-                                    ]}
-                                />
-                            ))}
+                    <View style={[styles.messageRow, styles.messageRowRight]}>
+                        <View style={[styles.bubble, styles.bubbleSent, styles.w170]}>
+                            <Text style={styles.textSent}>Thanks for the rec</Text>
+                            <SentTail />
                         </View>
-                        <Text style={styles.audioDuration}>00:04</Text>
-                        <SentTail />
+                    </View>
+
+                    <View style={[styles.messageRow, styles.messageRowRight]}>
+                        <View style={[styles.bubble, styles.bubbleSent, styles.w280, styles.h61]}>
+                            <Text style={styles.textSent}>I thought that place was great 😊</Text>
+                            <SentTail />
+                        </View>
+                    </View>
+
+                    <View style={[styles.messageRow, styles.messageRowLeft]}>
+                        <View style={[styles.bubble, styles.bubbleReceived, styles.w152]}>
+                            <Text style={styles.textReceived}>Yea it really was</Text>
+                            <ReceivedTail />
+                        </View>
+                    </View>
+
+                    <View style={[styles.messageRow, styles.messageRowRight]}>
+                        <View style={[styles.bubble, styles.bubbleSent, styles.audioBubble, styles.w280]}>
+                            <TouchableOpacity style={styles.playBtn} activeOpacity={0.7} onPress={() => { }}>
+                                <View style={styles.playIcon} />
+                            </TouchableOpacity>
+                            <View style={styles.waveform}>
+                                {WAVEFORM_HEIGHTS.map((barHeight, i) => (
+                                    <View
+                                        key={`bar-${i}`}
+                                        style={[
+                                            styles.waveBar,
+                                            { height: scaleUniform(barHeight) },
+                                        ]}
+                                    />
+                                ))}
+                            </View>
+                            <Text style={styles.audioDuration}>00:04</Text>
+                            <SentTail />
+                        </View>
+                    </View>
+
+                    <View style={[styles.messageRow, styles.messageRowLeft]}>
+                        <View style={[styles.bubble, styles.bubbleReceived, styles.w249]}>
+                            <Text style={styles.textReceived}>Me too! Any places in mind?</Text>
+                            <ReceivedTail />
+                        </View>
+                    </View>
+
+                    <View style={[styles.messageRow, styles.messageRowRight]}>
+                        <View style={[styles.bubble, styles.bubbleSent, styles.w188]}>
+                            <Text style={styles.textSent}>Check out Haleakala</Text>
+                            <SentTail />
+                        </View>
+                    </View>
+
+                    <View style={[styles.messageRow, styles.messageRowLeft]}>
+                        <View style={[styles.bubble, styles.bubbleReceived, styles.w171]}>
+                            <Text style={styles.textReceived}>Perfect. I’ll book it</Text>
+                            <ReceivedTail />
+                        </View>
+                    </View>
+
+                    <View style={styles.timestampRow}>
+                        <Text style={styles.timestampDay}>Today</Text>
+                        <Text style={styles.timestampTime}>9:41 AM</Text>
+                    </View>
+
+                    <View style={[styles.messageRow, styles.messageRowLeft]}>
+                        <View style={[styles.bubble, styles.bubbleReceived, styles.w280, styles.h84]}>
+                            <Text style={styles.textReceived}>
+                                Have you watched the new episode of our show yet? Spoiler alert!
+                            </Text>
+                            <ReceivedTail />
+                        </View>
+                    </View>
+
+                    <View style={[styles.messageRow, styles.messageRowRight]}>
+                        <View style={[styles.bubble, styles.bubbleSent, styles.w280, styles.h84]}>
+                            <Text style={styles.textSent}>
+                                Okay don't tell me! Are we still on for a late lunch with Christian today?
+                            </Text>
+                            <SentTail />
+                        </View>
+                    </View>
+
+                    <View style={[styles.messageRow, styles.messageRowLeft]}>
+                        <View style={[styles.bubble, styles.bubbleReceived, styles.w252]}>
+                            <Text style={styles.textReceived}>Yea you bet. lunch is still on!</Text>
+                            <ReceivedTail />
+                        </View>
+                    </View>
+
+                    <View style={[styles.messageRow, styles.messageRowRight]}>
+                        <View style={[styles.bubble, styles.bubbleSent, styles.w152]}>
+                            <Text style={styles.textSent}>Sounds good 😊</Text>
+                            <SentTail />
+                        </View>
+                    </View>
+
+                    <View style={[styles.messageRow, styles.messageRowRight]}>
+                        <View style={[styles.bubble, styles.bubbleSent, styles.w140]}>
+                            <Text style={styles.textSent}>See you there!</Text>
+                            <SentTail />
+                        </View>
+                    </View>
+
+                    <View style={[styles.messageRow, styles.messageRowLeft]}>
+                        <View style={[styles.bubble, styles.bubbleReceived, styles.w222]}>
+                            <Text style={styles.textReceived}>Awesome, see you soon!</Text>
+                            <ReceivedTail />
+                        </View>
+                    </View>
+                </ScrollView>
+
+                <View style={styles.inputContainer}>
+                    <TouchableOpacity style={styles.cameraBtn} activeOpacity={0.7} onPress={() => router.push('/photo-gallery')}>
+                        <Text style={styles.cameraBtnText}>＋</Text>
+                    </TouchableOpacity>
+
+                    <View style={styles.inputWrapper}>
+                        <TextInput
+                            style={styles.textInput}
+                            placeholder="iMessage"
+                            placeholderTextColor="#D9D9D9"
+                            value={message}
+                            onChangeText={setMessage}
+                            multiline
+                        />
+                        <Svg width={13} height={19} viewBox="0 0 13 19" fill="none" style={styles.micIcon}>
+                            <Path
+                                d="M-0.000488281 8.93994V7.29639C-0.000488281 7.08057 0.0769857 6.89795 0.231934 6.74854C0.386882 6.59912 0.569499 6.52441 0.779785 6.52441C1.00114 6.52441 1.18929 6.59912 1.34424 6.74854C1.49919 6.89795 1.57666 7.08057 1.57666 7.29639V8.88184C1.57666 9.82259 1.77311 10.6471 2.16602 11.3555C2.56445 12.0583 3.12061 12.6034 3.83447 12.9907C4.54834 13.3781 5.37565 13.5718 6.31641 13.5718C7.2627 13.5718 8.09001 13.3781 8.79834 12.9907C9.50667 12.6034 10.0601 12.0583 10.4585 11.3555C10.8569 10.6471 11.0562 9.82259 11.0562 8.88184V7.29639C11.0562 7.08057 11.1336 6.89795 11.2886 6.74854C11.4435 6.59912 11.6289 6.52441 11.8447 6.52441C12.0605 6.52441 12.2432 6.59912 12.3926 6.74854C12.5475 6.89795 12.625 7.08057 12.625 7.29639V8.93994C12.625 10.0799 12.3898 11.0871 11.9194 11.9614C11.4491 12.8358 10.7961 13.5358 9.96045 14.0615C9.13037 14.5872 8.17025 14.9027 7.08008 15.0078V16.7095H10.1265C10.3423 16.7095 10.5277 16.7842 10.6826 16.9336C10.8376 17.0885 10.915 17.2739 10.915 17.4897C10.915 17.7 10.8376 17.8799 10.6826 18.0293C10.5277 18.1842 10.3423 18.2617 10.1265 18.2617H2.50635C2.29053 18.2617 2.10514 18.1842 1.9502 18.0293C1.79525 17.8799 1.71777 17.7 1.71777 17.4897C1.71777 17.2739 1.79525 17.0885 1.9502 16.9336C2.10514 16.7842 2.29053 16.7095 2.50635 16.7095H5.55273V15.0078C4.46257 14.9027 3.49967 14.5872 2.66406 14.0615C1.82845 13.5358 1.17546 12.8358 0.705078 11.9614C0.234701 11.0871 -0.000488281 10.0799 -0.000488281 8.93994ZM3.13721 8.57471V3.39502C3.13721 2.73096 3.27279 2.14437 3.54395 1.63525C3.8151 1.12614 4.18864 0.727702 4.66455 0.439941C5.146 0.146647 5.69661 0 6.31641 0C6.9362 0 7.48405 0.146647 7.95996 0.439941C8.44141 0.727702 8.81494 1.12614 9.08057 1.63525C9.35173 2.14437 9.4873 2.73096 9.4873 3.39502V8.57471C9.4873 9.23877 9.35173 9.82536 9.08057 10.3345C8.81494 10.8436 8.44141 11.2448 7.95996 11.5381C7.48405 11.8258 6.9362 11.9697 6.31641 11.9697C5.69661 11.9697 5.146 11.8258 4.66455 11.5381C4.18864 11.2448 3.8151 10.8436 3.54395 10.3345C3.27279 9.82536 3.13721 9.23877 3.13721 8.57471ZM4.71436 8.59961C4.71436 9.15299 4.85824 9.60124 5.146 9.94434C5.43929 10.2819 5.82943 10.4507 6.31641 10.4507C6.80892 10.4507 7.19629 10.2819 7.47852 9.94434C7.76628 9.60124 7.91016 9.15299 7.91016 8.59961V3.37012C7.91016 2.81673 7.76628 2.37126 7.47852 2.03369C7.19629 1.69059 6.80892 1.51904 6.31641 1.51904C5.82943 1.51904 5.43929 1.69059 5.146 2.03369C4.85824 2.37126 4.71436 2.81673 4.71436 3.37012V8.59961Z"
+                                fill="#D9D9D9"
+                            />
+                        </Svg>
                     </View>
                 </View>
-
-                <View style={[styles.messageRow, styles.messageRowLeft]}>
-                    <View style={[styles.bubble, styles.bubbleReceived, styles.w249]}>
-                        <Text style={styles.textReceived}>Me too! Any places in mind?</Text>
-                        <ReceivedTail />
-                    </View>
-                </View>
-
-                <View style={[styles.messageRow, styles.messageRowRight]}>
-                    <View style={[styles.bubble, styles.bubbleSent, styles.w188]}>
-                        <Text style={styles.textSent}>Check out Haleakala</Text>
-                        <SentTail />
-                    </View>
-                </View>
-
-                <View style={[styles.messageRow, styles.messageRowLeft]}>
-                    <View style={[styles.bubble, styles.bubbleReceived, styles.w171]}>
-                        <Text style={styles.textReceived}>Perfect. I’ll book it</Text>
-                        <ReceivedTail />
-                    </View>
-                </View>
-
-                <View style={styles.timestampRow}>
-                    <Text style={styles.timestampDay}>Today</Text>
-                    <Text style={styles.timestampTime}>9:41 AM</Text>
-                </View>
-
-                <View style={[styles.messageRow, styles.messageRowLeft]}>
-                    <View style={[styles.bubble, styles.bubbleReceived, styles.w280, styles.h84]}>
-                        <Text style={styles.textReceived}>
-                            Have you watched the new episode of our show yet? Spoiler alert!
-                        </Text>
-                        <ReceivedTail />
-                    </View>
-                </View>
-
-                <View style={[styles.messageRow, styles.messageRowRight]}>
-                    <View style={[styles.bubble, styles.bubbleSent, styles.w280, styles.h84]}>
-                        <Text style={styles.textSent}>
-                            Okay don't tell me! Are we still on for a late lunch with Christian today?
-                        </Text>
-                        <SentTail />
-                    </View>
-                </View>
-
-                <View style={[styles.messageRow, styles.messageRowLeft]}>
-                    <View style={[styles.bubble, styles.bubbleReceived, styles.w252]}>
-                        <Text style={styles.textReceived}>Yea you bet. lunch is still on!</Text>
-                        <ReceivedTail />
-                    </View>
-                </View>
-
-                <View style={[styles.messageRow, styles.messageRowRight]}>
-                    <View style={[styles.bubble, styles.bubbleSent, styles.w152]}>
-                        <Text style={styles.textSent}>Sounds good 😊</Text>
-                        <SentTail />
-                    </View>
-                </View>
-
-                <View style={[styles.messageRow, styles.messageRowRight]}>
-                    <View style={[styles.bubble, styles.bubbleSent, styles.w140]}>
-                        <Text style={styles.textSent}>See you there!</Text>
-                        <SentTail />
-                    </View>
-                </View>
-
-                <View style={[styles.messageRow, styles.messageRowLeft]}>
-                    <View style={[styles.bubble, styles.bubbleReceived, styles.w222]}>
-                        <Text style={styles.textReceived}>Awesome, see you soon!</Text>
-                        <ReceivedTail />
-                    </View>
-                </View>
-            </ScrollView>
-
-            <SafeAreaView edges={['bottom']} style={styles.inputContainer}>
-                <TouchableOpacity style={styles.cameraBtn} activeOpacity={0.7} onPress={() => router.push('/photo-gallery')}>
-                    <Text style={styles.cameraBtnText}>＋</Text>
-                </TouchableOpacity>
-
-                <View style={styles.inputWrapper}>
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder="iMessage"
-                        placeholderTextColor="#D9D9D9"
-                        value={message}
-                        onChangeText={setMessage}
-                        multiline
-                    />
-                    <Text style={styles.micIcon}>􀊰</Text>
-                </View>
-            </SafeAreaView>
-        </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 }
 
@@ -229,10 +234,14 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#A0A0A0',
     },
+    keyboardContainer: {
+        flex: 1,
+    },
     header: {
         backgroundColor: '#D9D9D9',
         paddingHorizontal: 18,
-        paddingBottom: 16,
+        paddingTop: 15,
+        paddingBottom: 6,
         borderBottomLeftRadius: 30,
         borderBottomRightRadius: 30,
     },
@@ -441,9 +450,9 @@ const styles = StyleSheet.create({
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingTop: 4,
+        paddingTop: 8,
         paddingHorizontal: 28,
-        paddingBottom: 28,
+        paddingBottom: 8,
         gap: 12,
         backgroundColor: '#A0A0A0',
     },
@@ -481,9 +490,7 @@ const styles = StyleSheet.create({
         paddingVertical: 0,
     },
     micIcon: {
-        fontFamily: 'SF Pro',
-        fontSize: 17,
-        lineHeight: 20,
-        color: '#D9D9D9',
+        width: 13,
+        height: 19,
     },
 });
