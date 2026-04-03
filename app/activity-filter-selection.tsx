@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BlurView } from 'expo-blur';
 import { BackArrowIcon, ConfirmCheckIcon, SearchIcon, TerrainProfileIcon } from '../src/components/icons';
 import { scaleUniform } from '../src/utils/globalScale';
 
@@ -129,11 +130,12 @@ export default function ActivityFilterSelectionScreen() {
               >
                 <Image source={activity.thumbnail} style={styles.selectedCardImage} resizeMode="cover" />
                 <View style={styles.selectedStroke}>
-                  <View style={{ transform: [{ rotate: '170deg' }] }}>
-                    <TerrainProfileIcon width={100} height={28} color="#007AFF" />
+                  <View style={{ top: 0, transform: [{ rotate: '170deg' }] }}>
+                    <TerrainProfileIcon width={100} height={30} color="#007AFF" />
                   </View>
                 </View>
                 <View style={styles.selectedDateOverlay}>
+                  {/* <BlurView intensity={30} tint="dark" style={styles.selectedDateOverlayBlur} pointerEvents="none" /> */}
                   <Text style={styles.selectedOverlayText}>{`${activity.date} ${activity.month}`}</Text>
                 </View>
               </TouchableOpacity>
@@ -178,6 +180,7 @@ export default function ActivityFilterSelectionScreen() {
 
               <View style={styles.activityInfo}>
                 <Text style={styles.activityDateText}>{`${activity.date}\n${activity.month}`}</Text>
+
                 <Text style={styles.activityType}>{activity.type}</Text>
                 <Text style={styles.activityLocation}>{activity.location}</Text>
                 <Text style={styles.activityDistance}>{activity.distance}</Text>
@@ -289,13 +292,10 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   selectedStroke: {
-    position: 'relative',
-    left: 12,
-    top: 3,
-    right: 0,
-    bottom: 20,
-    padding: 5,
-    zIndex: 1,
+    position: 'absolute',
+    left: 0,
+    bottom: 16,
+    zIndex: 10,
   },
   selectedDateOverlay: {
     position: 'absolute',
@@ -307,13 +307,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.2)',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 2,
+    zIndex: 20,
+    overflow: 'hidden',
+  },
+  selectedDateOverlayBlur: {
+    ...StyleSheet.absoluteFillObject,
   },
   selectedOverlayText: {
     fontFamily: 'Inter',
     fontSize: 12,
     fontWeight: '700',
-    color: '#282828',
+    color: "rgba(40, 40, 40, 1)",
+    zIndex: 1,
   },
   activitiesSection: {
     paddingHorizontal: 10,
@@ -365,6 +370,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#007AFF',
     // marginBottom: 6,
+  },
+  activityDateIconWrap: {
+    width: 64,
+    height: 14,
+    marginTop: 1,
+    marginBottom: 2,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
   },
   activityType: {
     fontFamily: 'Inter',
