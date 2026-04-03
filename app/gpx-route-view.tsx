@@ -240,6 +240,7 @@ export default function GpxRouteViewScreen() {
     const router = useRouter();
     const insets = useSafeAreaInsets();
     const topButtonOffset = Math.max(16, insets.top + 8);
+    const editButtonBottom = Math.max(44, insets.bottom + 28);
 
 
     return (
@@ -330,7 +331,7 @@ export default function GpxRouteViewScreen() {
 
                 {/* "Edit" button — bottom right of map */}
                 <TouchableOpacity
-                    style={[styles.editBtn, { bottom: Math.max(8, insets.bottom) }]}
+                    style={[styles.editBtn, { bottom: editButtonBottom }]}
                     activeOpacity={0.75}
                     onPress={() => router.push('/photo-preview-flow')}
                 >
