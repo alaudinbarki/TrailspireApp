@@ -136,14 +136,18 @@ export default function HomeScreen() {
     return !followingUsers.has(item.username);
   });
 
+  const cardsForLayout: CardItem[] = selectedView !== 'explore'
+    ? visibleCards.map((item) => ({ ...item, layout: 'full' as const }))
+    : visibleCards;
+
   const scaledColW = sx(COL_W);
   const scaledFullW = sx(BASE_WIDTH - SIDE_PAD * 2);
   const scaledStatBarW = sx(87);
 
   /* Split cards into left / right / full columns */
-  const leftCards = visibleCards.filter((c) => c.layout === 'left');
-  const rightCards = visibleCards.filter((c) => c.layout === 'right');
-  const fullCards = visibleCards.filter((c) => c.layout === 'full');
+  const leftCards = cardsForLayout.filter((c) => c.layout === 'left');
+  const rightCards = cardsForLayout.filter((c) => c.layout === 'right');
+  const fullCards = cardsForLayout.filter((c) => c.layout === 'full');
 
   /* Render a single card */
   const renderCard = (item: CardItem) => (
@@ -487,19 +491,26 @@ export default function HomeScreen() {
           </View>
 
           <View style={styles.feedContainer}>
-            {fullCards[0] && renderCard(fullCards[0])}
+            {selectedView !== 'explore' ? (
+              fullCards.map(renderCard)
+            ) : (
+              <>
+                {fullCards[0] && renderCard(fullCards[0])}
 
-            <View style={styles.masonryContainer}>
-              <View style={styles.masonryCol}>
-                {leftCards.map(renderCard)}
-              </View>
-              <View style={styles.masonryCol}>
-                {rightCards.map(renderCard)}
-              </View>
-            </View>
+                <View style={styles.masonryContainer}>
+                  <View style={styles.masonryCol}>
+                    {leftCards.map(renderCard)}
+                  </View>
+                  <View style={styles.masonryCol}>
+                    {rightCards.map(renderCard)}
+                  </View>
+                </View>
 
-            {fullCards[1] && renderCard(fullCards[1])}
-            {fullCards[2] && renderCard(fullCards[2])}
+                {fullCards[1] && renderCard(fullCards[1])}
+                {fullCards[2] && renderCard(fullCards[2])}
+              </>
+            )}
+
             <View style={styles.bottomSpacer} />
           </View>
         </ScrollView>
@@ -703,7 +714,7 @@ const styles = StyleSheet.create({
   mapBadgeIconLeft: {
     position: 'absolute',
     left: 14,
-    top: 45,
+    top: 55,
     width: 25,
     height: 25,
     alignItems: 'center',

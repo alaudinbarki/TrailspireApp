@@ -85,7 +85,7 @@ export default function ActivityFilterSelectionScreen() {
         }}
       />
 
-      <View style={[styles.header, { paddingTop: Math.max(30, insets.top + 16) }]}>
+      <View style={[styles.header, { paddingTop: Math.max(20, insets.top + 8) }]}>
         <TouchableOpacity
           style={styles.backBtn}
           activeOpacity={0.7}
