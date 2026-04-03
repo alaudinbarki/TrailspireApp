@@ -11,11 +11,12 @@ import {
   Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CloseIcon } from '../src/components/icons';
 
 export default function NewCollectionModalScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [name, setName] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
 
@@ -31,8 +32,10 @@ export default function NewCollectionModalScreen() {
       <TouchableOpacity style={styles.dismissArea2} activeOpacity={1} onPress={() => router.back()} />
 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardView}>
-        <SafeAreaView style={styles.sheet} edges={['top', 'bottom']}>
-          <View style={styles.handle} />
+        <SafeAreaView style={[styles.sheet, { paddingTop: Math.max(20, insets.top + 12), paddingBottom: Math.max(20, insets.bottom + 12) }]} edges={['bottom']}>
+          <View style={[styles.handleBar, { marginTop: -Math.max(20, insets.top + 12) }]}>
+            <View style={styles.handle} />
+          </View>
           <View style={styles.sheetHeader}>
             <View style={styles.sheetHeaderSpacer} />
             <Text style={styles.sheetTitle}>New Collection</Text>
@@ -115,7 +118,8 @@ const styles = StyleSheet.create({
   dismissArea2: { flex: 1 },
   keyboardView: { justifyContent: 'flex-end' },
   sheet: { backgroundColor: '#282828', borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 20 },
-  handle: { width: 36, height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.3)', alignSelf: 'center', marginBottom: 16 },
+  handleBar: { alignItems: 'center', paddingVertical: 8, marginLeft: -20, marginRight: -20 },
+  handle: { width: 36, height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.3)' },
   sheetHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 24 },
   sheetHeaderSpacer: { width: 36, height: 36 },
   sheetTitle: { flex: 1, fontFamily: 'Inter', fontSize: 20, fontWeight: '700', color: '#FFFFFF', textAlign: 'center' },

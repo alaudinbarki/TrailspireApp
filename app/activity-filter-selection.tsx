@@ -9,7 +9,7 @@ import {
   TextInput,
 } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackArrowIcon, ConfirmCheckIcon, SearchIcon, TerrainProfileIcon } from '../src/components/icons';
 import { scaleUniform } from '../src/utils/globalScale';
 
@@ -63,6 +63,7 @@ const ACTIVITIES = [
 
 export default function ActivityFilterSelectionScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [selectedIds, setSelectedIds] = useState([1, 2, 3]);
   const selectedActivities = ACTIVITIES.filter((item) => selectedIds.includes(item.id));
 
@@ -84,7 +85,7 @@ export default function ActivityFilterSelectionScreen() {
         }}
       />
 
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: Math.max(30, insets.top + 16) }]}>
         <TouchableOpacity
           style={styles.backBtn}
           activeOpacity={0.7}
@@ -109,7 +110,7 @@ export default function ActivityFilterSelectionScreen() {
 
       <ScrollView
         style={styles.content}
-        contentContainerStyle={styles.contentInner}
+        contentContainerStyle={[styles.contentInner, { paddingBottom: Math.max(24, insets.bottom + 12) }]}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.selectedSection}>
@@ -214,7 +215,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'space-between',
     paddingHorizontal: 18,
-    paddingTop: 30,
     paddingBottom: 6,
     backgroundColor: '#D9D9D9',
     borderBottomLeftRadius: 30,
@@ -257,9 +257,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-  contentInner: {
-    paddingBottom: 24,
-  },
+  contentInner: {},
   selectedSection: {
     paddingTop: 4,
     marginBottom: 4,

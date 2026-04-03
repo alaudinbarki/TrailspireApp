@@ -9,7 +9,7 @@ import {
   TextInput,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
 import { SearchIcon } from '../src/components/icons/SearchIcon';
 import Svg, { Path } from 'react-native-svg';
@@ -40,6 +40,7 @@ const FRIENDS = [
 
 export default function FriendsGridScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredFriends = useMemo(
@@ -49,7 +50,7 @@ export default function FriendsGridScreen() {
 
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: Math.max(55, insets.top + 24) }]}>
         <View style={styles.controlsRow}>
           <TouchableOpacity
             style={styles.backBtn}
@@ -89,7 +90,7 @@ export default function FriendsGridScreen() {
 
       <ScrollView
         style={styles.content}
-        contentContainerStyle={styles.contentInner}
+        contentContainerStyle={[styles.contentInner, { paddingBottom: Math.max(40, insets.bottom + 28) }]}
         showsVerticalScrollIndicator={false}
       >
         <Text style={styles.headerTitle}>Friends</Text>
@@ -127,7 +128,6 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 18,
-    paddingTop: 55,
     paddingBottom: 14,
     backgroundColor: '#D9D9D9',
     borderBottomLeftRadius: 30,
@@ -189,7 +189,6 @@ const styles = StyleSheet.create({
   },
   contentInner: {
     paddingTop: 14,
-    paddingBottom: 40,
     paddingHorizontal: GRID_SIDE_PADDING,
   },
   grid: {

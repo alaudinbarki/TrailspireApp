@@ -275,7 +275,14 @@ export default function SearchScreen() {
       >
         <ScrollView
           style={styles.scrollContent}
-          contentContainerStyle={styles.scrollInner}
+          contentContainerStyle={[
+            styles.scrollInner,
+            {
+              paddingBottom: showResults
+                ? Math.max(100, insets.bottom + 96)
+                : Math.max(100, insets.bottom + 28),
+            },
+          ]}
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.filterSection}>
@@ -287,7 +294,7 @@ export default function SearchScreen() {
               marginBottom: 18,
             }}>
               <View>
-                <Text style={styles.searchTitle}>Olso, Norway
+                <Text style={styles.searchTitle}>Oslo, Norway
                 </Text>
                 <Text style={{
                   fontFamily: 'Inter',
@@ -424,7 +431,7 @@ export default function SearchScreen() {
               </View>
               {fullCards[1] ? renderCard(fullCards[1]) : null}
               {fullCards[2] ? renderCard(fullCards[2]) : null}
-              <View style={[styles.bottomSpacer, styles.bottomSpacerWithBar]} />
+              <View style={[styles.bottomSpacer, { height: Math.max(180, insets.bottom + 160) }]} />
 
             </View>
 
@@ -435,7 +442,7 @@ export default function SearchScreen() {
 
         {/* Search Input at bottom */}
         {!showResults ? (
-          <View style={styles.searchInputContainer}>
+          <View style={[styles.searchInputContainer, { paddingBottom: Math.max(20, insets.bottom + 8) }]}>
             <TextInput
               style={styles.searchInput}
               placeholder="Search location or activity..."
@@ -445,7 +452,8 @@ export default function SearchScreen() {
               returnKeyType="search"
               onSubmitEditing={() => setShowResults(true)}
             />
-          </View>) : null}
+          </View>
+        ) : null}
       </KeyboardAvoidingView>
 
       {showResults ? (
@@ -651,7 +659,6 @@ const styles = StyleSheet.create({
   scrollInner: {
     paddingHorizontal: 20,
     paddingTop: 16,
-    paddingBottom: 100,
   },
   searchTitleRow: {
     flexDirection: 'row',
@@ -771,7 +778,6 @@ const styles = StyleSheet.create({
   },
   searchInputContainer: {
     paddingHorizontal: 20,
-    paddingBottom: 20,
     paddingTop: 8,
     backgroundColor: '#A0A0A0',
   },

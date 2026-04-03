@@ -10,7 +10,7 @@ import {
   PixelRatio,
   useWindowDimensions,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { BlurView } from 'expo-blur';
 import Svg, { Path } from 'react-native-svg';
@@ -94,6 +94,7 @@ const CARD_DATA: CardItem[] = [
 /* ── Component ── */
 export default function HomeScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ view?: string }>();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedView, setSelectedView] = useState<'home' | 'youFollow' | 'explore'>(
@@ -453,7 +454,7 @@ export default function HomeScreen() {
       <View style={styles.contentWrapper}>
         <ScrollView
           style={styles.mainScroll}
-          contentContainerStyle={styles.mainContent}
+          contentContainerStyle={[styles.mainContent, { paddingBottom: Math.max(132, insets.bottom + 80) }]}
           scrollEnabled
           directionalLockEnabled
           canCancelContentTouches
@@ -528,9 +529,8 @@ const styles = StyleSheet.create({
   mainScroll: {
     flex: 1,
   },
-  mainContent: {
-    paddingBottom: 132,
-  },
+  mainContent: {},
+  // paddingBottom set dynamically via useSafeAreaInsets
   contentWrapper: {
     flex: 1,
     position: 'relative',

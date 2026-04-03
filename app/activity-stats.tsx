@@ -8,7 +8,7 @@ import {
   Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
 
 const BASE_WIDTH = 393;
@@ -35,6 +35,7 @@ const ACTIVITIES = [
 
 export default function ActivityStatsScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [selectedPeriod, setSelectedPeriod] = useState(2);
   const maxVal = Math.max(...CURRENT_DATA);
 
@@ -49,7 +50,7 @@ export default function ActivityStatsScreen() {
         <View style={styles.headerSpacer} />
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scrollContent, { paddingBottom: Math.max(30, insets.bottom + 18) }]}>
         {/* Period Tabs */}
         <View style={styles.periodTabs}>
           {PERIOD_TABS.map((tab, idx) => (
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
   backBtn: { width: 49, height: 49, borderRadius: 15, backgroundColor: '#CFD0D1', alignItems: 'center', justifyContent: 'center' },
   headerSpacer: { width: 49 },
   headerTitle: { fontFamily: 'Inter', fontSize: 20, fontWeight: '600', color: '#282828' },
-  scrollContent: { padding: 16, paddingBottom: 30 },
+  scrollContent: { padding: 16 },
   periodTabs: { flexDirection: 'row', backgroundColor: '#FFFFFF', borderRadius: 12, padding: 4, marginBottom: 20 },
   periodTab: { flex: 1, paddingVertical: 10, borderRadius: 10, alignItems: 'center' },
   periodTabActive: { backgroundColor: '#007AFF' },

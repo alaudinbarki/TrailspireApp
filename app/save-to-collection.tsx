@@ -9,7 +9,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SearchIcon } from '../src/components/icons/SearchIcon';
 
 const { width: SCREEN_W } = Dimensions.get('window');
@@ -23,11 +23,12 @@ const COLLECTIONS = [
 
 export default function SaveToCollectionScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   return (
     <View style={styles.backdrop}>
       <TouchableOpacity style={styles.dismissArea} activeOpacity={1} onPress={() => router.back()} />
-      <SafeAreaView style={styles.sheet} edges={['top', 'bottom']}>
+      <SafeAreaView style={[styles.sheet, { paddingBottom: Math.max(12, insets.bottom + 8) }]} edges={['top', 'bottom']}>
         {/* Activity preview header */}
         <View style={styles.activityHeader}>
           <Image source={require('../assets/images/feed/activity_data_bg.png')} style={styles.activityBg} />
@@ -55,7 +56,10 @@ export default function SaveToCollectionScreen() {
         </View>
 
         {/* Collection list */}
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.listContent}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={[styles.listContent, { paddingBottom: Math.max(30, insets.bottom + 18) }]}
+        >
           {COLLECTIONS.map((col) => (
             <TouchableOpacity
               key={col.id}

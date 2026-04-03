@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width: SCREEN_W } = Dimensions.get('window');
 
@@ -48,6 +48,7 @@ const FEED_ITEMS = [
 
 export default function FeedFiltersScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [distanceValue, setDistanceValue] = useState(5);
   const distanceLabel = distanceValue >= 100 ? 'All' : `${distanceValue} km`;
 
@@ -137,7 +138,11 @@ export default function FeedFiltersScreen() {
         </View>
 
         {/* Apply button */}
-        <TouchableOpacity style={styles.applyBtn} activeOpacity={0.7} onPress={() => router.back()}>
+        <TouchableOpacity
+          style={[styles.applyBtn, { marginBottom: Math.max(20, insets.bottom + 8) }]}
+          activeOpacity={0.7}
+          onPress={() => router.back()}
+        >
           <Text style={styles.applyBtnText}>Apply Filters</Text>
         </TouchableOpacity>
       </SafeAreaView>
@@ -171,6 +176,6 @@ const styles = StyleSheet.create({
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: '#E8E8E6' },
   chipText: { fontFamily: 'Inter', fontSize: 13, fontWeight: '500', color: '#282828' },
-  applyBtn: { backgroundColor: '#282828', borderRadius: 14, paddingVertical: 16, marginHorizontal: 16, marginBottom: 20, alignItems: 'center' },
+  applyBtn: { backgroundColor: '#282828', borderRadius: 14, paddingVertical: 16, marginHorizontal: 16, alignItems: 'center' },
   applyBtnText: { fontFamily: 'Inter', fontSize: 16, fontWeight: '700', color: '#FFFFFF' },
 });

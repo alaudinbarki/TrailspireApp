@@ -4,11 +4,11 @@ import {
   Text,
   Image,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
   FlatList,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
 
 const BASE_WIDTH = 393;
@@ -40,6 +40,7 @@ const GALLERY_IMAGES = [
 
 export default function PhotoGalleryScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
   const toggleSelection = (id: string) => {
@@ -68,7 +69,7 @@ export default function PhotoGalleryScreen() {
   };
 
   return (
-    <View style={styles.screen}>
+    <SafeAreaView style={[styles.screen, { marginTop: Math.max(12, insets.top + 6) }]} edges={['bottom']}>
       {/* Drag Handle */}
       <View style={styles.handleBar}>
         <View style={styles.handle} />
@@ -99,11 +100,11 @@ export default function PhotoGalleryScreen() {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         numColumns={NUM_COLS}
-        contentContainerStyle={styles.gridContainer}
+        contentContainerStyle={[styles.gridContainer, { paddingBottom: Math.max(100, insets.bottom + 80) }]}
         columnWrapperStyle={styles.gridRow}
         showsVerticalScrollIndicator={false}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#282828',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    paddingTop: 12,
+
   },
 
   // Handle
@@ -163,7 +164,6 @@ const styles = StyleSheet.create({
   // Grid
   gridContainer: {
     paddingHorizontal: GRID_PADDING,
-    paddingBottom: 100,
   },
   gridRow: {
     gap: GRID_GAP,

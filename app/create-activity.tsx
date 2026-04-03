@@ -9,6 +9,7 @@ import {
   Image,
 } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
 import { scaleHeight, scaleUniform, scaleWidth } from '../src/utils/globalScale';
@@ -37,6 +38,7 @@ const TAGGED_FRIENDS = [
 
 export default function CreateActivityScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [description, setDescription] = useState('');
   const [selectedDifficulty, setSelectedDifficulty] = useState(3);
 
@@ -50,7 +52,7 @@ export default function CreateActivityScreen() {
         }}
       />
 
-      <View style={[styles.heroPanel, { minHeight: HERO_PANEL_MIN_HEIGHT }]}>
+      <View style={[styles.heroPanel, { minHeight: HERO_PANEL_MIN_HEIGHT, paddingTop: Math.max(20, insets.top + 8) }]}>
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.backBtn}
@@ -87,7 +89,13 @@ export default function CreateActivityScreen() {
 
       <ScrollView
         style={styles.content}
-        contentContainerStyle={[styles.contentInner, { paddingHorizontal: CONTENT_HORIZONTAL }]}
+        contentContainerStyle={[
+          styles.contentInner,
+          {
+            paddingHorizontal: CONTENT_HORIZONTAL,
+            paddingBottom: Math.max(20, insets.bottom + 16),
+          },
+        ]}
         showsVerticalScrollIndicator={false}
       >
         {/* Activity Section */}
@@ -230,7 +238,6 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     paddingBottom: 18,
-    paddingTop: 40,
   },
   header: {
     flexDirection: 'row',

@@ -8,6 +8,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Path } from 'react-native-svg';
 import { ArrowUpRightIcon } from '../../src/components/icons/ArrowUpRightIcon';
 import { MessageBubbleIcon } from '../../src/components/icons/MessageBubbleIcon';
@@ -138,6 +139,7 @@ const USER_POSTS: ProfilePost[] = [
 
 export default function ProfileScreen() {
     const router = useRouter();
+    const insets = useSafeAreaInsets();
     const [activeTab, setActiveTab] = useState<'posts' | 'saved'>('posts');
     const [activeNav, setActiveNav] = useState('all');
     const [activeViewMode, setActiveViewMode] = useState<'stats' | 'atlas'>('atlas');
@@ -169,7 +171,7 @@ export default function ProfileScreen() {
         <View style={styles.screen}>
             <ScrollView
                 style={styles.scroll}
-                contentContainerStyle={styles.scrollContent}
+                contentContainerStyle={[styles.scrollContent, { paddingBottom: Math.max(110, insets.bottom + 98) }]}
                 showsVerticalScrollIndicator={false}
             >
                 <View style={styles.profileHeader}>
@@ -506,7 +508,6 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollContent: {
-        paddingBottom: 110,
     },
     profileHeader: {
         minHeight: 180,

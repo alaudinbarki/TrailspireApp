@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import type { DimensionValue } from 'react-native';
 import { useRouter, Stack } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 import { ProfileCategoryIcon } from '../src/components/icons/ProfileCategoryIcon';
 import { TerrainProfileIcon } from '../src/components/icons/TerrainProfileIcon';
@@ -231,6 +232,7 @@ function ActivityCard({ card, width, imageH, iconW, iconH, isWideBadge }: { card
 
 export default function CollectionDetailFeedScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const scaleX = screenWidth / BASE_WIDTH;
   const scaleY = screenHeight / 852;
@@ -250,7 +252,7 @@ export default function CollectionDetailFeedScreen() {
       <Stack.Screen options={{ headerShown: false }} />
 
       {/* ── Fixed Header ─────────────────────────────────────── */}
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: Math.max(16, insets.top + 8) }]}>
         <View style={styles.headerText}>
           <Text style={styles.collectionTitle}>Skitouring Switzerland</Text>
           <Text style={styles.collectionSubtitle}>235 activities saved in this library</Text>
@@ -306,7 +308,7 @@ export default function CollectionDetailFeedScreen() {
       {/* ── Scrollable Masonry Grid ───────────────────────────── */}
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: Math.max(30, insets.bottom + 18) }]}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.feedContainer}>
@@ -382,7 +384,7 @@ export default function CollectionDetailFeedScreen() {
           )}
         </View>
 
-        <View style={styles.bottomSpacer} />
+        <View style={[styles.bottomSpacer, { height: Math.max(24, insets.bottom + 12) }]} />
       </ScrollView>
     </View>
   );
@@ -397,7 +399,6 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 55,
     paddingBottom: 10,
     paddingHorizontal: 12,
     gap: 12,

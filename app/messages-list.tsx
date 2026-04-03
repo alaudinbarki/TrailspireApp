@@ -9,7 +9,7 @@ import {
   TextInput,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackArrowIcon, EditIcon, SearchIcon } from '../src/components/icons';
 import { scaleUniform } from '../src/utils/globalScale';
 
@@ -75,6 +75,7 @@ const MESSAGES: Message[] = [
 
 export default function MessagesListScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   return (
     <View style={styles.screen}>
@@ -109,6 +110,7 @@ export default function MessagesListScreen() {
       {/* Messages List */}
       <ScrollView
         style={styles.messagesList}
+        contentContainerStyle={{ paddingBottom: Math.max(12, insets.bottom + 8) }}
         showsVerticalScrollIndicator={false}
       >
         {MESSAGES.map((msg, index) => (

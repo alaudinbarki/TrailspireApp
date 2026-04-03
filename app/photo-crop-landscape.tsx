@@ -7,7 +7,7 @@ import {
   Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
 
 const ASPECT_RATIOS = [
@@ -20,6 +20,7 @@ const ASPECT_RATIOS = [
 
 export default function PhotoCropLandscapeScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [selectedRatio, setSelectedRatio] = useState(1); // 16:9 by default
 
   return (
@@ -92,7 +93,7 @@ export default function PhotoCropLandscapeScreen() {
       </View>
 
       {/* Actions */}
-      <View style={styles.actions}>
+      <View style={[styles.actions, { paddingBottom: Math.max(20, insets.bottom + 8) }]}>
         <TouchableOpacity
           style={styles.nextBtn}
           activeOpacity={0.8}
@@ -222,7 +223,6 @@ const styles = StyleSheet.create({
   },
   actions: {
     paddingHorizontal: 20,
-    paddingBottom: 20,
   },
   nextBtn: {
     height: 54,

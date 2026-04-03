@@ -9,18 +9,19 @@ import {
   ScrollView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
 
 export default function EditCollectionScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [name, setName] = useState('Skitouring Switzerland');
   const [isPrivate, setIsPrivate] = useState(false);
   const [isCollaborative, setIsCollaborative] = useState(true);
 
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scrollContent, { paddingBottom: Math.max(24, insets.bottom + 12) }]}>
         <View style={styles.panel}>
           <View style={styles.header}>
             <TouchableOpacity style={styles.backBtn} activeOpacity={0.7} onPress={() => router.back()}>
@@ -108,9 +109,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#A0A0A0',
   },
-  scrollContent: {
-    paddingBottom: 24,
-  },
+  scrollContent: {},
   panel: {
     minHeight: 852,
     backgroundColor: '#282828',

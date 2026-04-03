@@ -8,11 +8,13 @@ import {
   Text,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
 export default function ImageViewerScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   return (
     <View style={styles.screen}>
@@ -26,7 +28,7 @@ export default function ImageViewerScreen() {
 
         {/* Close button */}
         <TouchableOpacity
-          style={styles.closeBtn}
+          style={[styles.closeBtn, { top: Math.max(16, insets.top + 8) }]}
           activeOpacity={0.7}
           onPress={() => router.back()}
         >
@@ -34,7 +36,7 @@ export default function ImageViewerScreen() {
         </TouchableOpacity>
 
         {/* Bottom gradient action area */}
-        <View style={styles.bottomBar}>
+        <View style={[styles.bottomBar, { bottom: Math.max(24, insets.bottom + 12) }]}>
           <TouchableOpacity style={styles.actionPill} activeOpacity={0.7} onPress={() => router.back()}>
             <Text style={styles.actionText}>Save</Text>
           </TouchableOpacity>
@@ -65,7 +67,6 @@ const styles = StyleSheet.create({
   },
   closeBtn: {
     position: 'absolute',
-    top: 56,
     right: 20,
     width: 36,
     height: 36,
@@ -82,7 +83,6 @@ const styles = StyleSheet.create({
   },
   bottomBar: {
     position: 'absolute',
-    bottom: 40,
     left: 0,
     right: 0,
     flexDirection: 'row',

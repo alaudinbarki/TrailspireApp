@@ -11,10 +11,11 @@ import {
   Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function NewCollectionVariantScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [name, setName] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
   const [isCollaborative, setIsCollaborative] = useState(false);
@@ -31,7 +32,7 @@ export default function NewCollectionVariantScreen() {
       <TouchableOpacity style={styles.dismissArea2} activeOpacity={1} onPress={() => router.back()} />
 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardView}>
-        <SafeAreaView style={styles.sheet} edges={['top', 'bottom']}>
+        <SafeAreaView style={[styles.sheet, { paddingBottom: Math.max(20, insets.bottom + 12) }]} edges={['top', 'bottom']}>
           <View style={styles.handle} />
           <Text style={styles.sheetTitle}>New Collection</Text>
 

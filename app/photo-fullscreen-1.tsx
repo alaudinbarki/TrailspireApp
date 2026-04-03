@@ -4,15 +4,18 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  useWindowDimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-
-const BASE_WIDTH = 393;
-const BASE_HEIGHT = 852;
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function PhotoFullscreen1Screen() {
   const router = useRouter();
+  const { width, height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  const imageWidth = width * 0.85;
+  const imageHeight = Math.min(height * 0.65, height - (insets.top + insets.bottom + 80));
 
   return (
     <TouchableOpacity
@@ -26,7 +29,7 @@ export default function PhotoFullscreen1Screen() {
       />
       <Image
         source={require('../assets/images/feed/photo_preview_1.png')}
-        style={styles.image}
+        style={[styles.image, { width: imageWidth, height: imageHeight }]}
         resizeMode="contain"
       />
     </TouchableOpacity>
@@ -36,5 +39,5 @@ export default function PhotoFullscreen1Screen() {
 const styles = StyleSheet.create({
   screen: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   gradient: { ...StyleSheet.absoluteFillObject },
-  image: { width: BASE_WIDTH * 0.85, height: BASE_HEIGHT * 0.65, borderRadius: 16 },
+  image: { borderRadius: 16 },
 });

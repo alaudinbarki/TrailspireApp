@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '../src/constants/theme';
 import { MapPinIcon } from '../src/components/icons/MapPinIcon';
 import { HeartIcon } from '../src/components/icons/HeartIcon';
@@ -135,6 +136,7 @@ const CATEGORIES = ['All', 'Hiking', 'Cycling', 'Skiing', 'Running', 'Climbing']
 
 export default function ExploreResultsScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [selectedCat, setSelectedCat] = useState('All');
 
   const leftColumn = ACTIVITIES.filter((_, i) => i % 2 === 0);
@@ -152,7 +154,7 @@ export default function ExploreResultsScreen() {
         />
         <View style={styles.headerOverlay} />
 
-        <View style={styles.headerContent}>
+        <View style={[styles.headerContent, { paddingTop: Math.max(24, insets.top + 8) }]}>
           <View style={styles.headerTop}>
             <TouchableOpacity
               style={styles.backBtn}
@@ -307,7 +309,7 @@ export default function ExploreResultsScreen() {
             ))}
           </View>
         </View>
-        <View style={{ height: 100 }} />
+        <View style={{ height: Math.max(100, insets.bottom + 80) }} />
       </ScrollView>
     </View>
   );
@@ -338,7 +340,6 @@ const styles = StyleSheet.create({
   },
   headerContent: {
     flex: 1,
-    paddingTop: 60,
     paddingHorizontal: 18,
     paddingBottom: 18,
     justifyContent: 'space-between',

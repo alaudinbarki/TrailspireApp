@@ -8,7 +8,7 @@ import {
   Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
 
 const BASE_WIDTH = 393;
@@ -33,6 +33,7 @@ const PHOTOS = [
 
 export default function UserProfileAtlasScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [atlasTab, setAtlasTab] = useState<'your' | 'all'>('your');
 
   return (
@@ -52,7 +53,7 @@ export default function UserProfileAtlasScreen() {
 
       <ScrollView
         style={styles.content}
-        contentContainerStyle={styles.contentInner}
+        contentContainerStyle={[styles.contentInner, { paddingBottom: Math.max(20, insets.bottom + 8) }]}
         showsVerticalScrollIndicator={false}
       >
         {/* Profile Info */}
@@ -180,9 +181,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-  contentInner: {
-    paddingBottom: 20,
-  },
+  contentInner: {},
   profileSection: {
     alignItems: 'center',
     paddingVertical: 24,

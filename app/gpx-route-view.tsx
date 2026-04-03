@@ -8,6 +8,7 @@ import {
     Dimensions,
 } from 'react-native';
 import { useRouter, Stack } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, {
     Path,
     Rect,
@@ -44,6 +45,7 @@ function GlassBtn({
                     height: h,
                     borderRadius,
                     backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                    overflow: 'hidden',
                     justifyContent: 'center',
                     alignItems: 'center',
                     shadowColor: '#000',
@@ -236,6 +238,9 @@ function RouteSlider() {
 /* ─── Screen ──────────────────────────────────────────────────── */
 export default function GpxRouteViewScreen() {
     const router = useRouter();
+    const insets = useSafeAreaInsets();
+    const topButtonOffset = Math.max(16, insets.top + 8);
+
 
     return (
         <View style={styles.screen}>
@@ -267,12 +272,12 @@ export default function GpxRouteViewScreen() {
 
                 {/* Top-left: share button */}
                 <TouchableOpacity
-                    style={styles.topLeftBtn}
+                    style={[styles.topLeftBtn, { top: topButtonOffset }]}
                     activeOpacity={0.75}
                     onPress={() => { }}
                 >
                     <GlassBtn>
-                        <Svg width={22} height={22} viewBox="0 0 22 22" fill="none">
+                        <Svg width={22} height={22} viewBox="0 0 22 22" fill="none" style={styles.iconSvg}>
                             <Path
                                 d="M8.25 5.5L11 2.75L13.75 5.5M11 2.75V14.667M5.5 8.25C4.12 8.25 3 9.37 3 10.75V17.417C3 18.797 4.12 19.917 5.5 19.917H16.5C17.88 19.917 19 18.797 19 17.417V10.75C19 9.37 17.88 8.25 16.5 8.25"
                                 stroke="#1F1F1F"
@@ -286,12 +291,12 @@ export default function GpxRouteViewScreen() {
 
                 {/* Top-right: close button */}
                 <TouchableOpacity
-                    style={styles.topRightClose}
+                    style={[styles.topRightClose, { top: topButtonOffset }]}
                     activeOpacity={0.75}
                     onPress={() => router.back()}
                 >
                     <GlassBtn>
-                        <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">
+                        <Svg width={16} height={16} viewBox="0 0 16 16" fill="none" style={styles.iconSvg}>
                             <Path
                                 d="M2 2L14 14M14 2L2 14"
                                 stroke="#1F1F1F"
@@ -304,13 +309,13 @@ export default function GpxRouteViewScreen() {
 
                 {/* Top-right: route/trace button (below close) */}
                 <TouchableOpacity
-                    style={styles.topRightRoute}
+                    style={[styles.topRightRoute, { top: topButtonOffset + 54 }]}
                     activeOpacity={0.75}
                     onPress={() => { }}
                 >
                     <GlassBtn>
                         {/* Route trace icon */}
-                        <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
+                        <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" style={styles.iconSvg}>
                             <Circle cx={5} cy={19} r={3} stroke="#1F1F1F" strokeWidth="1.5" />
                             <Circle cx={19} cy={5} r={3} stroke="#1F1F1F" strokeWidth="1.5" />
                             <Path
@@ -325,7 +330,7 @@ export default function GpxRouteViewScreen() {
 
                 {/* "Edit" button — bottom right of map */}
                 <TouchableOpacity
-                    style={styles.editBtn}
+                    style={[styles.editBtn, { bottom: Math.max(8, insets.bottom) }]}
                     activeOpacity={0.75}
                     onPress={() => router.push('/photo-preview-flow')}
                 >
@@ -336,14 +341,14 @@ export default function GpxRouteViewScreen() {
             </View>
 
             {/* ── Bottom Sheet ──────────────────────────────────────── */}
-            <View style={styles.sheet}>
+            <View style={[styles.sheet, { paddingBottom: Math.max(10, insets.bottom + 8) }]}>
                 {/* Drag handle */}
                 <View style={styles.dragHandle} />
 
                 {/* Title row */}
                 <View style={styles.titleRow}>
                     <View style={{ flex: 1 }}>
-                        <Text style={styles.titleText}>Olso, Norway</Text>
+                        <Text style={styles.titleText}>Oslo, Norway</Text>
                         <Text style={styles.subtitleText}>Gravel Cycling · 16.05.2026 · 9:18 AM</Text>
                     </View>
                     <TouchableOpacity style={styles.gpxDownloadBtn} activeOpacity={0.8} onPress={() => { }}>
@@ -423,7 +428,6 @@ export default function GpxRouteViewScreen() {
                 <View style={{
                     backgroundColor: 'rgba(242, 242, 242, 1)',
                     padding: 12,
-                    marginBottom: 12,
                     marginTop: 8,
                     marginHorizontal: -10,
                     borderRadius: 20,
@@ -448,17 +452,13 @@ const styles = StyleSheet.create({
     // ── Map ─────────────────────────────────────────────────────
     mapContainer: {
         flex: 1,
-        // position: 'relative',
-        height: 600,
         zIndex: 3,
-        // paddingTop: 160, // to avoid overlap with status bar
-        // bo
+        paddingTop: 150
     },
     mapBg: {
         width: '100%',
         height: '100%',
-        resizeMode: "cover"
-        , paddingTop: 150
+        resizeMode: 'cover',
     },
     topLeftBtn: {
         position: 'absolute',
@@ -477,16 +477,16 @@ const styles = StyleSheet.create({
     },
     editBtn: {
         position: 'absolute',
-        bottom: 16,
         right: 16,
-        marginBottom: 28,
-        // backgroundColor: "rgba(0, 0, 0, 0.08)"
     },
     editBtnText: {
         fontFamily: 'Inter',
         fontSize: 16,
         fontWeight: '700',
         color: '#282828',
+    },
+    iconSvg: {
+        backgroundColor: 'transparent',
     },
 
     // ── Sheet ────────────────────────────────────────────────────
@@ -495,7 +495,6 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         paddingHorizontal: 18,
-        paddingBottom: 10,
         paddingTop: 8,
         marginTop: -30,
         zIndex: 5,

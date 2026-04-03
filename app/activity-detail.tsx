@@ -323,11 +323,11 @@ export default function ActivityDetailScreen() {
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: Math.max(100, insets.bottom + 90) }]}
         showsVerticalScrollIndicator={false}
       >
         {/* ── Top Activity Header (Page Style) ─────────────────── */}
-        <View style={styles.topActionPhoto}>
+        <View style={[styles.topActionPhoto, { paddingTop: Math.max(54.66, insets.top + 28) }]}>
           <Text style={styles.topActivityLabel}>Activity Data</Text>
           <Text style={styles.topTimestamp}>11:18 PM · May 31, 2026 · Oslo, Norway</Text>
         </View>
@@ -792,9 +792,6 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingTop: 0,
-    paddingBottom: 100,
-    // paddingRight: -10,
-    // marginRight: -10
   },
 
 

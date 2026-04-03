@@ -11,7 +11,7 @@ import {
     Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackArrowIcon } from '../src/components/icons/BackArrowIcon';
 import Svg, { Path } from 'react-native-svg';
 import { scaleUniform } from '../src/utils/globalScale';
@@ -49,6 +49,7 @@ function ReceivedTail() {
 
 export default function ChatThreadScreen() {
     const router = useRouter();
+    const insets = useSafeAreaInsets();
     const [message, setMessage] = useState('');
 
     return (
@@ -81,7 +82,7 @@ export default function ChatThreadScreen() {
 
                 <ScrollView
                     style={styles.messagesScroll}
-                    contentContainerStyle={styles.messagesContent}
+                    contentContainerStyle={[styles.messagesContent, { paddingBottom: Math.max(126, insets.bottom + 80) }]}
                     showsVerticalScrollIndicator={false}
                 >
                     <View style={[styles.timestampRow, styles.timestampTop]}>
@@ -282,7 +283,6 @@ const styles = StyleSheet.create({
     messagesContent: {
         paddingHorizontal: 16.5,
         paddingTop: 1,
-        paddingBottom: 126,
     },
     timestampRow: {
         width: 360,

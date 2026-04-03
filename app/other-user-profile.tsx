@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SearchIcon } from '../src/components/icons/SearchIcon';
 import { FilterIcon } from '../src/components/icons/FilterIcon';
 import Svg, { Path } from 'react-native-svg';
@@ -62,10 +62,11 @@ const ACTIVITIES = [
 
 export default function OtherUserProfileScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scrollContent, { paddingBottom: Math.max(26, insets.bottom + 14) }]}>
         <View style={styles.topHeaderRow}>
           <View style={styles.profileSection}>
             <Image source={require('../assets/images/feed/profile_andrea_avatar.png')} style={styles.avatar} />
@@ -151,7 +152,7 @@ export default function OtherUserProfileScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#000000' },
-  scrollContent: { paddingBottom: 26 },
+  scrollContent: {},
   topHeaderRow: {
     marginTop: 10,
     paddingHorizontal: 19,

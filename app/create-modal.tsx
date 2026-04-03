@@ -8,17 +8,20 @@ import {
   Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width: SCREEN_W } = Dimensions.get('window');
 
 export default function CreateModalScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const sheetWidth = Math.min(389, SCREEN_W - 16);
+  const sheetBottom = Math.max(16, insets.bottom + 8);
 
   return (
     <View style={styles.screen}>
       <Pressable style={styles.backdrop} onPress={() => router.back()} />
-      <View style={[styles.sheet, { width: sheetWidth }]}>
+      <View style={[styles.sheet, { width: sheetWidth, marginBottom: sheetBottom }]}>
         <Text style={styles.title}>Create</Text>
 
         <TouchableOpacity
@@ -97,7 +100,6 @@ const styles = StyleSheet.create({
     height: 173,
     backgroundColor: '#282828',
     borderRadius: 60,
-    marginBottom: 16,
     paddingTop: 16,
     paddingHorizontal: 20,
     position: 'relative',
@@ -149,8 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F2F2F2',
     borderRadius: 1,
     marginVertical: 4,
-    paddingBottom: -4,
-    marginBottom: 20
+    marginBottom: 20,
   },
   iconWrap: {
     width: 42,

@@ -11,7 +11,7 @@ import {
   View,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path, Rect } from 'react-native-svg';
 
 type TabMode = 'collections' | 'gpx';
@@ -106,6 +106,7 @@ const COLLECTIONS: CollectionItem[] = [
 
 export default function SavedCollectionsScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const [activeTab, setActiveTab] = useState<TabMode>('collections');
   const [showMenu, setShowMenu] = useState(false);
@@ -239,7 +240,10 @@ export default function SavedCollectionsScreen() {
         </>
       )}
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={[styles.content, { paddingBottom: Math.max(120, insets.bottom + 108) }]}
+      >
 
         <View style={styles.svgRowWrapper}>
           <Svg width={responsiveSvgWidth} height={responsiveSvgHeight} viewBox="0 0 350 40" fill="none">
@@ -343,7 +347,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#D9D9D9',
   },
   content: {
-    paddingBottom: 120,
   },
   topActionsRow: {
     flexDirection: 'row',
